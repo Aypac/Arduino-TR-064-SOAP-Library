@@ -10,7 +10,7 @@
 #ifndef tr064_h
 #define tr064_h
 
-#define USE_SERIAL Serial
+//#define USE_SERIAL Serial
 #include "Arduino.h"
 #include <ESP8266HTTPClient.h>
 

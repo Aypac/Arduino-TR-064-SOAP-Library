@@ -166,6 +166,7 @@ void loop() {
 
     //Check for all users if at least one of the macs is online
     for (int i=0;i<numUser;++i) {
+      USE_SERIAL.printf("> USER %d -------------------------------\n",i);
       boolean b = true; //No online device found yet
       //Check all devices
       for (int j=0;j<maxDevices && b;++j) {
@@ -187,6 +188,7 @@ void loop() {
         }
       }
     }
+    USE_SERIAL.println("-------------------------------------------");
 
     //Flash all LEDs and then set them to the status we just found
     for (int i=0;i<numUser;++i) {
