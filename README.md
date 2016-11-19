@@ -3,6 +3,8 @@ Arduino library for the TR-064 protocol, most commonly used by Fritz!Box. A [Des
 
 Has been developed on an ESP8266 and was tested with a Fritz!Box FON WLAN 7360.
 
+For illustration on the example, please also visit my [instructable](http://www.instructables.com/id/Who-Is-Home-Indicator-aka-Weasley-Clock-Based-on-T/).
+
 # TODO
 Help is very welcome (especially when improving the library code). I'm not a genius with C++.
 ##Library
