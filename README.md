@@ -7,7 +7,9 @@ For illustration on the example, please also visit my [instructable](http://www.
 
 # TODO
 Help is very welcome (especially when improving the library code). I'm not a genius with C++.
+
 ##Library
+
 * Test for different setups (i.e. other microcontroller and other routers)
 * Make code more efficient
 * Do some (better) error-handeling
@@ -15,6 +17,9 @@ Help is very welcome (especially when improving the library code). I'm not a gen
   * Re-initialize authorization to have a fresh Nonce
 * Add some more commentary
 * Create a sophisticated debug/verbose mode (and silence the non-debug mode!)
+* Add a keywords.txt , as described here: https://www.arduino.cc/en/Hacking/LibraryTutorial
 
 ##Example
-* Add nice GUI/Website to configure/manage the users/LEDs/MACs/known devices
+
+* Add a few more nice examples (eg turning on/off wifi, testing connection speed, etc)
+* WhoIsHomeIndicator: Add nice GUI/Website to configure/manage the users/LEDs/MACs/known devices
