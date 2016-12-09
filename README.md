@@ -11,6 +11,7 @@ Help is very welcome (especially when improving the library code). I'm not a gen
 ##Library
 
 * Test for different setups (i.e. other microcontroller and other routers)
+* Get a new Nonce if a connection fails
 * Make code more efficient
 * Do some (better) error-handeling
   * Return proper errors
@@ -22,4 +23,6 @@ Help is very welcome (especially when improving the library code). I'm not a gen
 ##Example
 
 * Add a few more nice examples (eg turning on/off wifi, testing connection speed, etc)
-* WhoIsHomeIndicator: Add nice GUI/Website to configure/manage the users/LEDs/MACs/known devices
+* WhoIsHomeIndicator
+  * Add nice GUI/Website to configure/manage the users/LEDs/MACs/known devices
+  * Known Bug: After a few hours the known devices "freeze", needs restart
