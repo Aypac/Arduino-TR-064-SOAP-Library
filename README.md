@@ -5,6 +5,12 @@ Has been developed on an ESP8266 and was tested with a Fritz!Box FON WLAN 7360.
 
 For illustration on the example, please also visit my [instructable](http://www.instructables.com/id/Who-Is-Home-Indicator-aka-Weasley-Clock-Based-on-T/).
 
+##Known routers with TR-064 interface
+If you know more, please let me know!
+
+* Almost all Fritz!Box routers
+* Some ZyXEL routers [eg. ftp://ftp.zyxel.nl/VMG4325-B10A/user_guide/VMG4325-B10A_.pdf page 29 ]
+
 # TODO
 Help is very welcome (especially when improving the library code). I'm not a genius with C++.
 
@@ -22,7 +28,7 @@ Help is very welcome (especially when improving the library code). I'm not a gen
 
 ##Example
 
-* Add a few more nice examples (eg turning on/off wifi, testing connection speed, etc)
+* Add a few more nice examples (eg turning on/off (guest) wifi, testing connection speed, WPS, etc)
 * WhoIsHomeIndicator
   * Add nice GUI/Website to configure/manage the users/LEDs/MACs/known devices
   * Known Bug: After a few hours the known devices "freeze", needs restart
