@@ -8,7 +8,9 @@ For illustration on the example, please also visit my [instructable](http://www.
 ##Known routers with TR-064 interface
 If you know more, please let me know!
 
-* Almost all Fritz!Box routers
+* Almost all Fritz!Box routers. Tested devices:
+ * Fritz!Box FON WLAN 7360
+ * DECT 200 (tested by Ole Urgast)
 * Some ZyXEL routers [eg. ftp://ftp.zyxel.nl/VMG4325-B10A/user_guide/VMG4325-B10A_.pdf page 29 ]
 
 # TODO
