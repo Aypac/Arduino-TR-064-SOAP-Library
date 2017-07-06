@@ -25,8 +25,8 @@ ESP8266WiFiMulti WiFiMulti;
 //Put your router settings here
 //-------------------------------------------------------------------------------------
 
-//Wifi network name
-const char* wifi_ssid = "FRITZ!Box Fon WLAN 7360"; 
+//Wifi network name (SSID)
+const char* wifi_ssid = "WLANSID"; 
 
 //Wifi network password
 const char* wifi_password = "XXXXXXXXXXXXXXXXXXXXX";
