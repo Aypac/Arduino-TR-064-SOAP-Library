@@ -5,12 +5,14 @@ Has been developed on an ESP8266 and was tested with a Fritz!Box FON WLAN 7360.
 
 For illustration on the example, please also visit my [instructable](http://www.instructables.com/id/Who-Is-Home-Indicator-aka-Weasley-Clock-Based-on-T/).
 
+If you need further guidance, provide your own example or find a bug, please open an issue here on Github or head over to the [instructable](http://www.instructables.com/id/Who-Is-Home-Indicator-aka-Weasley-Clock-Based-on-T/) and ask there.
+
 ##Known routers with TR-064 interface
 If you know more, please let me know!
 
 * Almost all Fritz!Box routers. Tested devices:
   * Fritz!Box FON WLAN 7360
-  * DECT 200 (tested by Ole Urgast)
+  * DECT200 (tested by Oliver-André Urban)
 * Some ZyXEL routers [eg. ftp://ftp.zyxel.nl/VMG4325-B10A/user_guide/VMG4325-B10A_.pdf page 29 ]
 
 # TODO
