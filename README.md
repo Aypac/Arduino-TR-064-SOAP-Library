@@ -16,6 +16,8 @@ If you know more, please let me know!
 * Some ZyXEL routers [eg. ftp://ftp.zyxel.nl/VMG4325-B10A/user_guide/VMG4325-B10A_.pdf page 29 ]
 
 # TODO
+* Add yield()'s
+* figure out the occasional crashes
 Help is very welcome (especially when improving the library code). I'm not a genius with C++.
 
 ##Library
