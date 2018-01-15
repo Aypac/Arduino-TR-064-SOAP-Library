@@ -16,9 +16,11 @@ If you know more, please let me know!
   * DECT200 (tested by Oliver-André Urban)
 * Some ZyXEL routers [eg. ftp://ftp.zyxel.nl/VMG4325-B10A/user_guide/VMG4325-B10A_.pdf page 29 ]
 
+
 # TODO
 
-Help is very welcome (especially when improving the library code). I'm not a genius with C++.
+
+Help is very welcome (especially for improving the library code). I'm not particularily good with C++. Also if you use the library to do something cool, please let me know - I'd love to add more examples to the Repo!
 
 ##Library
 
