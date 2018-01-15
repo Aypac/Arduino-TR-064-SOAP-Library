@@ -12,17 +12,18 @@ If you know more, please let me know!
 
 * Almost all Fritz!Box routers. Tested devices:
   * Fritz!Box FON WLAN 7360
+  * Fritz!Box 7490 (tested by Dirk Kaben)
   * DECT200 (tested by Oliver-André Urban)
 * Some ZyXEL routers [eg. ftp://ftp.zyxel.nl/VMG4325-B10A/user_guide/VMG4325-B10A_.pdf page 29 ]
 
 # TODO
-* Add yield()'s
-* figure out the occasional crashes
 
 Help is very welcome (especially when improving the library code). I'm not a genius with C++.
 
 ##Library
 
+* Add yield()'s
+* figure out the occasional crashes
 * Test for different setups (i.e. other microcontroller and other routers)
 * Get a new Nonce if a connection fails
 * Make code more efficient
@@ -33,9 +34,10 @@ Help is very welcome (especially when improving the library code). I'm not a gen
 * Create a sophisticated debug/verbose mode (and silence the non-debug mode!)
 * Add a keywords.txt , as described here: https://www.arduino.cc/en/Hacking/LibraryTutorial
 
-##Example
+##Examples
 
-* Add a few more nice examples (eg turning on/off (guest) wifi, testing connection speed, WPS, etc)
+* Add yield()'s
+* Add a few more nice examples (eg turning on/off (guest) wifi, connection speed, WPS, etc)
 * WhoIsHomeIndicator
   * Add nice GUI/Website to configure/manage the users/LEDs/MACs/known devices
   * Known Bug: After a few hours the known devices "freeze", needs restart
