@@ -63,7 +63,7 @@ void TR064::initNonce() {
 //Returns the xml-header for authentification
 String TR064::generateAuthXML() {
     String token;
-    if (_nonce == "") { //If we do not have a nonce yet, we need to use a different header
+    if (_nonce == "" || _error) { //If we do not have a nonce yet, we need to use a different header
        token="<s:Header><h:InitChallenge xmlns:h=\"http://soap-authentication.org/digest/2001/10/\" s:mustUnderstand=\"1\"><UserID>"+_user+"</UserID></h:InitChallenge ></s:Header>";
     } else { //Otherwise we produce an authorisation header
       token = generateAuthToken();
@@ -92,6 +92,7 @@ String TR064::action(String service, String act) {
 //e.g. String params[][2] = {{ "arg1", "value1" }, { "arg2", "value2" }};
 String TR064::action(String service, String act, String params[][2], int nParam) {
     //USE_SERIAL.println("action_1");
+
 	//Generate the xml-envelop
     String xml = _requestStart + generateAuthXML() + "<s:Body><u:"+act+" xmlns:u='" + service + "'>";
 	//add request-parameters to xml
@@ -199,6 +200,11 @@ String TR064::httpRequest(String url, String xml, String soapaction) {
     } else {
       //Error
 	//TODO: Proper error-handling?
+	_error=true;
+	//This might not be the best place to do this, potentially endless loop!
+	if (_error) {
+		initNonce();
+	}
       //USE_SERIAL.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpCode).c_str());
       //TODO: _nonce="";
     }
@@ -220,13 +226,13 @@ String TR064::httpRequest(String url, String xml, String soapaction) {
 String TR064::md5String(String text){
   byte bbuff[16];
   String hash = "";
-      MD5Builder nonce_md5; 
-      nonce_md5.begin();
-      nonce_md5.add(text); 
-      nonce_md5.calculate(); 
-      nonce_md5.getBytes(bbuff);
-      for ( byte i = 0; i < 16; i++) hash += byte2hex(bbuff[i]);
-      return hash;   
+  MD5Builder nonce_md5; 
+  nonce_md5.begin();
+  nonce_md5.add(text); 
+  nonce_md5.calculate(); 
+  nonce_md5.getBytes(bbuff);
+  for ( byte i = 0; i < 16; i++) hash += byte2hex(bbuff[i]);
+  return hash;   
 }
 
 String TR064::byte2hex(byte number){

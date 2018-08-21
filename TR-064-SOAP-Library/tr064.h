@@ -11,8 +11,19 @@
 #define tr064_h
 
 //#define USE_SERIAL Serial
+
 #include "Arduino.h"
-#include <ESP8266HTTPClient.h>
+#include <MD5Builder.h>
+
+#if defined(ESP8266)
+  //Serial.println(F("Version compiled for ESP8266."));
+  #include <ESP8266HTTPClient.h>
+#elif defined(ESP32)
+  //Serial.println(F("Version compiled for ESP32."));
+  #include <HTTPClient.h>
+#else
+  //INCOMPATIBLE!
+#endif
 
 #define arr_len( x )  ( sizeof( x ) / sizeof( *x ) )
 
@@ -44,7 +55,8 @@ class TR064
     String _nonce = "";
     const String _requestStart = "<?xml version=\"1.0\"?><s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">";
     const String _detectPage = "/tr64desc.xml";
-    String _services[100][2];
+    String _services[100][2]; //TODO: Remove 100 services limits here
+    bool _error=false;
 };
 
 #endif
