@@ -19,13 +19,12 @@ TR064::TR064(int port, String ip, String user, String pass)
 
 //DONT FORGET TO INIT!
 void TR064::init() {
-  //USE_SERIAL.begin(115200); //TODO: REMOVE
-  delay(1000); //TODO: REMOVE
+  delay(100); //TODO: REMOVE
 	//Get a list of all services and the associated urls
   initServiceURLs();
 	//Get the initial nonce and the realm
   initNonce();
-	//Now we have everything to generate out hased secret.
+	//Now we have everything to generate our hashed secret.
   //USE_SERIAL.println("Your secret is is: " + _user + ":" + _realm + ":" + _pass);
   _secretH = md5String(_user + ":" + _realm + ":" + _pass);
   //USE_SERIAL.println("Your secret is hashed: " + _secretH);
@@ -36,7 +35,7 @@ void TR064::initServiceURLs() {
    String inStr = httpRequest(_detectPage, "", "");
    int CountChar=7; //length of word "service"
    int i = 0;
-    while (inStr.indexOf("<service>") > 0 || inStr.indexOf("</service>") > 0) {
+   while (inStr.indexOf("<service>") > 0 || inStr.indexOf("</service>") > 0) {
        int indexStart=inStr.indexOf("<service>");
        int indexStop= inStr.indexOf("</service>");
        String serviceXML = inStr.substring(indexStart+CountChar+2, indexStop);
@@ -49,7 +48,7 @@ void TR064::initServiceURLs() {
        //USE_SERIAL.flush();
        //USE_SERIAL.println(servicename + " @ " + controlurl);
        inStr = inStr.substring(indexStop+CountChar+3);
-    }
+   }
 }
 
 //Fetches the initial nonce and the realm
@@ -108,11 +107,8 @@ String TR064::action(String service, String act, String params[][2], int nParam)
 	//The SOAPACTION-header is in the format service#action
     String soapaction = service+"#"+act;
 
-
-
 	//Send the http-Request
     String xmlR = httpRequest(findServiceURL(service), xml, soapaction);
-
 
 	//Extract the Nonce for the next action/authToken.
     if (xmlR != "") {
@@ -219,7 +215,6 @@ String TR064::httpRequest(String url, String xml, String soapaction) {
 //----------------------------
 //----- Helper-functions -----
 //----------------------------
-
 
 
 

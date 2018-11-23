@@ -76,6 +76,8 @@ void loop() {
     USE_SERIAL.println();
     USE_SERIAL.printf("Button pressed");
     callWahlhilfe();
+    //callDect();
+    //char* status=getStatus();
     delay(20000);
   }
   else
@@ -103,4 +105,26 @@ int callWahlhilfe() {
   String req[][2] = {{}};
 
   connection.action("urn:dslforum-org:service:X_VoIP:1", "X_AVM-DE_DialNumber", params, 1, req, 0);
+}
+
+int callDect() {
+  // Maybe the WLAN connection is lost, so testing an reconnect if needed
+  if ((WiFiMulti.run() != WL_CONNECTED)) {
+    WiFiMulti.addAP(wifi_ssid, wifi_password);
+    while ((WiFiMulti.run() != WL_CONNECTED)) {
+      delay(100);
+    }
+  }
+  //(Re-) Initialize the TR-064 library - it is done every time, as maybe the connection has lost before
+  connection.init();
+  
+  String params[][2] = {{"NewAIN", "12345 0123456"}, {"NewSwitchState", "TOGGLE"}};
+  connection.action("urn:dslforum-org:service:X_AVM-DE_Homeauto:1", "SetSwitch", params, 2);
+}
+
+char* getStatus() {
+  String paramsb[][2] = {{"NewAIN", "12345 0123456"}};
+  String reqb[][2] = {{"NewDeviceId", ""}, {"NewSwitchState", ""}};
+  connection.action("urn:dslforum-org:service:X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", paramsb, 1, reqb, 2);
+   return reqb[1][1]
 }
