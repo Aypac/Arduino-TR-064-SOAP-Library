@@ -1,7 +1,7 @@
 # Arduino-TR-064-SOAP-Library
 Arduino library for the TR-064 protocol, most commonly used by Fritz!Box. A [Description of the protocol](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf).
 
-Has been developed on an ESP8266 and was tested with a Fritz!Box FON WLAN 7360.
+Has been developed on an ESP8266 and tested on an ESP32.
 
 For illustration on the example, please also visit my [instructable](http://www.instructables.com/id/Who-Is-Home-Indicator-aka-Weasley-Clock-Based-on-T/).
 
