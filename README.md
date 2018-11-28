@@ -16,7 +16,7 @@ If you know more, please let me know!
   * DECT200 (tested by Oliver-André Urban)
 * Some ZyXEL routers (eg. <a href="ftp://ftp.zyxel.nl/VMG4325-B10A/user_guide/VMG4325-B10A_.pdf">VMG4325 and VMG4380, see page 29</a>)
 
-## Featured in C'T!
+## Made it into the C'T!
 In a German magazine, the C'T, there was [an article (in German)](https://www.heise.de/select/ct/2018/17/1534215254552977) on how to create a doorbell using the DECT phones and an ESP8266.
 
 # TODO
