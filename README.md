@@ -1,5 +1,5 @@
 # Arduino-TR-064-SOAP-Library
-Arduino library for the TR-064 protocol, most commonly used by Fritz!Box. A [Description of the protocol](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf).
+Arduino library for the TR-064 protocol, most commonly used by Fritz!Box. [Definition of the Protocol](https://www.broadband-forum.org/technical/download/TR-064.pdf) and [Description of the protocol](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf).
 
 Has been developed on an ESP8266 and tested on an ESP32.
 
