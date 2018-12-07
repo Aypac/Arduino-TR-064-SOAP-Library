@@ -1,22 +1,30 @@
 language: c
+sudo: false
+cache:
+  directories:
+    - ~/arduino_ide
+    - ~/.arduino15/packages/
+git:
+  depth: false
+  quiet: true
+env:
+  global:
+     - ARDUINO_IDE_VERSION="1.8.7"
+     - PRETTYNAME="Adafruit FT6206 Arduino Library"
+# Optional, will default to "$TRAVIS_BUILD_DIR/Doxyfile"
+#    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxyfile
+ 
 before_install:
-  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_1.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :1 -ac -screen 0 1280x1024x16"
-  - sleep 3
-  - export DISPLAY=:1.0
-  - wget http://downloads.arduino.cc/arduino-1.8.8-linux64.tar.xz
-  - tar xf arduino-1.8.8-linux64.tar.xz
-  - sudo mv arduino-1.8.8 /usr/local/share/arduino
-  - sudo ln -s /usr/local/share/arduino/arduino /usr/local/bin/arduino
+   - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
+   - arduino --pref "boardsmanager.additional.urls=https://dl.espressif.com/dl/package_esp32_index.json, http://arduino.esp8266.com/stable/package_esp8266com_index.json" --save-prefs
 install:
-  - ln -s $PWD /usr/local/share/arduino/libraries/Arduino-TR-064-SOAP-Library
-  - arduino --pref "boardsmanager.additional.urls=https://dl.espressif.com/dl/package_esp32_index.json, http://arduino.esp8266.com/stable/package_esp8266com_index.json" --save-prefs
-  - arduino --install-library ConfigManager
-  - arduino --install-boards esp8266:esp8266
-  - arduino --install-boards esp32:esp32
+   - arduino --install-library "ConfigManager"
+ 
 script:
-  - arduino --verify --board esp8266:esp8266:generic:CpuFrequency=80 $PWD/examples/home-indicator.ino
-  
-notifications:
-  email:
-    on_success: change
-    on_failure: change
+   - build_main_platforms
+   - arduino --verify --board esp8266:esp8266:generic:CpuFrequency=80 $PWD/examples/home-indicator.ino
+ 
+# Generate and deploy documentation
+after_success:
+  - source <(curl -SLs  https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/library_check.sh)
+  - source <(curl -SLs  https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/doxy_gen_and_deploy.sh)
