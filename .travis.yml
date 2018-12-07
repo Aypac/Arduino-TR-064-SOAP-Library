@@ -11,8 +11,6 @@ env:
   global:
      - ARDUINO_IDE_VERSION="1.8.8"
      - PRETTYNAME="Arduino TR-064 Library"
-    # Limit the platforms to ESP32 and ESP8266
-     - export MAIN_PLATFORMS='declare -A main_platforms=( [esp8266]="esp8266:esp8266:huzzah:FlashSize=4M3M,CpuFrequency=80" [esp32]="esp32:esp32:featheresp32:FlashFreq=80" )'
 # Optional, will default to "$TRAVIS_BUILD_DIR/Doxyfile"
 #    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxyfile
  
@@ -25,7 +23,8 @@ install:
 #   - arduino --install-boards esp32:esp32
  
 script:
-   - build_main_platforms
+   - 
+   - build_platform esp8266
 #   - arduino --verify --board esp8266:esp8266:generic:CpuFrequency=80 $PWD/examples/home-indicator.ino
  
 # Generate and deploy documentation
