@@ -10,7 +10,8 @@ before_install:
 install:
   - ln -s $PWD /usr/local/share/arduino/libraries/Arduino-TR-064-SOAP-Library
   - arduino --pref "boardsmanager.additional.urls=https://dl.espressif.com/dl/package_esp32_index.json, http://arduino.esp8266.com/stable/package_esp8266com_index.json" --save-prefs
-  - arduino --install-library "ConfigManager,ESP8266"
+  - arduino --install-library ConfigManager
+  - arduino --install-library ESP8266
   - arduino --install-boards esp8266:esp8266
   - arduino --install-boards esp32:esp32
 script:
