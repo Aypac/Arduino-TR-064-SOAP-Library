@@ -9,16 +9,18 @@ git:
   quiet: true
 env:
   global:
-     - ARDUINO_IDE_VERSION="1.8.7"
-     - PRETTYNAME="Adafruit FT6206 Arduino Library"
+     - ARDUINO_IDE_VERSION="1.8.8"
+     - PRETTYNAME="Arduino TR-064 Library"
 # Optional, will default to "$TRAVIS_BUILD_DIR/Doxyfile"
 #    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxyfile
  
 before_install:
    - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
-   - arduino --pref "boardsmanager.additional.urls=https://dl.espressif.com/dl/package_esp32_index.json, http://arduino.esp8266.com/stable/package_esp8266com_index.json" --save-prefs
+#   - arduino --pref "boardsmanager.additional.urls=https://dl.espressif.com/dl/package_esp32_index.json, http://arduino.esp8266.com/stable/package_esp8266com_index.json" --save-prefs
 install:
    - arduino --install-library "ConfigManager"
+#   - arduino --install-boards esp8266:esp8266
+#   - arduino --install-boards esp32:esp32
  
 script:
    - build_main_platforms
@@ -27,4 +29,4 @@ script:
 # Generate and deploy documentation
 after_success:
   - source <(curl -SLs  https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/library_check.sh)
-  - source <(curl -SLs  https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/doxy_gen_and_deploy.sh)
+#  - source <(curl -SLs  https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/doxy_gen_and_deploy.sh)
