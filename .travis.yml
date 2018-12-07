@@ -23,8 +23,8 @@ install:
 #   - arduino --install-boards esp32:esp32
  
 script:
-   - 
    - build_platform esp8266
+   - build_platform esp32
 #   - arduino --verify --board esp8266:esp8266:generic:CpuFrequency=80 $PWD/examples/home-indicator.ino
  
 # Generate and deploy documentation
