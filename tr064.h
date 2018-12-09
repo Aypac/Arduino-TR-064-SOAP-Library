@@ -10,16 +10,14 @@
 #ifndef tr064_h
 #define tr064_h
 
-//#define USE_SERIAL Serial
-
 #include "Arduino.h"
 #include <MD5Builder.h>
 
 #if defined(ESP8266)
-  //Serial.println(F("Version compiled for ESP8266."));
+  //if(Serial) Serial.println(F("Version compiled for ESP8266."));
   #include <ESP8266HTTPClient.h>
 #elif defined(ESP32)
-  //Serial.println(F("Version compiled for ESP32."));
+  //if(Serial) Serial.println(F("Version compiled for ESP32."));
   #include <HTTPClient.h>
 #else
   //INCOMPATIBLE!

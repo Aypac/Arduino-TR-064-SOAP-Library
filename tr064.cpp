@@ -8,7 +8,7 @@
 
 #include "tr064.h"
 
-//Do not construct this unless you have a working connection to the device!
+// Do not construct this unless you have a working connection to the device!
 TR064::TR064(int port, String ip, String user, String pass)
 {
   _port = port;
@@ -17,20 +17,20 @@ TR064::TR064(int port, String ip, String user, String pass)
   _pass = pass;
 }
 
-//DONT FORGET TO INIT!
+// DONT FORGET TO INIT!
 void TR064::init() {
-  delay(100); //TODO: REMOVE
-	//Get a list of all services and the associated urls
+  delay(100); // TODO: REMOVE
+	// Get a list of all services and the associated urls
   initServiceURLs();
-	//Get the initial nonce and the realm
+	// Get the initial nonce and the realm
   initNonce();
-	//Now we have everything to generate our hashed secret.
-  //USE_SERIAL.println("Your secret is is: " + _user + ":" + _realm + ":" + _pass);
+	// Now we have everything to generate our hashed secret.
+  if(Serial) Serial.println("Your secret is is: " + _user + ":" + _realm + ":" + _pass);
   _secretH = md5String(_user + ":" + _realm + ":" + _pass);
-  //USE_SERIAL.println("Your secret is hashed: " + _secretH);
+  if(Serial) Serial.println("Your secret is hashed: " + _secretH);
 }
 
-//Fetches a list of all services and the associated urls
+// Fetches a list of all services and the associated urls
 void TR064::initServiceURLs() {
    String inStr = httpRequest(_detectPage, "", "");
    int CountChar=7; //length of word "service"
@@ -44,19 +44,21 @@ void TR064::initServiceURLs() {
        _services[i][0] = servicename;
        _services[i][1] = controlurl;
        ++i;
-       //USE_SERIAL.printf("Service no %d:\t", i);
-       //USE_SERIAL.flush();
-       //USE_SERIAL.println(servicename + " @ " + controlurl);
+       if(Serial) {
+           Serial.printf("Service no %d:\t", i);
+           Serial.flush();
+           Serial.println(servicename + " @ " + controlurl);
+       }
        inStr = inStr.substring(indexStop+CountChar+3);
    }
 }
 
-//Fetches the initial nonce and the realm
+// Fetches the initial nonce and the realm
 void TR064::initNonce() {
-    //USE_SERIAL.print("Geting the initial nonce and realm\n");
+    if(Serial) Serial.print("Geting the initial nonce and realm\n");
     String a[][2] = {{"NewAssociatedDeviceIndex", "1"}};
     action("urn:dslforum-org:service:WLANConfiguration:1", "GetGenericAssociatedDeviceInfo", a, 1);
-    //USE_SERIAL.print("Got the initial nonce: " + _nonce + " and the realm: " + _realm + "\n");
+    if(Serial) Serial.print("Got the initial nonce: " + _nonce + " and the realm: " + _realm + "\n");
 }
 
 //Returns the xml-header for authentification
@@ -71,30 +73,30 @@ String TR064::generateAuthXML() {
     return token;
 }
 
-//Returns the authentification token based on the hashed secret and the last nonce.
+// Returns the authentification token based on the hashed secret and the last nonce.
 String TR064::generateAuthToken() {
     String token = md5String(_secretH + ":" + _nonce);
-    //USE_SERIAL.print("The auth token is " + token + "\n");
+    if(Serial) Serial.print("The auth token is " + token + "\n");
     return token;
 }
 
 
-//This function will call an action on the service.
+// This function will call an action on the service.
 String TR064::action(String service, String act) {
-    //USE_SERIAL.println("action_2");
+    if(Serial) Serial.println("action_2");
     String p[][2] = {{}};
     return action(service, act, p, 0);
 }
 
-//This function will call an action on the service.
-//With params you set the arguments for the action
-//e.g. String params[][2] = {{ "arg1", "value1" }, { "arg2", "value2" }};
+// This function will call an action on the service.
+// With params you set the arguments for the action
+// e.g. String params[][2] = {{ "arg1", "value1" }, { "arg2", "value2" }};
 String TR064::action(String service, String act, String params[][2], int nParam) {
-    //USE_SERIAL.println("action_1");
+    if(Serial) Serial.println("action_1");
 
-	//Generate the xml-envelop
+	// Generate the xml-envelop
     String xml = _requestStart + generateAuthXML() + "<s:Body><u:"+act+" xmlns:u='" + service + "'>";
-	//add request-parameters to xml
+	// add request-parameters to xml
     if (nParam > 0) {
         for (int i=0;i<nParam;++i) {
 	    if (params[i][0] != "") {
@@ -102,15 +104,15 @@ String TR064::action(String service, String act, String params[][2], int nParam)
             }
         }
     }
-	//close the envelop
+	// close the envelop
     xml += "</u:" + act + "></s:Body></s:Envelope>";
-	//The SOAPACTION-header is in the format service#action
+	// The SOAPACTION-header is in the format service#action
     String soapaction = service+"#"+act;
 
-	//Send the http-Request
+	// Send the http-Request
     String xmlR = httpRequest(findServiceURL(service), xml, soapaction);
 
-	//Extract the Nonce for the next action/authToken.
+	// Extract the Nonce for the next action/authToken.
     if (xmlR != "") {
       if (xmlTakeParam(xmlR, "Nonce") != "") {
           _nonce = xmlTakeParam(xmlR, "Nonce");
@@ -123,14 +125,14 @@ String TR064::action(String service, String act, String params[][2], int nParam)
 }
 
 
-//This function will call an action on the service.
-//With params you set the arguments for the action
-//e.g. String params[][2] = {{ "arg1", "value1" }, { "arg2", "value2" }};
-//Will also fill the array req with the values of the assiciated return variables of the request.
-//e.g. String req[][2] = {{ "resp1", "" }, { "resp2", "" }};
-//will be turned into req[][2] = {{ "resp1", "value1" }, { "resp2", "value2" }};
+// This function will call an action on the service.
+// With params you set the arguments for the action
+// e.g. String params[][2] = {{ "arg1", "value1" }, { "arg2", "value2" }};
+// Will also fill the array req with the values of the assiciated return variables of the request.
+// e.g. String req[][2] = {{ "resp1", "" }, { "resp2", "" }};
+// will be turned into req[][2] = {{ "resp1", "value1" }, { "resp2", "value2" }};
 String TR064::action(String service, String act, String params[][2], int nParam, String (*req)[2], int nReq) {
-    //USE_SERIAL.println("action_3");
+    if(Serial) Serial.println("action_3");
     String xmlR = action(service, act, params, nParam);
     String body = xmlTakeParam(xmlR, "s:Body");
 
@@ -144,7 +146,7 @@ String TR064::action(String service, String act, String params[][2], int nParam,
     return xmlR;
 }
 
-//Returns the (relative) url for a service
+// Returns the (relative) url for a service
 String TR064::findServiceURL(String service) {
     for (int i=0;i<arr_len(_services);++i) {
 	if (_services[i][0] == service) {
@@ -155,13 +157,13 @@ String TR064::findServiceURL(String service) {
 }
 
 
-//Puts a http-Request to the given url (relative to _ip on _port)
+// Puts a http-Request to the given url (relative to _ip on _port)
 // - if specified POSTs xml and adds soapaction as header field.
 // - otherwise just GETs the url
 String TR064::httpRequest(String url, String xml, String soapaction) {
     HTTPClient http;
 
-    //USE_SERIAL.print("[HTTP] begin: "+_ip+":"+_port+url+"\n");
+    if(Serial) Serial.print("[HTTP] begin: "+_ip+":"+_port+url+"\n");
     
     http.begin(_ip, _port, url);
     if (soapaction != "") {
@@ -174,12 +176,12 @@ String TR064::httpRequest(String url, String xml, String soapaction) {
     // start connection and send HTTP header
     int httpCode=0;
     if (xml != "") {
-      //USE_SERIAL.println("\n\n\n"+xml+"\n\n\n");
+      if(Serial) Serial.println("\n\n\n"+xml+"\n\n\n");
       httpCode = http.POST(xml);
-      //USE_SERIAL.print("[HTTP] POST... SOAPACTION: "+soapaction+"\n");
+      if(Serial) Serial.print("[HTTP] POST... SOAPACTION: "+soapaction+"\n");
     } else {
       httpCode = http.GET();
-      //USE_SERIAL.print("[HTTP] GET...\n");
+      if(Serial) Serial.print("[HTTP] GET...\n");
     }
 
     
@@ -187,36 +189,32 @@ String TR064::httpRequest(String url, String xml, String soapaction) {
     // httpCode will be negative on error
     if(httpCode > 0) {
         // HTTP header has been send and Server response header has been handled
-        //USE_SERIAL.printf("[HTTP] POST... code: %d\n", httpCode);
+        if(Serial) Serial.printf("[HTTP] POST... code: %d\n", httpCode);
 
         // file found at server
         if(httpCode == HTTP_CODE_OK) {
             payload = http.getString();
         }
     } else {
-      //Error
-	//TODO: Proper error-handling?
+      // Error
+	// TODO: Proper error-handling?
 	_error=true;
-	//This might not be the best place to do this, potentially endless loop!
+	// This might not be the best place to do this, potentially endless loop!
 	if (_error) {
 		initNonce();
 	}
-      //USE_SERIAL.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpCode).c_str());
-      //TODO: _nonce="";
+      if(Serial) Serial.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpCode).c_str());
+      // TODO: _nonce="";
     }
 
-    //USE_SERIAL.println("\n\n\n"+payload+"\n\n\n");
+    if(Serial) Serial.println("\n\n\n"+payload+"\n\n\n");
     http.end();
     return payload;
 }
 
-
-
-//----------------------------
-//----- Helper-functions -----
-//----------------------------
-
-
+// ----------------------------
+// ----- Helper-functions -----
+// ----------------------------
 
 String TR064::md5String(String text){
   byte bbuff[16];
