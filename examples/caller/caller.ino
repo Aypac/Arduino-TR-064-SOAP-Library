@@ -9,11 +9,17 @@
  * many thanks to René for his TR-064 library 
  */
 
-#include <Arduino.h>
-#include <ESP8266WiFi.h>
-#include <ESP8266WiFiMulti.h>
-#include <ESP8266HTTPClient.h>
-#include <tr064.h>
+#if defined(ESP8266)
+  #include <ESP8266WiFi.h>
+  #include <ESP8266WiFiMulti.h>
+  #include <ESP8266HTTPClient.h>
+  ESP8266WiFiMulti WiFiMulti;
+#elif defined(ESP32)
+  #include <WiFi.h>
+  #include <WiFiMulti.h>
+  #include <HTTPClient.h>
+  WiFiMulti WiFiMulti;
+#endif
 
 #define BUTTON D3 
 // Flash BUTTON - you can connect a seperate button to D3 or an opto-coupler 
@@ -23,7 +29,7 @@ ESP8266WiFiMulti WiFiMulti;
 
 
 //-------------------------------------------------------------------------------------
-//Put your router settings here
+// Put your router settings here
 //-------------------------------------------------------------------------------------
 
 
@@ -35,7 +41,7 @@ const char* wifi_password = "XXXXXXXXXXXXXXXXXXXXX";
 
 // The username and password for the API of your router
 // The username if you created and account, "admin" otherwise
-// (Anmeldung aus dem Heimnetz mit Benutzername und Passwort)
+// ("Anmeldung aus dem Heimnetz mit Benutzername und Passwort")
 const char* fuser = "homechecker";
 const char* fpass = "this_shouldBEaDecentPassword!";
 
@@ -61,7 +67,7 @@ void setup() {
   //Connect to wifi
   WiFiMulti.addAP(wifi_ssid, wifi_password);
 
-  //Wait for the wifi to connect
+  // Wait for the wifi to connect
   while ((WiFiMulti.run() != WL_CONNECTED)) {
     delay(100);
   }
