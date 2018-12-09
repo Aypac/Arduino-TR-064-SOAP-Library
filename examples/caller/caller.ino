@@ -8,7 +8,7 @@
  *  
  * many thanks to René for his TR-064 library 
  */
-
+#include <Arduino.h>
 #if defined(ESP8266)
   #include <ESP8266WiFi.h>
   #include <ESP8266WiFiMulti.h>
@@ -20,6 +20,8 @@
   #include <HTTPClient.h>
   WiFiMulti WiFiMulti;
 #endif
+
+#include <tr064.h>
 
 #define BUTTON D3 
 // Flash BUTTON - you can connect a seperate button to D3 or an opto-coupler 
