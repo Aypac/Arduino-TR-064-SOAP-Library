@@ -1,51 +1,58 @@
 /**
  * home-indicator.ino
  *  René Vollmer
- *  Example code for the home-indicator-project [ instructables url here! ].
+ *  Example code for the home-indicator-project [ https://www.instructables.com/id/Who-Is-Home-Indicator-aka-Weasley-Clock-Based-on-T ].
  *  Please adjust your data below.
  *  
- *  Created on: 09.12.2015
+ *  Created on: 09.12.2015,
+ *  latest update: 10.12.2018
  *
  */
 
-#include <Arduino.h>
-
-#include <ESP8266WiFi.h>
-#include <ESP8266WiFiMulti.h>
-
-#include <ESP8266HTTPClient.h>
-
-ESP8266WiFiMulti WiFiMulti;
+ 
+#if defined(ESP8266)
+  //Imports for ESP8266
+  #include <ESP8266WiFi.h>
+  #include <ESP8266WiFiMulti.h>
+  #include <ESP8266HTTPClient.h>
+  ESP8266WiFiMulti WiFiMulti;
+#elif defined(ESP32)
+  //Imports for ESP32
+  #include <WiFi.h>
+  #include <WiFiMulti.h>
+  #include <HTTPClient.h>
+  WiFiMulti WiFiMulti;
+#endif
 
 #include <tr064.h>
 
 //-------------------------------------------------------------------------------------
-//Put your router settings here
+// Put your router settings here
 //-------------------------------------------------------------------------------------
 
-//Wifi network name (SSID)
+// Wifi network name (SSID)
 const char* wifi_ssid = "WLANSID"; 
 
-//Wifi network password
+// Wifi network password
 const char* wifi_password = "XXXXXXXXXXXXXXXXXXXXX";
 
-//IP address of your router. This should be "192.168.179.1" for all FRITZ!Boxes
+// IP address of your router. This should be "192.168.179.1" for all FRITZ!Boxes
 const char* IP = "192.168.179.1";
 
-//Port of the API of your router. This should be 49000 for all TR-064 devices.
+// Port of the API of your router. This should be 49000 for all TR-064 devices.
 const int PORT = 49000;
 
-//The username if you created and account, "admin" otherwise
+// The username if you created an account, "admin" otherwise
 const char* fuser = "homechecker";
 
-//The password for the aforementioned account.
+// The password for the aforementioned account.
 const char* fpass = "this_shouldBEaDecentPassword!";
 
-//Put the settings for the devices to detect here
-//The number of different people/user you want to be able to detect
+// Put the settings for the devices to detect here
+//   The number of different people/user you want to be able to detect
 const int numUser = 3;
 
-//The maximum amount of devices per user
+//   The maximum amount of devices per user
 const int maxDevices = 3;
 
 /*
@@ -91,11 +98,11 @@ const int STATUS_HOSTNAME_INDEX = 2;
 //###########################################################################################
 
 void setup() {
-  //You might want to change the baud-rate
+  // You might want to change the baud-rate
   Serial.begin(115200);
   if(Serial) Serial.setDebugOutput(true);
 
-  //Clear some space in the serial monitor.
+  // Clear some space in the serial monitor.
   if(Serial) {
     Serial.println();
     Serial.println();
@@ -125,11 +132,11 @@ void setup() {
   // **************************************************
 
 
-  //Connect to wifi
+  // Connect to wifi
   WiFiMulti.addAP(wifi_ssid, wifi_password);
 
   
-  //Wait for the wifi to connect and flash all LEDs
+  // Wait for the wifi to connect and flash all LEDs
   while ((WiFiMulti.run() != WL_CONNECTED)) {
     for (int i=0;i<numUser;++i) {
       digitalWrite(userPins[i], HIGH);
@@ -159,12 +166,12 @@ void setup() {
 }
 
 void loop() {
-    //For the next round, assume all users are offline
+    // For the next round, assume all users are offline
     for (int i=0;i<numUser;++i) {
       onlineUsers[i] = false;
     }
 
-    //Check for all users if at least one of the macs is online
+    // Check for all users if at least one of the macs is online
     for (int i=0;i<numUser;++i) {
       if(Serial) Serial.printf("> USER %d -------------------------------\n",i);
       boolean b = true; //No online device found yet
@@ -190,7 +197,7 @@ void loop() {
     }
     if(Serial) Serial.println("-------------------------------------------");
 
-    //Flash all LEDs and then set them to the status we just found
+    // Flash all LEDs and then set them to the status we just found
     for (int i=0;i<numUser;++i) {
       digitalWrite(userPins[i], HIGH);
       delay(7);
@@ -322,4 +329,3 @@ void verboseStatus(String r[4][2]) {
     }
     if(Serial) Serial.print("\n");
 }
-
