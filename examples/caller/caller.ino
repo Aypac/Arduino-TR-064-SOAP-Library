@@ -6,8 +6,12 @@
  *  by René Vollmer
  *  Example code for the home-indicator-project
  *  
+ *  created on: 07.06.2017
+ *  latest update: 10.12.2018
+ *  
  * many thanks to René for his TR-064 library 
  */
+
 #include <Arduino.h>
 #if defined(ESP8266)
   #include <ESP8266WiFi.h>
@@ -23,11 +27,10 @@
 
 #include <tr064.h>
 
-#define BUTTON D3 
+
 // Flash BUTTON - you can connect a seperate button to D3 or an opto-coupler 
 // for example: use a resistor and an opto-coupler to connect to a doorbell
-
-ESP8266WiFiMulti WiFiMulti;
+#define BUTTON D3 
 
 
 //-------------------------------------------------------------------------------------
