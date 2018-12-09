@@ -28,9 +28,9 @@
 #include <tr064.h>
 
 
-// Flash BUTTON - you can connect a seperate button to D3 or an opto-coupler 
+// Flash BUTTON - you can connect a seperate button to this pin or an opto-coupler 
 // for example: use a resistor and an opto-coupler to connect to a doorbell
-#define BUTTON D3 
+#define BUTTON 0
 
 
 //-------------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ void setup() {
 
 void loop() {
   int taste = digitalRead(BUTTON);
-  if (digitalRead(BUTTON)== LOW) 
+  if (digitalRead(BUTTON) == LOW) 
   {
     if(Serial) {
         Serial.println();
@@ -113,6 +113,7 @@ int callWahlhilfe() {
     }
   }
   // (Re-) Initialize the TR-064 library - it is done every time, as maybe the connection has lost before
+  // TODO: This should be fixed with b33fbbc6, we need to check if that did the job.
   connection.init();
 
   String params[][2] = {{"NewX_AVM-DE_PhoneNumber", "**799"}};
@@ -130,6 +131,7 @@ int callDect() {
     }
   }
   // (Re-) Initialize the TR-064 library - it is done every time, as maybe the connection has lost before
+  // TODO: This should be fixed with b33fbbc6, we need to check if that did the job.
   connection.init();
   
   String params[][2] = {{"NewAIN", "12345 0123456"}, {"NewSwitchState", "TOGGLE"}};
