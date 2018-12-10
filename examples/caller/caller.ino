@@ -104,7 +104,7 @@ void loop() {
 }
 
 
-int callWahlhilfe() {
+void callWahlhilfe() {
   // Maybe the WLAN connection is lost, so testing an reconnect if needed
   if ((WiFiMulti.run() != WL_CONNECTED)) {
     WiFiMulti.addAP(wifi_ssid, wifi_password);
@@ -122,7 +122,7 @@ int callWahlhilfe() {
   connection.action("urn:dslforum-org:service:X_VoIP:1", "X_AVM-DE_DialNumber", params, 1, req, 0);
 }
 
-int callDect() {
+void callDect() {
   // Maybe the WLAN connection is lost, so testing an reconnect if needed
   if ((WiFiMulti.run() != WL_CONNECTED)) {
     WiFiMulti.addAP(wifi_ssid, wifi_password);
