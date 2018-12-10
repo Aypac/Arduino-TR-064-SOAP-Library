@@ -6,9 +6,13 @@
  *  by René Vollmer
  *  Example code for the home-indicator-project
  *  
+ *  created on: 07.06.2017
+ *  latest update: 10.12.2018
+ *  
  * many thanks to René for his TR-064 library 
  */
 
+#include <Arduino.h>
 #if defined(ESP8266)
   #include <ESP8266WiFi.h>
   #include <ESP8266WiFiMulti.h>
@@ -21,11 +25,12 @@
   WiFiMulti WiFiMulti;
 #endif
 
-#define BUTTON D3 
-// Flash BUTTON - you can connect a seperate button to D3 or an opto-coupler 
-// for example: use a resistor and an opto-coupler to connect to a doorbell
+#include <tr064.h>
 
-ESP8266WiFiMulti WiFiMulti;
+
+// Flash BUTTON - you can connect a seperate button to this pin or an opto-coupler 
+// for example: use a resistor and an opto-coupler to connect to a doorbell
+#define BUTTON 0
 
 
 //-------------------------------------------------------------------------------------
@@ -76,7 +81,7 @@ void setup() {
 
 void loop() {
   int taste = digitalRead(BUTTON);
-  if (digitalRead(BUTTON)== LOW) 
+  if (digitalRead(BUTTON) == LOW) 
   {
     if(Serial) {
         Serial.println();
@@ -99,7 +104,7 @@ void loop() {
 }
 
 
-int callWahlhilfe() {
+void callWahlhilfe() {
   // Maybe the WLAN connection is lost, so testing an reconnect if needed
   if ((WiFiMulti.run() != WL_CONNECTED)) {
     WiFiMulti.addAP(wifi_ssid, wifi_password);
@@ -108,6 +113,7 @@ int callWahlhilfe() {
     }
   }
   // (Re-) Initialize the TR-064 library - it is done every time, as maybe the connection has lost before
+  // TODO: This should be fixed with b33fbbc6, we need to check if that did the job.
   connection.init();
 
   String params[][2] = {{"NewX_AVM-DE_PhoneNumber", "**799"}};
@@ -116,7 +122,7 @@ int callWahlhilfe() {
   connection.action("urn:dslforum-org:service:X_VoIP:1", "X_AVM-DE_DialNumber", params, 1, req, 0);
 }
 
-int callDect() {
+void callDect() {
   // Maybe the WLAN connection is lost, so testing an reconnect if needed
   if ((WiFiMulti.run() != WL_CONNECTED)) {
     WiFiMulti.addAP(wifi_ssid, wifi_password);
@@ -125,6 +131,7 @@ int callDect() {
     }
   }
   // (Re-) Initialize the TR-064 library - it is done every time, as maybe the connection has lost before
+  // TODO: This should be fixed with b33fbbc6, we need to check if that did the job.
   connection.init();
   
   String params[][2] = {{"NewAIN", "12345 0123456"}, {"NewSwitchState", "TOGGLE"}};
