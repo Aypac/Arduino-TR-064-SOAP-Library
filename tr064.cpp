@@ -183,7 +183,7 @@ String TR064::action(String service, String act, String params[][2], int nParam)
 
 	// Generate the XML-envelop
     String xml = _requestStart + generateAuthXML() + "<s:Body><u:"+act+" xmlns:u='" + service + "'>";
-	// add request-parameters to xml
+	// Add request-parameters to XML
     if (nParam > 0) {
         for (int i=0;i<nParam;++i) {
 			if (params[i][0] != "") {
@@ -191,11 +191,15 @@ String TR064::action(String service, String act, String params[][2], int nParam)
             }
         }
     }
-	// close the envelop
+	// Close the envelop
     xml += "</u:" + act + "></s:Body></s:Envelope>";
 	// The SOAPACTION-header is in the format service#action
     String soapaction = service+"#"+act;
-
+	
+	
+	// Reset error status.
+	_error=false;
+	
 	// Send the http-Request
     String xmlR = httpRequest(findServiceURL(service), xml, soapaction);
 
@@ -378,15 +382,15 @@ String TR064::httpRequest(String url, String xml, String soapaction, bool retry)
 */
 /**************************************************************************/
 String TR064::md5String(String text){
-  byte bbuff[16];
-  String hash = "";
-  MD5Builder nonce_md5; 
-  nonce_md5.begin();
-  nonce_md5.add(text); 
-  nonce_md5.calculate(); 
-  nonce_md5.getBytes(bbuff);
-  for ( byte i = 0; i < 16; i++) hash += byte2hex(bbuff[i]);
-  return hash;   
+	byte bbuff[16];
+	String hash = "";
+	MD5Builder nonce_md5; 
+	nonce_md5.begin();
+	nonce_md5.add(text); 
+	nonce_md5.calculate(); 
+	nonce_md5.getBytes(bbuff);
+	for ( byte i = 0; i < 16; i++) hash += byte2hex(bbuff[i]);
+	return hash;   
 }
 
 /**************************************************************************/
@@ -398,9 +402,9 @@ String TR064::md5String(String text){
 */
 /**************************************************************************/
 String TR064::byte2hex(byte number){
-  String Hstring = String(number, HEX);
-  if (number < 16){Hstring = "0" + Hstring;}
-  return Hstring;
+	String Hstring = String(number, HEX);
+	if (number < 16){Hstring = "0" + Hstring;}
+	return Hstring;
 }
 
 
@@ -420,11 +424,11 @@ String TR064::byte2hex(byte number){
 String TR064::xmlTakeParam(String inStr, String needParam) {
 	String cont = xmlTakeSensitiveParam(inStr, needParam);
 	if (cont != "") {
-		return cont
+		return cont;
 	}
 	//As backup
 	//TODO: Give warning?
-	return xmlTakeInsensitiveParam(inStr, needParam)
+	return xmlTakeInsensitiveParam(inStr, needParam);
 }
 
 /**************************************************************************/

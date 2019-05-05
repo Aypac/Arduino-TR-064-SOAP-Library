@@ -77,7 +77,12 @@ class TR064
     String _nonce = "";
     const String _requestStart = "<?xml version=\"1.0\"?><s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">";
     const String _detectPage = "/tr64desc.xml";
-    String _services[100][2]; //TODO: Remove 100 services limits here
+	
+	/* TODO: We should give access to this data for users to inspect the
+	 * possibilities of their device(s) - see #9 on Github.
+	 TODO: Remove 100 services limits here
+	 */
+    String _services[100][2];
     bool _error=false;
 };
 
