@@ -461,7 +461,10 @@ String TR064::xmlTakeSensitiveParam(String inStr, String needParam) {
 */
 /**************************************************************************/
 String TR064::xmlTakeInsensitiveParam(String inStr,String needParam) {
-	return _xmlTakeParam(inStr.toLowerCase(), needParam.toLowerCase());
+	needParam.toLowerCase();
+	String instr = inStr;
+	instr.toLowerCase();
+	return _xmlTakeParam(instr, needParam);
 }
 
 /**************************************************************************/
