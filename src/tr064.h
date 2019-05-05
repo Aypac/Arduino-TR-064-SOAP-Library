@@ -64,6 +64,7 @@ class TR064
     void initServiceURLs();
     void initNonce();
     String httpRequest(String url, String xml, String action);
+    String httpRequest(String url, String xml, String action, bool retry);
     String generateAuthToken();
     String generateAuthXML();
     String findServiceURL(String service);

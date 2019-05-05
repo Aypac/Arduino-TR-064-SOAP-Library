@@ -7,6 +7,9 @@ For illustration and examples, please also visit the [Wiki](https://github.com/A
 
 If you need further guidance, please check out the [Wiki](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki) if that doens't help, please don't hesistate to [open an issue here on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new). Please create a pull request (or, if you don't know how, an issue) if you made something cool with this library and want to provide it as an example.
 
+## Install and using
+Simply go to the library manager in arduino IDE and search for 'TR-064'. Press install. Usage examples can then be found in the IDE under Examples->'TR-064 SOAP Library'.
+
 ## Known routers with TR-064 interface
 If you know more, please let me know!
 
