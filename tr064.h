@@ -45,7 +45,7 @@
   //INCOMPATIBLE!
 #endif
 
-#define arr_len( x )  ( sizeof( x ) / sizeof( *x ) ) ///< function to help get the length of an array
+#define arr_len( x )  ( sizeof( x ) / sizeof( *x ) )
 
 class TR064
 {
@@ -56,6 +56,8 @@ class TR064
     String action(String service, String act, String params[][2], int nParam);
     String action(String service, String act, String params[][2], int nParam, String (*req)[2], int nReq);
     String xmlTakeParam(String inStr,String needParam);
+    String xmlTakeInsensitiveParam(String inStr,String needParam);
+    String xmlTakeSensitiveParam(String inStr,String needParam);
     String md5String(String s);
     String byte2hex(byte number);
   private:
@@ -65,7 +67,7 @@ class TR064
     String generateAuthToken();
     String generateAuthXML();
     String findServiceURL(String service);
-    String xmlTakeParami(String inStr,String needParam);
+    String _xmlTakeParam(String inStr,String needParam);
     String _ip;
     int _port;
     String _user;

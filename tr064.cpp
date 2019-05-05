@@ -16,7 +16,7 @@
  *
  * This library depends on:
  *	MD5Builder
- * ESP8266HTTPClient or HTTPClient, depending on the intended platform (ESP8266 or ESP32).
+ *  ESP8266HTTPClient or HTTPClient, depending on the intended platform (ESP8266 or ESP32).
  *
  * @section author Author
  *
@@ -418,13 +418,13 @@ String TR064::byte2hex(byte number){
 */
 /**************************************************************************/
 String TR064::xmlTakeParam(String inStr, String needParam) {
-	String cont = _xmlTakeParam(inStr, needParam);
+	String cont = xmlTakeSensitiveParam(inStr, needParam);
 	if (cont != "") {
 		return cont
 	}
 	//As backup
 	//TODO: Give warning?
-	return xmlTakeParami(inStr, needParam)
+	return xmlTakeInsensitiveParam(inStr, needParam)
 }
 
 /**************************************************************************/
@@ -438,7 +438,7 @@ String TR064::xmlTakeParam(String inStr, String needParam) {
     @return The content of the requested XML tag.
 */
 /**************************************************************************/
-String TR064::xmlTakeParams(String inStr, String needParam) {
+String TR064::xmlTakeSensitiveParam(String inStr, String needParam) {
 	return _xmlTakeParam(inStr, needParam);
 }
 
@@ -456,7 +456,7 @@ String TR064::xmlTakeParams(String inStr, String needParam) {
     @return The content of the requested XML tag.
 */
 /**************************************************************************/
-String TR064::xmlTakeParami(String inStr,String needParam) {
+String TR064::xmlTakeInsensitiveParam(String inStr,String needParam) {
 	return _xmlTakeParam(inStr.toLowerCase(), needParam.toLowerCase());
 }
 
