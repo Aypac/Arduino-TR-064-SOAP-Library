@@ -352,7 +352,7 @@ String TR064::httpRequest(String url, String xml, String soapaction, bool retry)
     }
 	String status = xmlTakeParam('Status', payload).toLowerCase();
 	Serial.printf("[HTTP] status: "+status);
-	if (httpCode <= 0 or status == 'unauthenticated') {
+	if (httpCode <= 0 or status == "unauthenticated") {
 		// Error
 		// TODO: Proper error-handling? See also #12 on github
 		if(Serial) Serial.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpCode).c_str());
