@@ -7,8 +7,18 @@ To get started, I reccomend to check out the [examples folder](https://github.co
 
 If you need further guidance, if you still have question please don't hesistate to [open an issue here on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new). If you made something cool with this library I want to encourage you to provide it as an example. Please create a pull request (or, if you don't know how, an issue) to do that.
 
-## Install and using
+## Installation and usage
 Simply go to `Tools->Manage Libraries...` in the Arduino IDE and search for `TR-064`. Press install. The examples can then also be found in the IDE under `Examples->TR-064 SOAP Library`.
+
+Don't forget that you also need to [add the board you are using to the IDE](https://learn.adafruit.com/add-boards-arduino-v164/setup);
+
+<b>Example board URLs</b>
+
+Please note, that these might not be the best options and can change at any time.
+<ul>
+	<li>ESP8266 https://arduino.esp8266.com/stable/package_esp8266com_index.json</li>
+	<li>ESP32   https://dl.espressif.com/dl/package_esp32_index.json</li>
+</ul>
 
 ## Known routers with TR-064 interface
 If you know more, please let me know!
