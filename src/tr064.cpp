@@ -270,7 +270,7 @@ String TR064::action(String service, String act, String params[][2], int nParam,
 /**************************************************************************/
 String TR064::findServiceURL(String service) {
     for (int i=0;i<arr_len(_services);++i) {
-	if (_services[i][0] == service) {
+		if (_services[i][0] == service) {
             return _services[i][1];
         }
     }
@@ -344,33 +344,34 @@ String TR064::httpRequest(String url, String xml, String soapaction, bool retry)
     // httpCode will be negative on error
     if (httpCode > 0) {
         // HTTP header has been send and Server response header has been handled
-        if(Serial) Serial.printf("[HTTP] POST... code: %d\n", httpCode);
+        if (Serial) Serial.printf("[HTTP] POST... code: %d\n", httpCode);
 
         // file found at server
         if (httpCode == HTTP_CODE_OK) {
             payload = http.getString();
 			status = xmlTakeParam(payload, "Status");
-			if (Serial) Serial.printf("[HTTP] Response status: %s\n", status);
+			if (Serial) Serial.println("[HTTP] Response status: "+status);
         }
-    }
+    } else {
+		if (Serial) Serial.printf("[HTTP] Failed, error: %s\n", http.errorToString(httpCode).c_str());
+	}
 	
 	status.toLowerCase();
-	if (httpCode <= 0 && Serial) Serial.printf("[HTTP] Failed, error: %s\n", http.errorToString(httpCode).c_str());
 	if (httpCode <= 0 || status == "unauthenticated" || payload == "") {
 		// Error
 		// TODO: Proper error-handling? See also #12 on github
 		if (retry) {
 			_nonce = "";
 			return httpRequest(url, xml, soapaction, false);
-			if(Serial) Serial.println("[HTTP] Trying again.");
+			if (Serial) Serial.println("[HTTP] Trying again.");
 		} else {
-			if(Serial) Serial.println("[HTTP] Giving up.");
+			if (Serial) Serial.println("[HTTP] Giving up.");
 			_error=true;
 		}
     }
 	
 	// TODO: only print this if high debug priority
-    if(Serial) Serial.println("\n\n\n"+payload+"\n\n\n");
+    if (Serial) Serial.println("\n\n\n"+payload+"\n\n\n");
     http.end();
     return payload;
 }
@@ -409,7 +410,7 @@ String TR064::md5String(String text){
 /**************************************************************************/
 String TR064::byte2hex(byte number){
 	String Hstring = String(number, HEX);
-	if (number < 16){Hstring = "0" + Hstring;}
+	if (number < 16) {Hstring = "0" + Hstring;}
 	return Hstring;
 }
 
@@ -488,7 +489,7 @@ String TR064::_xmlTakeParam(String inStr, String needParam) {
    int indexStart = inStr.indexOf("<"+needParam+">");
    int indexStop = inStr.indexOf("</"+needParam+">");  
    if (indexStart > 0 || indexStop > 0) {
-		int CountChar=needParam.length();
+		int CountChar = needParam.length();
 		return inStr.substring(indexStart+CountChar+2, indexStop);
    }
 	//TODO: Proper error-handling? See also #12 on github

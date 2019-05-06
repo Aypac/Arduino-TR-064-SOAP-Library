@@ -36,56 +36,55 @@
 #include <MD5Builder.h>
 
 #if defined(ESP8266)
-  //if(Serial) Serial.println(F("Version compiled for ESP8266."));
-  #include <ESP8266HTTPClient.h>
+	//if(Serial) Serial.println(F("Version compiled for ESP8266."));
+	#include <ESP8266HTTPClient.h>
 #elif defined(ESP32)
-  //if(Serial) Serial.println(F("Version compiled for ESP32."));
-  #include <HTTPClient.h>
+	//if(Serial) Serial.println(F("Version compiled for ESP32."));
+	#include <HTTPClient.h>
 #else
-  //INCOMPATIBLE!
+	//INCOMPATIBLE!
 #endif
 
 #define arr_len( x )  ( sizeof( x ) / sizeof( *x ) )
 
-class TR064
-{
-  public:
-    TR064(int port, String ip, String user, String pass);
-    void init();
-    void initNonce();
-    String action(String service, String act);
-    String action(String service, String act, String params[][2], int nParam);
-    String action(String service, String act, String params[][2], int nParam, String (*req)[2], int nReq);
-    String xmlTakeParam(String inStr, String needParam);
-    String xmlTakeInsensitiveParam(String inStr, String needParam);
-    String xmlTakeSensitiveParam(String inStr, String needParam);
-    String md5String(String s);
-    String byte2hex(byte number);
-  private:
-	//TODO: More consistent naming.
-    void initServiceURLs();
-    String httpRequest(String url, String xml, String action);
-    String httpRequest(String url, String xml, String action, bool retry);
-    String generateAuthToken();
-    String generateAuthXML();
-    String findServiceURL(String service);
-    String _xmlTakeParam(String inStr, String needParam);
-    String _ip;
-    int _port;
-    String _user;
-    String _pass;
-    String _realm; //To be requested from the router
-    String _secretH; //to be generated
-    String _nonce = "";
-    const String _requestStart = "<?xml version=\"1.0\"?><s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">";
-    const String _detectPage = "/tr64desc.xml";
-	
-	/* TODO: We should give access to this data for users to inspect the
-	 * possibilities of their device(s) - see #9 on Github.
-	 TODO: Remove 100 services limits here
-	 */
-    String _services[100][2];
-    bool _error=false;
+class TR064 {
+	public:
+		TR064(int port, String ip, String user, String pass);
+		void init();
+		void initNonce();
+		String action(String service, String act);
+		String action(String service, String act, String params[][2], int nParam);
+		String action(String service, String act, String params[][2], int nParam, String (*req)[2], int nReq);
+		String xmlTakeParam(String inStr, String needParam);
+		String xmlTakeInsensitiveParam(String inStr, String needParam);
+		String xmlTakeSensitiveParam(String inStr, String needParam);
+		String md5String(String s);
+		String byte2hex(byte number);
+	private:
+		//TODO: More consistent naming.
+		void initServiceURLs();
+		String httpRequest(String url, String xml, String action);
+		String httpRequest(String url, String xml, String action, bool retry);
+		String generateAuthToken();
+		String generateAuthXML();
+		String findServiceURL(String service);
+		String _xmlTakeParam(String inStr, String needParam);
+		String _ip;
+		int _port;
+		String _user;
+		String _pass;
+		String _realm; //To be requested from the router
+		String _secretH; //to be generated
+		String _nonce = "";
+		const String _requestStart = "<?xml version=\"1.0\"?><s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">";
+		const String _detectPage = "/tr64desc.xml";
+
+		/* TODO: We should give access to this data for users to inspect the
+		* possibilities of their device(s) - see #9 on Github.
+		TODO: Remove 100 services limits here
+		*/
+		String _services[100][2];
+		bool _error=false;
 };
 
 #endif
