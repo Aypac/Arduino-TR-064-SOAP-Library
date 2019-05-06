@@ -74,7 +74,7 @@ void TR064::initServiceURLs() {
 	 * possibilities of their device(s) - see #9 on Github.
 	 */
 	String inStr = httpRequest(_detectPage, "", "");
-	int CountChar=7; //length of word "service"
+	int CountChar = 7; //length of word "service"
 	int i = 0;
 	while (inStr.indexOf("<service>") > 0 || inStr.indexOf("</service>") > 0) {
 		int indexStart=inStr.indexOf("<service>");
@@ -249,7 +249,7 @@ String TR064::action(String service, String act, String params[][2], int nParam,
     String body = xmlTakeParam(xmlR, "s:Body");
 
     if (nReq > 0) {
-        for (int i=0;i<nReq;++i) {
+        for (int i=0; i<nReq; ++i) {
             if (req[i][0] != "") {
                 req[i][1] = xmlTakeParam(body, req[i][0]);
             }
@@ -330,15 +330,16 @@ String TR064::httpRequest(String url, String xml, String soapaction, bool retry)
     // start connection and send HTTP header
     int httpCode=0;
     if (xml != "") {
-		if(Serial) Serial.println("\n\n\n"+xml+"\n\n\n");
+		if (Serial) Serial.println("\n\n\n"+xml+"\n\n\n");
 		httpCode = http.POST(xml);
-		if(Serial) Serial.print("[HTTP] POST... SOAPACTION: "+soapaction+"\n");
+		if (Serial) Serial.print("[HTTP] POST... SOAPACTION: "+soapaction+"\n");
     } else {
 		httpCode = http.GET();
-		if(Serial) Serial.print("[HTTP] GET...\n");
+		if (Serial) Serial.print("[HTTP] GET...\n");
     }
 
     
+	String status = "";
     String payload = "";
     // httpCode will be negative on error
     if (httpCode > 0) {
@@ -346,22 +347,24 @@ String TR064::httpRequest(String url, String xml, String soapaction, bool retry)
         if(Serial) Serial.printf("[HTTP] POST... code: %d\n", httpCode);
 
         // file found at server
-        if(httpCode == HTTP_CODE_OK) {
+        if (httpCode == HTTP_CODE_OK) {
             payload = http.getString();
+			status = xmlTakeParam(payload, "Status");
+			if (Serial) Serial.printf("[HTTP] Response status: %s\n", status);
         }
     }
-	String status = xmlTakeParam('Status', payload).toLowerCase();
-	Serial.printf("[HTTP] status: "+status);
-	if (httpCode <= 0 or status == "unauthenticated") {
+	
+	//status.toLowerCase();
+	if (httpCode <= 0 && Serial) Serial.printf("[HTTP] Failed, error: %s\n", http.errorToString(httpCode).c_str());
+	if (httpCode <= 0 || status == "unauthenticated" || payload == "") {
 		// Error
 		// TODO: Proper error-handling? See also #12 on github
-		if(Serial) Serial.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpCode).c_str());
 		if (retry) {
 			_nonce = "";
 			return httpRequest(url, xml, soapaction, false);
-			if(Serial) Serial.printf("[HTTP] Trying again.");
+			if(Serial) Serial.println("[HTTP] Trying again.");
 		} else {
-			if(Serial) Serial.printf("[HTTP] Giving up.");
+			if(Serial) Serial.println("[HTTP] Giving up.");
 			_error=true;
 		}
     }
@@ -392,7 +395,7 @@ String TR064::md5String(String text){
 	nonce_md5.add(text); 
 	nonce_md5.calculate(); 
 	nonce_md5.getBytes(bbuff);
-	for ( byte i = 0; i < 16; i++) hash += byte2hex(bbuff[i]);
+	for (byte i = 0; i < 16; i++) hash += byte2hex(bbuff[i]);
 	return hash;   
 }
 
