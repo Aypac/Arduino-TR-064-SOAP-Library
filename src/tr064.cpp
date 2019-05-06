@@ -354,7 +354,7 @@ String TR064::httpRequest(String url, String xml, String soapaction, bool retry)
         }
     }
 	
-	//status.toLowerCase();
+	status.toLowerCase();
 	if (httpCode <= 0 && Serial) Serial.printf("[HTTP] Failed, error: %s\n", http.errorToString(httpCode).c_str());
 	if (httpCode <= 0 || status == "unauthenticated" || payload == "") {
 		// Error
