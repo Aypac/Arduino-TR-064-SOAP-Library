@@ -52,6 +52,7 @@ class TR064
   public:
     TR064(int port, String ip, String user, String pass);
     void init();
+    void initNonce();
     String action(String service, String act);
     String action(String service, String act, String params[][2], int nParam);
     String action(String service, String act, String params[][2], int nParam, String (*req)[2], int nReq);
@@ -61,8 +62,8 @@ class TR064
     String md5String(String s);
     String byte2hex(byte number);
   private:
+	//TODO: More consistent naming.
     void initServiceURLs();
-    void initNonce();
     String httpRequest(String url, String xml, String action);
     String httpRequest(String url, String xml, String action, bool retry);
     String generateAuthToken();

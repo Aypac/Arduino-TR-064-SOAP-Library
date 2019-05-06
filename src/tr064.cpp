@@ -341,7 +341,7 @@ String TR064::httpRequest(String url, String xml, String soapaction, bool retry)
     
     String payload = "";
     // httpCode will be negative on error
-    if(httpCode > 0) {
+    if (httpCode > 0) {
         // HTTP header has been send and Server response header has been handled
         if(Serial) Serial.printf("[HTTP] POST... code: %d\n", httpCode);
 
@@ -349,7 +349,10 @@ String TR064::httpRequest(String url, String xml, String soapaction, bool retry)
         if(httpCode == HTTP_CODE_OK) {
             payload = http.getString();
         }
-    } else {
+    }
+	String status = xmlTakeParam('Status', payload).toLowerCase();
+	Serial.printf("[HTTP] status: "+status);
+	if (httpCode <= 0 or status == 'unauthenticated') {
 		// Error
 		// TODO: Proper error-handling? See also #12 on github
 		if(Serial) Serial.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpCode).c_str());

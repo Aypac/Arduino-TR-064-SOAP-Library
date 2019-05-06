@@ -1,6 +1,7 @@
 TR064					KEYWORD1
 init					KEYWORD2
 action					KEYWORD2
+initNonce				KEYWORD2
 xmlTakeParam			KEYWORD2
 xmlTakeSensitiveParam	KEYWORD2
 xmlTakeinsensitiveParam	KEYWORD2
