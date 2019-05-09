@@ -17,7 +17,7 @@ TR064::TR064(int port, String ip, String user, String pass)
   _pass = pass;
 }
 
-// DONT FORGET TO INIT!
+// DON'T FORGET TO INIT!
 void TR064::init() {
   delay(100); // TODO: REMOVE
 	// Get a list of all services and the associated urls
@@ -55,13 +55,13 @@ void TR064::initServiceURLs() {
 
 // Fetches the initial nonce and the realm
 void TR064::initNonce() {
-    if(Serial) Serial.print("Geting the initial nonce and realm\n");
+    if(Serial) Serial.print("Getting the initial nonce and realm\n");
     String a[][2] = {{"NewAssociatedDeviceIndex", "1"}};
     action("urn:dslforum-org:service:WLANConfiguration:1", "GetGenericAssociatedDeviceInfo", a, 1);
     if(Serial) Serial.print("Got the initial nonce: " + _nonce + " and the realm: " + _realm + "\n");
 }
 
-//Returns the xml-header for authentification
+//Returns the xml-header for authentication
 String TR064::generateAuthXML() {
     String token;
     if (_nonce == "" || _error) { //If we do not have a nonce yet, we need to use a different header
@@ -73,7 +73,7 @@ String TR064::generateAuthXML() {
     return token;
 }
 
-// Returns the authentification token based on the hashed secret and the last nonce.
+// Returns the authentication token based on the hashed secret and the last nonce.
 String TR064::generateAuthToken() {
     String token = md5String(_secretH + ":" + _nonce);
     if(Serial) Serial.print("The auth token is " + token + "\n");

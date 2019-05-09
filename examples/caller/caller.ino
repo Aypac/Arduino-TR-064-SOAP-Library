@@ -28,7 +28,7 @@
 #include <tr064.h>
 
 
-// Flash BUTTON - you can connect a seperate button to this pin or an opto-coupler 
+// Flash BUTTON - you can connect a separate button to this pin or an opto-coupler 
 // for example: use a resistor and an opto-coupler to connect to a doorbell
 #define BUTTON 0
 

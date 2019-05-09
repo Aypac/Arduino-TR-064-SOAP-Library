@@ -5,7 +5,7 @@ Has been developed on an ESP8266 and tested on an ESP32.
 
 For illustration and examples, please also visit the [Wiki](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki), my [instructable](http://www.instructables.com/id/Who-Is-Home-Indicator-aka-Weasley-Clock-Based-on-T/) and of course the [examples folder](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/tree/master/examples).
 
-If you need further guidance, please check out the [Wiki](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki) if that doens't help, please don't hesistate to [open an issue here on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new). Please create a pull request (or, if you don't know how, an issue) if you made something cool with this library and want to provide it as an example.
+If you need further guidance, please check out the [Wiki](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki) if that doesn't help, please don't hesistate to [open an issue here on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new). Please create a pull request (or, if you don't know how, an issue) if you made something cool with this library and want to provide it as an example.
 
 ## Known routers with TR-064 interface
 If you know more, please let me know!
@@ -33,7 +33,7 @@ If you know more, please let me know!
 
 I moved the todo's mostly into the [issue section here on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues).
 
-However, let me note, that help is very welcome (especially for improving the library code). I'm not particularily good with C++. Also if you use the library to do something cool, please let me know - I'd love to add more examples to the Repo!
+However, let me note, that help is very welcome (especially for improving the library code). I'm not particularly good with C++. Also if you use the library to do something cool, please let me know - I'd love to add more examples to the Repo!
 
 Some of the old issues are:
 
