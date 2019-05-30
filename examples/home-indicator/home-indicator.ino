@@ -60,9 +60,10 @@ const int maxDevices = 3;
  * = {{"mac1:user1", "mac2:user1", ..., "macX:user1"}, {"mac1:user2", "mac2:user2", ..., "macX:user2"}, ..., {"mac1:userY", "mac2:userY", ..., "macX:userY"}};
  * Doesn't matter if upper or lowercase :)
  */
-const char macsPerUser[numUser][maxDevices][18] = { {"01:23:45:67:89:AB","12:34:56:78:9A:BC"}, //User1, two devices
-													{"23:45:67:89:AB:CD"}, //User2, one device
-													{"34:56:78:9A:BC:DE", "45:67:89:AB:CD:EF", "56:78:9A:BC:DE:F0"}}; //User3, three devices
+const char macsPerUser[numUser][maxDevices][18] =
+    { {"01:23:45:67:89:AB","12:34:56:78:9A:BC"}, //User1, two devices
+      {"23:45:67:89:AB:CD"}, //User2, one device
+      {"34:56:78:9A:BC:DE", "45:67:89:AB:CD:EF", "56:78:9A:BC:DE:F0"}}; //User3, three devices
 
 /*
  * The pins for the LED output the users
@@ -70,12 +71,11 @@ const char macsPerUser[numUser][maxDevices][18] = { {"01:23:45:67:89:AB","12:34:
  * Default is {5, 4, 0, 2}, which are the D1, D2, D3, D4 (in that order) pins of the MCU ESP8266 board.
  * (Adjust this to the amount of users you have :))
  */
-int userPins[numUser] = {5, 4, 0};
+int userPins[numUser] = {5, 4, 0}; //Three LED's because there are three users
 
 //-------------------------------------------------------------------------------------
 
 
-// Do not mess with these :)
 // TR-064 connection
 TR064 connection(PORT, IP, fuser, fpass);
 // Status array. No need to change this!
@@ -150,7 +150,8 @@ void setup() {
 
 	// Initialize the TR-064 library
 	// (IMPORTANT!)
-	if(Serial) Serial.printf("Initialize TR-064 connection");
+	if(Serial) Serial.printf("Initialize TR-064 connection\n\n");
+    connection.debug_level = DEBUG_VERBOSE; //0: None, 1: Errors, 2: Warning, 3: Info, 4: Verbose
 	connection.init();
 
 	// Request the number of (connected) Wifi-Devices
@@ -166,6 +167,19 @@ void setup() {
 }
 
 void loop() {
+  // Make sure the connection is still alive.
+  while (WiFi.status() != WL_CONNECTED) {
+    WiFiMulti.run();
+    //Flash all LED's to indicate, that the connection was lost.
+    for (int i=0;i<numUser;++i) {
+      digitalWrite(userPins[i], HIGH);
+      delay(7);
+      digitalWrite(userPins[i], LOW);
+      delay(7);
+    }
+    delay(1000);
+  }
+  
 	// For the next round, assume all users are offline
 	for (int i=0;i<numUser;++i) {
 		onlineUsers[i] = false;

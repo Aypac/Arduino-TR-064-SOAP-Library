@@ -47,6 +47,13 @@
 
 #define arr_len( x )  ( sizeof( x ) / sizeof( *x ) )
 
+// Different debug level
+#define DEBUG_NONE 0
+#define DEBUG_ERROR 1
+#define DEBUG_WARNING 2
+#define DEBUG_INFO 3
+#define DEBUG_VERBOSE 4
+
 class TR064 {
 	public:
 		TR064(int port, String ip, String user, String pass);
@@ -60,9 +67,14 @@ class TR064 {
 		String xmlTakeSensitiveParam(String inStr, String needParam);
 		String md5String(String s);
 		String byte2hex(byte number);
+		int debug_level; //0: None, 1: Errors, 2: Warning, 3: Info, 4: Verbose
 	private:
 		//TODO: More consistent naming.
 		void initServiceURLs();
+		void deb_print(String message, int level);
+		void deb_println(String message, int level);
+		String action_raw(String service, String act, String params[][2], int nParam);
+		void takeNonce(String xml);
 		String httpRequest(String url, String xml, String action);
 		String httpRequest(String url, String xml, String action, bool retry);
 		String generateAuthToken();
@@ -84,7 +96,6 @@ class TR064 {
 		TODO: Remove 100 services limits here
 		*/
 		String _services[100][2];
-		bool _error=false;
 };
 
 #endif

@@ -79,3 +79,8 @@ Some of the old issues are:
   * Add nice GUI/Website to configure/manage the users/LEDs/MACs/known devices
   * Known Bug: After a few hours the known devices "freeze", needs restart
 * Extend doorbell example to also send telegram messages :)
+
+
+◽◾◽
+◾◽◽
+◾◾◾
