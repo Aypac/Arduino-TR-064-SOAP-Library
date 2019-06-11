@@ -2,10 +2,11 @@
  * home-indicator.ino
  *  René Vollmer
  *  Example code for the home-indicator-project [ https://www.instructables.com/id/Who-Is-Home-Indicator-aka-Weasley-Clock-Based-on-T ].
- *  Please adjust your data below.
+ *  
+  * Please adjust your data below.
  *  
  *  Created on: 09.12.2015,
- *  latest update: 06.05.2019
+ *  latest update: 11.06.2019
  *
  */
 
@@ -36,17 +37,17 @@ const char* wifi_ssid = "WLANSID";
 // Wifi network password
 const char* wifi_password = "XXXXXXXXXXXXXXXXXXXXX";
 
-// IP address of your router. This should be "192.168.179.1" for all FRITZ!Boxes
-const char* IP = "192.168.179.1";
-
-// Port of the API of your router. This should be 49000 for all TR-064 devices.
-const int PORT = 49000;
-
 // The username if you created an account, "admin" otherwise
 const char* fuser = "homechecker";
 
 // The password for the aforementioned account.
 const char* fpass = "this_shouldBEaDecentPassword!";
+
+// IP address of your router. This should be "192.168.179.1" for most FRITZ!Boxes
+const char* IP = "192.168.179.1";
+
+// Port of the API of your router. This should be 49000 for all TR-064 devices.
+const int PORT = 49000;
 
 // Put the settings for the devices to detect here
 //   The number of different people/user you want to be able to detect
@@ -54,6 +55,9 @@ const int numUser = 3;
 
 //   The maximum amount of devices per user
 const int maxDevices = 3;
+
+//-------------------------------------------------------------------------------------
+
 
 /*
  * The array of macs. Structure:
@@ -75,9 +79,10 @@ int userPins[numUser] = {5, 4, 0}; //Three LED's because there are three users
 
 //-------------------------------------------------------------------------------------
 
-
 // TR-064 connection
 TR064 connection(PORT, IP, fuser, fpass);
+
+
 // Status array. No need to change this!
 bool onlineUsers[numUser];
 
@@ -133,20 +138,7 @@ void setup() {
 
 
 	// Connect to wifi
-	WiFiMulti.addAP(wifi_ssid, wifi_password);
-
-
-	// Wait for the wifi to connect and flash all LEDs
-	while (WiFiMulti.run() != WL_CONNECTED) {
-		for (int i=0; i<numUser; ++i) {
-			digitalWrite(userPins[i], HIGH);
-		}
-		delay(50);
-		for (int i=0;i<numUser;++i) {
-			digitalWrite(userPins[i], LOW);
-		}
-		delay(50);
-	}
+	ensureWIFIConnection();
 
 	// Initialize the TR-064 library
 	// (IMPORTANT!)
@@ -167,18 +159,7 @@ void setup() {
 }
 
 void loop() {
-  // Make sure the connection is still alive.
-  while (WiFi.status() != WL_CONNECTED) {
-    WiFiMulti.run();
-    //Flash all LED's to indicate, that the connection was lost.
-    for (int i=0;i<numUser;++i) {
-      digitalWrite(userPins[i], HIGH);
-      delay(7);
-      digitalWrite(userPins[i], LOW);
-      delay(7);
-    }
-    delay(1000);
-  }
+	ensureWIFIConnection();
   
 	// For the next round, assume all users are offline
 	for (int i=0;i<numUser;++i) {
@@ -342,4 +323,24 @@ void verboseStatus(String r[4][2]) {
 		if(Serial) Serial.print(r[i][0]+"="+r[i][1]+", ");
 	}
 	if(Serial) Serial.print("\n");
+}
+
+/**
+ * Makes sure there is a WIFI connection and waits until it is (re-)established.
+ */
+void ensureWIFIConnection() {
+	if ((WiFiMulti.run() != WL_CONNECTED)) {
+		WiFiMulti.addAP(wifi_ssid, wifi_password);
+		WiFiMulti.run();
+		while ((WiFiMulti.run() != WL_CONNECTED)) {
+			//Flash all LED's to indicate, that the connection was lost.
+			for (int i = 0; i < numUser; ++i) {
+				digitalWrite(userPins[i], HIGH);
+				delay(7);
+				digitalWrite(userPins[i], LOW);
+				delay(7);
+			}
+			delay(500);
+		}
+	}
 }

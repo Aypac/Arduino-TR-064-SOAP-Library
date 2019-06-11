@@ -81,6 +81,8 @@ Some of the old issues are:
 * Extend doorbell example to also send telegram messages :)
 
 
-◽◾◽
-◾◽◽
-◾◾◾
+<table>
+<tr><td>◽</td><td>◾</td><td>◽</td></tr>
+<tr><td>◾</td><td>◽</td><td>◽</td></tr>
+<tr><td>◾</td><td>◾</td><td>◾</td></tr>
+</table>
