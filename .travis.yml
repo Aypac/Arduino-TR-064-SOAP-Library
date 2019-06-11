@@ -9,10 +9,10 @@ git:
   quiet: true
 env:
   global:
-     - ARDUINO_IDE_VERSION="1.8.8"
+     - ARDUINO_IDE_VERSION="1.8.9"
      - PRETTYNAME="Arduino TR-064 Library"
 # Optional, will default to "$TRAVIS_BUILD_DIR/Doxyfile"
-#    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxyfile
+    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxyfile
  
 before_install:
    - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
@@ -30,4 +30,4 @@ script:
 # Generate and deploy documentation
 after_success:
   - source <(curl -SLs  https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/library_check.sh)
-#  - source <(curl -SLs  https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/doxy_gen_and_deploy.sh)
+  - source <(curl -SLs  https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/doxy_gen_and_deploy.sh)
