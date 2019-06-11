@@ -1,18 +1,18 @@
 # Arduino-TR-064-SOAP-Library [![Build Status](https://travis-ci.com/Aypac/Arduino-TR-064-SOAP-Library.svg?branch=master)](https://travis-ci.com/Aypac/Arduino-TR-064-SOAP-Library)
-Arduino library to facilitate the use of the TR-064 protocol, most commonly used by Fritz!Box. [Definition of the Protocol](https://www.broadband-forum.org/technical/download/TR-064.pdf) and [Description of the protocol](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf).
+Arduino library to facilitate the use of the TR-064 protocol ([Definition](https://www.broadband-forum.org/technical/download/TR-064.pdf) and [Description](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf)), most commonly used by Fritz!Box.
 
-Has been developed on an ESP8266 and tested on an ESP32.
+This library has been developed on an ESP8266 and tested on an ESP32.
 
-To get started, I reccomend to check out the [examples folder](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/tree/master/examples), the [Wiki](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki) and the [instructable](http://www.instructables.com/id/Who-Is-Home-Indicator-aka-Weasley-Clock-Based-on-T/).
+To get started, I recommend to check out the [examples folder](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/tree/master/examples), the [Wiki](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki) and the [instructable](http://www.instructables.com/id/Who-Is-Home-Indicator-aka-Weasley-Clock-Based-on-T/).
 
-If you need further guidance, if you still have question please don't hesistate to [open an issue here on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new). If you made something cool with this library I want to encourage you to provide it as an example. Please create a pull request (or, if you don't know how, an issue) to do that.
+If you need further guidance, if you still have question please don't hesistate to [open an issue here on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new). If you made something cool with this library I want to encourage you to provide it as an example. Please create a pull request (or, if you don't know how, [an issue](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new)) to do that.
 
 ## Installation and usage
 Simply go to `Tools->Manage Libraries...` in the Arduino IDE and search for `TR-064`. Press install. The examples can then also be found in the IDE under `Examples->TR-064 SOAP Library`.
 
 Don't forget that you also need to [add the board you are using to the IDE](https://learn.adafruit.com/add-boards-arduino-v164/setup); 
 <details><summary>Example board URLs</summary>
-	Please note, that these might not be the best options and can change at any time.
+	Please note, that these might not be the best options and can change at any time. If in doubt, do your own research :)
 	<ul>
 		<li>ESP8266 https://arduino.esp8266.com/stable/package_esp8266com_index.json</li>
 		<li>ESP32   https://dl.espressif.com/dl/package_esp32_index.json</li>
@@ -36,7 +36,7 @@ If you know more, please let me know!
 			</ul>
 		</details>
 	</li>
-	<li> Some ZyXEL routers (eg. <a href="ftp://ftp.zyxel.nl/VMG4325-B10A/user_guide/VMG4325-B10A_.pdf">VMG4325 and VMG4380, see page 29</a>)</li>
+	<li> Some ZyXEL routers (eg. <a href="ftp://ftp.zyxel.nl/VMG4325-B10A/user_guide/VMG4325-B10A_.pdf">VMG4325, VMG8324, VMG8324-B10A and VMG4380, see page 29</a>)</li>
 	<li> Please let me know if you tested a device not in this list [with an issue here on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new)</li>
 </ul>
 
