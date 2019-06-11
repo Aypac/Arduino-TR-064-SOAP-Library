@@ -30,6 +30,7 @@
  * 	
  *  Example code for placing internal DECT phone calls based on the power
  *   consumption of a device (using a smart plug, such as DECT210).
+ *   consumption of a device (using a smart plug, such as DECT210).
  *  Can be used to notify a user when a washingmachine/dryer is done.
  *
  *  created on: 11.06.2019
@@ -142,31 +143,31 @@ void setup()
 
   Serial.printf("\r\n\r\nConnecting to %s\r\n", WiFiSSID);
 
-  WiFi.setAutoConnect (true);
-  WiFi.setAutoReconnect (true);
-  WiFi.softAPdisconnect (true);
+  WiFiMulti.setAutoConnect(true);
+  WiFiMulti.setAutoReconnect(true);
+  WiFiMulti.softAPdisconnect(true);
 
   myIP.fromString(WiFiIP);
   myGW.fromString(WiFiGW);
   myNM.fromString(WiFiNM);
   myDNS.fromString(WiFiDNS);
 
-  WiFi.config(myIP, myGW, myNM, myDNS);
+  WiFiMulti.config(myIP, myGW, myNM, myDNS);
 
-  if ( String(WiFiSSID) != WiFi.SSID() )
+  if ( String(WiFiSSID) != WiFiMulti.SSID() )
   {
     Serial.print("Wifi initializing...\r\n");
-    WiFi.begin(WiFiSSID, WiFiPSK);
+    WiFiMulti.begin(WiFiSSID, WiFiPSK);
   }
 
-  while ( WiFi.status() != WL_CONNECTED )
+  while ( WiFiMulti.status() != WL_CONNECTED )
   {
     delay(500);
     Serial.print(".");
   }
   
-  WiFi.persistent(true);
-  Serial.printf("\r\nWiFi connected to: %s\r\n", WiFi.localIP().toString().c_str());
+  WiFiMulti.persistent(true);
+  Serial.printf("\r\nWiFi connected to: %s\r\n", WiFiMulti.localIP().toString().c_str());
   digitalWrite(LED_ESP12E, 0);
 
   aSip.Init(SipIP, SipPORT, WiFiIP, SipPORT, SipUSER, SipPW, 38);
