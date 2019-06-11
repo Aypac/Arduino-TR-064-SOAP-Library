@@ -20,7 +20,7 @@ Don't forget that you also need to [add the board you are using to the IDE](http
 </details>
 
 ## Known routers with TR-064 interface
-If you know more, please let me know!
+If you know more/have tested a device not on the list, please let me know!
 
 <ul>
 	<li> Almost all Fritz!Box routers.

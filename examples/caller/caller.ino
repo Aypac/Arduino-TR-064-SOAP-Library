@@ -11,8 +11,6 @@
  *  
  *  created on: 07.06.2017
  *  latest update: 11.06.2019
- *  
- * many thanks to René for his TR-064 library 
  */
 
 #include <Arduino.h>
