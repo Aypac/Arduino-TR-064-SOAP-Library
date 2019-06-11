@@ -30,7 +30,6 @@
  * 	
  *  Example code for placing internal DECT phone calls based on the power
  *   consumption of a device (using a smart plug, such as DECT210).
- *   consumption of a device (using a smart plug, such as DECT210).
  *  Can be used to notify a user when a washingmachine/dryer is done.
  *
  *  created on: 11.06.2019

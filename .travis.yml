@@ -22,7 +22,7 @@ install:
 #   - arduino --install-library "ArduinoSIP"
 #   - arduino --install-boards esp8266:esp8266
 #   - arduino --install-boards esp32:esp32
- 
+
 script:
    - build_platform esp8266
    - build_platform esp32
