@@ -7,13 +7,6 @@ cache:
 git:
   depth: false
   quiet: true
-addons:
-  apt:
-    sources:
-      - llvm-toolchain-trusty-5.0
-      - key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
-    packages:
-      - clang-format-5.0
 env:
   global:
      - ARDUINO_IDE_VERSION="1.8.11"
@@ -23,19 +16,12 @@ env:
  
 before_install:
    - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
-   - curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/run-clang-format.py > run-clang-format.py
-#   - arduino --pref "boardsmanager.additional.urls=https://dl.espressif.com/dl/package_esp32_index.json, http://arduino.esp8266.com/stable/package_esp8266com_index.json" --save-prefs
 install:
    - arduino --install-library "ConfigManager"
-#   - arduino --install-library "ArduinoSIP"
-#   - arduino --install-boards esp8266:esp8266
-#   - arduino --install-boards esp32:esp32
 
 script:
-   - python run-clang-format.py -r .
    - build_platform esp8266
    - build_platform esp32
-#   - arduino --verify --board esp8266:esp8266:generic:CpuFrequency=80 $PWD/examples/home-indicator.ino
  
 # Generate and deploy documentation
 after_success:
