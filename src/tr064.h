@@ -1,5 +1,5 @@
 /*!
- * @file tr064.cpp
+ * @file tr064.h
  * 
  * Library for communicating via TR-064 protocol (e.g. Fritz!Box)
  * This library allows for easy communication of TR-064 (and possibly TR-069) enabled devices,
