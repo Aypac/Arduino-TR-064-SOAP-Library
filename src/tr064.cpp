@@ -44,7 +44,6 @@
 			  User name to be used to establish the TR-064 connection.
 	@param    pass
 			  Password to be used to establish the TR-064 connection.
-	@return void
 */
 /**************************************************************************/
 TR064::TR064(int port, String ip, String user, String pass) {
@@ -59,7 +58,6 @@ TR064::TR064(int port, String ip, String user, String pass) {
 /*!
     @brief  Initializes the library. Needs to be explicitly called.
 			There should already be a working connection to the device.
-    @return void
 */
 /**************************************************************************/
 void TR064::init() {
@@ -71,7 +69,6 @@ void TR064::init() {
 /**************************************************************************/
 /*!
     @brief  Fetches a list of all services and the associated URLs for internal use.
-    @return void
 */
 /**************************************************************************/
 void TR064::initServiceURLs() {
@@ -104,7 +101,6 @@ void TR064::initServiceURLs() {
 /*!
     @brief  Fetches the initial nonce and the realm for internal use.
 			Deprecated, not required anymore.
-    @return void
 */
 /**************************************************************************/
 void TR064::initNonce() {
@@ -314,7 +310,6 @@ String TR064::action_raw(String service, String act, String params[][2], int nPa
 			TR-064 call for the next one.
     @param    xml
               The XML as received from the TR-064 host (e.g. router).
-    @return void
 */
 /**************************************************************************/
 void TR064::takeNonce(String xml) {
@@ -580,7 +575,6 @@ String TR064::_xmlTakeParam(String inStr, String needParam) {
               The message to be conditionally printed.
     @param    level
 			  The minimally required debug level.
-    @return void
 */
 /**************************************************************************/
 void TR064::deb_print(String message, int level) {
@@ -596,11 +590,11 @@ void TR064::deb_print(String message, int level) {
 /*!
     @brief  Same as deb_print, but with a new line at the end.
 			Only prints the message if the debug level is high enough.
-    @param    message
+    @param  
+	message
               The message to be conditionally printed.
     @param    level
 			  The minimally required debug level.
-    @return void
 */
 /**************************************************************************/
 void TR064::deb_println(String message, int level) {
