@@ -7,7 +7,7 @@ cache:
 git:
   depth: false
   quiet: true
- addons:
+addons:
   apt:
     sources:
       - llvm-toolchain-trusty-5.0
@@ -26,7 +26,7 @@ before_install:
    - curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/run-clang-format.py > run-clang-format.py
 #   - arduino --pref "boardsmanager.additional.urls=https://dl.espressif.com/dl/package_esp32_index.json, http://arduino.esp8266.com/stable/package_esp8266com_index.json" --save-prefs
 install:
-   - arduino --install-library "ConfigManager","ArduinoSIP"
+   - arduino --install-library "ConfigManager"
 #   - arduino --install-library "ArduinoSIP"
 #   - arduino --install-boards esp8266:esp8266
 #   - arduino --install-boards esp32:esp32
