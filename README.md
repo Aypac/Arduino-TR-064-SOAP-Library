@@ -14,8 +14,8 @@ Don't forget that you also need to [add the board you are using to the IDE](http
 <details><summary>Example board URLs</summary>
 	Please note, that these might not be the best options and can change at any time. If in doubt, do your own research :)
 	<ul>
-		<li>ESP8266 `https://arduino.esp8266.com/stable/package_esp8266com_index.json`</li>
-		<li>ESP32   `https://dl.espressif.com/dl/package_esp32_index.json`</li>
+		<li>ESP8266 https://arduino.esp8266.com/stable/package_esp8266com_index.json</li>
+		<li>ESP32   https://dl.espressif.com/dl/package_esp32_index.json</li>
 	</ul>
 </details>
 
