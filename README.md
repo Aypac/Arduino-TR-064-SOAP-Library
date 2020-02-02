@@ -1,5 +1,5 @@
 # Arduino-TR-064-SOAP-Library [![Build Status](https://travis-ci.com/Aypac/Arduino-TR-064-SOAP-Library.svg?branch=master)](https://travis-ci.com/Aypac/Arduino-TR-064-SOAP-Library)
-Arduino library to facilitate the use of the TR-064 protocol ([Definition](https://www.broadband-forum.org/technical/download/TR-064.pdf) and [Description](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf)), most commonly used by Fritz!Box.
+Arduino library to facilitate the use of the TR-064 protocol ([definition](https://www.broadband-forum.org/technical/download/TR-064.pdf) and [description](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf)), most commonly used by Fritz!Box.
 
 This library has been developed on an ESP8266 and tested on an ESP32.
 
@@ -39,7 +39,7 @@ If you know more/have tested a device not on the list, please let me know!
 		</details>
 	</li>
 	<li> Some ZyXEL routers (eg. <a href="ftp://ftp.zyxel.nl/VMG4325-B10A/user_guide/VMG4325-B10A_.pdf">VMG4325, VMG8324, VMG8324-B10A and VMG4380, see page 29</a>)</li>
-	<li> Please let me know if you tested a device not in this list [with an issue here on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new)</li>
+	<li> Please let me know if you tested a device not in this list <a href='https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new'>by creating an issue</a></li>
 </ul>
 
 ## Press
@@ -53,7 +53,7 @@ If you know more/have tested a device not on the list, please let me know!
 Help is very welcome! For example:
  - Please let me know if you came up with a cool use-case (I'd love to add more examples, see also list at the end of this file)
  - Let me know if you tested it on hardware not listed here (i.e. other microcontroller and other routers)
- - If you have any suggestions on how to improve the library code itself (I'm not particularily good with C++). I moved the TODO's mostly into the [issue section here on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues), or check out the list below.
+ - If you have any suggestions on how to improve the library code itself (I'm not particularily good with C++). I moved the TODO's mostly into the [issue section on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues), or check out the list below.
  - Contributions to the [Wiki](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki) are also very welcome!
 
 Some of the old issues are:
@@ -83,9 +83,11 @@ Some of the old issues are:
   * Known Bug: After a few hours the known devices "freeze", needs restart (might be fixed, but please report if still encountered)
 * Extend doorbell example to also send telegram messages :)
 
-
-<table>
-<tr><td>◽</td><td>◾</td><td>◽</td></tr>
-<tr><td>◾</td><td>◽</td><td>◽</td></tr>
-<tr><td>◾</td><td>◾</td><td>◾</td></tr>
-</table>
+<hr />
+<center>
+	<table>
+		<tr><td>◽</td><td>◾</td><td>◽</td></tr>
+		<tr><td>◾</td><td>◽</td><td>◽</td></tr>
+		<tr><td>◾</td><td>◾</td><td>◾</td></tr>
+	</table>
+</center>
