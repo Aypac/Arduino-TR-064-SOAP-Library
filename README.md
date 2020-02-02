@@ -5,7 +5,7 @@ This library has been developed on an ESP8266 and tested on an ESP32.
 
 To get started, I recommend to check out the [examples folder](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/tree/master/examples), the [Wiki](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki) and the [instructable](http://www.instructables.com/id/Who-Is-Home-Indicator-aka-Weasley-Clock-Based-on-T/).
 
-If you need further guidance, if you still have question please don't hesistate to [open an issue here on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new). If you made something cool with this library I want to encourage you to provide it as an example. Please create a pull request (or, if you don't know how, [an issue](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new)) to do that.
+If you still have question please don't hesistate to [open an issue here on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new). If you made something cool with this library I want to encourage you to provide it as an example. Please create a pull request (or, if you don't know how, [an issue](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new)) to do that.
 
 ## Installation and usage
 Simply go to `Tools->Manage Libraries...` in the Arduino IDE and search for `TR-064`. Press install. The examples can then also be found in the IDE under `Examples->TR-064 SOAP Library`.
@@ -19,6 +19,7 @@ Don't forget that you also need to [add the board you are using to the IDE](http
 	</ul>
 </details>
 
+
 ## Known routers with TR-064 interface
 If you know more/have tested a device not on the list, please let me know!
 
@@ -30,6 +31,7 @@ If you know more/have tested a device not on the list, please let me know!
 				<li> Fritz!Box 7490 (tested by Dirk Kaben)</li>
 				<li> Fritz!Box 7580</li>
 				<li> Fritz!Box 7590</li>
+				<li> Fritz!Box 5490 (<a href='https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/21'>not finally confirmed</a>, tested by <a href='https://github.com/Paul760'>Paul760</a>)</li>
 				<li> FRITZ!DECT 200 (tested by Oliver-André Urban)</li>
 				<li> FRITZ!DECT 210 (test by Thorsten Godau)</li>
 				<li> Apparantly, pretty much all Fritz products...</li>
@@ -48,17 +50,18 @@ If you know more/have tested a device not on the list, please let me know!
 
 # TODO
 
-Help is very welcome! I strongly encourage you to let me know if you came up with a cool use-case (I'd love to add more examples, see also list at the end of this file) and if you have any suggestions on how to improve the library code itself (I'm not particularily good with C++). Contributions to the [Wiki](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki) are also very welcome!
-
-I moved the todo's mostly into the [issue section here on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues).
+Help is very welcome! For example:
+ - Please let me know if you came up with a cool use-case (I'd love to add more examples, see also list at the end of this file)
+ - Let me know if you tested it on hardware not listed here (i.e. other microcontroller and other routers)
+ - If you have any suggestions on how to improve the library code itself (I'm not particularily good with C++). I moved the TODO's mostly into the [issue section here on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues), or check out the list below.
+ - Contributions to the [Wiki](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki) are also very welcome!
 
 Some of the old issues are:
 
 ### Library
 
-* Add yield()'s
-* figure out the occasional crashes
-* Test for different setups (i.e. other microcontroller and other routers)
+* Add yield()'s (where sensible)
+* figure out the occasional crashes (might be fixed, but please report if still encountered)
 * Make code more efficient
 * Do some (better) error-handeling
   * Return proper errors
@@ -67,7 +70,7 @@ Some of the old issues are:
 
 ### Examples
 
-* Add yield()'s
+* Add yield()'s (where sensible)
 * Add a few more nice examples
   * turning on/off (guest) wifi
   * read out and display connection speed
@@ -77,7 +80,7 @@ Some of the old issues are:
   * Start devices through e.g. telegram messages (e.g. coffee machine, washing machine, ...)
 * WhoIsHomeIndicator
   * Add nice GUI/Website to configure/manage the users/LEDs/MACs/known devices
-  * Known Bug: After a few hours the known devices "freeze", needs restart
+  * Known Bug: After a few hours the known devices "freeze", needs restart (might be fixed, but please report if still encountered)
 * Extend doorbell example to also send telegram messages :)
 
 
