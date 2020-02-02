@@ -35,15 +35,21 @@
 	//INCOMPATIBLE!
 #endif
 
-#define arr_len( x )  ( sizeof( x ) / sizeof( *x ) )
+#define arr_len( x )  ( sizeof( x ) / sizeof( *x ) ) ///< Gives the length of an array
 
 // Different debug level
-#define DEBUG_NONE 0
-#define DEBUG_ERROR 1
-#define DEBUG_WARNING 2
-#define DEBUG_INFO 3
-#define DEBUG_VERBOSE 4
+#define DEBUG_NONE 0		///< Print no debug messages whatsoever
+#define DEBUG_ERROR 1		///< Only print error messages
+#define DEBUG_WARNING 2		///< Only print error and warning messages
+#define DEBUG_INFO 3		///< Print error, warning and info messages
+#define DEBUG_VERBOSE 4		///< Print all messages
 
+
+/**************************************************************************/
+/*! 
+    @brief Class library to easily make TR-064 calls.
+*/
+/**************************************************************************/
 class TR064 {
 	public:
 		TR064(int port, String ip, String user, String pass);
