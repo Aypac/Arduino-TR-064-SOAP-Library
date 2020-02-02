@@ -36,6 +36,15 @@
 /*! 
     @brief  Library to easily make TR-064 calls. Do not construct this
 			unless you have a working connection to the device!
+	@param    port
+			Port number to be used to establish the TR-064 connection.
+	@param    ip
+			  IP address to be used to establish the TR-064 connection.
+	@param    user
+			  User name to be used to establish the TR-064 connection.
+	@param    pass
+			  Password to be used to establish the TR-064 connection.
+	@return void
 */
 /**************************************************************************/
 TR064::TR064(int port, String ip, String user, String pass) {
@@ -263,6 +272,23 @@ String TR064::action(String service, String act, String params[][2], int nParam)
     return xmlR;
 }
 
+/**************************************************************************/
+/*!
+    @brief  This function will call an action on the service of the device
+			with certain parameters, without error catching etc. Not
+			reccommended for direct use.
+    @param    service
+              The name of the service you want to adress.
+    @param    act
+              The action you want to perform on the service.
+    @param    params
+              A list of pairs of input parameters and values, e.g
+			  `params[][2] = {{ "arg1", "value1" }, { "arg2", "value2" }}`.
+    @param    nParam
+              The number of input parameters you passed.
+    @return The response from the device.
+*/
+/**************************************************************************/
 String TR064::action_raw(String service, String act, String params[][2], int nParam) {
 	// Generate the XML-envelop
     String xml = _requestStart + generateAuthXML() + "<s:Body><u:"+act+" xmlns:u='" + service + "'>";
@@ -282,7 +308,15 @@ String TR064::action_raw(String service, String act, String params[][2], int nPa
 	// Send the http-Request
     return httpRequest(findServiceURL(service), xml, soapaction);
 }
-
+/**************************************************************************/
+/*!
+    @brief  This method will extract and remember the nonce of the current
+			TR-064 call for the next one.
+    @param    xml
+              The XML as received from the TR-064 host (e.g. router).
+    @return void
+*/
+/**************************************************************************/
 void TR064::takeNonce(String xml) {
 	// Extract the Nonce for the next action/authToken.
     if (xml != "") {
@@ -301,8 +335,10 @@ void TR064::takeNonce(String xml) {
     }
 }
 
+// ----------------------------
+// ----- Helper-functions -----
+// ----------------------------
 
-// 
 
 /**************************************************************************/
 /*!
@@ -420,9 +456,6 @@ String TR064::httpRequest(String url, String xml, String soapaction, bool retry)
     return payload;
 }
 
-// ----------------------------
-// ----- Helper-functions -----
-// ----------------------------
 
 /**************************************************************************/
 /*!
@@ -540,6 +573,16 @@ String TR064::_xmlTakeParam(String inStr, String needParam) {
 	return "";
 }
 
+/**************************************************************************/
+/*!
+    @brief  Debug-print. Only prints the message if the debug level is high enough.
+    @param    message
+              The message to be conditionally printed.
+    @param    level
+			  The minimally required debug level.
+    @return void
+*/
+/**************************************************************************/
 void TR064::deb_print(String message, int level) {
 	if (Serial) {
 		if (debug_level >= level) {
@@ -549,6 +592,17 @@ void TR064::deb_print(String message, int level) {
 	}
 }
 
+/**************************************************************************/
+/*!
+    @brief  Same as deb_print, but with a new line at the end.
+			Only prints the message if the debug level is high enough.
+    @param    message
+              The message to be conditionally printed.
+    @param    level
+			  The minimally required debug level.
+    @return void
+*/
+/**************************************************************************/
 void TR064::deb_println(String message, int level) {
 	if (Serial) {
 		if (debug_level >= level) {

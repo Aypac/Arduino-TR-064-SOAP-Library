@@ -1,27 +1,17 @@
 /*!
  * @file tr064.cpp
- *
- * @mainpage Library for communicating via TR-064 protocol (e.g. Fritz!Box)
- *
- * @section intro_sec Introduction
  * 
+ * Library for communicating via TR-064 protocol (e.g. Fritz!Box)
  * This library allows for easy communication of TR-064 (and possibly TR-069) enabled devices,
  * such as Routers, smartplugs, DECT telephones etc.
  * Details, examples and the latest Version of this library can be found <a href='https://github.com/Aypac/Arduino-TR-064-SOAP-Library'>on my Github page</a>.
  * A descriptor of the protocol can be found <a href='https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf'>here</a>.
  * 
- *
- * @section dependencies Dependencies
- *
  * This library depends on:
  *	MD5Builder
- * ESP8266HTTPClient or HTTPClient, depending on the intended platform (ESP8266 or ESP32).
- *
- * @section author Author
+ *  ESP8266HTTPClient or HTTPClient, depending on the intended platform (ESP8266 or ESP32).
  *
  * Written by René Vollmer "Aypac" in November 2016.
- *
- * @section license License
  *
  * MIT License, all text here must be included in any redistribution.
  *
