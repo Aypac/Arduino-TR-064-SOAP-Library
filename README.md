@@ -8,7 +8,7 @@ To get started, I recommend to check out the [examples folder](https://github.co
 If you still have question please don't hesistate to [open an issue here on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new). If you made something cool with this library please provide it as an example. Please create a pull request (or, if you don't know how, [an issue](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new)) to do that.
 
 ## Installation and usage
-Simply go to `Tools→Manage Libraries...` in the Arduino IDE and search for `TR-064`. Press install. The examples can then also be found in the IDE under `Examples→TR-064 SOAP Library`.
+Simply go to `Tools → Manage Libraries...` in the Arduino IDE and search for `TR-064`. Press install. The examples can then also be found in the IDE under `Examples → TR-064 SOAP Library`.
 
 Don't forget that you also need to [add the board you are using to the IDE](https://learn.adafruit.com/add-boards-arduino-v164/setup); 
 <details><summary>Example board URLs</summary>
@@ -60,21 +60,20 @@ Some of the old issues are:
 ### Library
 
 * Add yield()'s (where sensible)
-* figure out the occasional crashes (might be fixed, but please report if still encountered)
-* Make code more efficient
 * Do some (better) error-handeling
   * Return proper errors
-* Add some more comments
-* Create a sophisticated debug/verbose mode (and silence the non-debug mode!)
+* Reduce occasional crashes (should be fixed, but please report if still encountered)
+* Should some of the calls of the examples be included into the library?
 
 ### Examples
 
 * Add yield()'s (where sensible)
+* Try to find a way to externalize the settings (WIFI etc)
 * Add a few more nice examples
   * turning on/off (guest) wifi
-  * read out and display connection speed
+  * read out connection speed
   * alternate WPS button
-  * Emergency dial-up to relatives or emergency services
+  * emergency dial-up to relatives or emergency services
   * recognize when devices (like washing machines) are done (along the lines of [this](https://github.com/dl9sec/ArduinoSIP/tree/master/examples/LaundryNotifier)
   * Start devices through e.g. telegram messages (e.g. coffee machine, washing machine, ...)
 * WhoIsHomeIndicator
@@ -83,10 +82,11 @@ Some of the old issues are:
 * Extend doorbell example to also send telegram messages :)
 
 <hr />
-<center>
-	<table>
+<p width="100%">
+<p align="center">
+	<table style="text-align:center;">
 		<tr><td>◽</td><td>◾</td><td>◽</td></tr>
 		<tr><td>◾</td><td>◽</td><td>◽</td></tr>
 		<tr><td>◾</td><td>◾</td><td>◾</td></tr>
 	</table>
-</center>
+</p></p>
