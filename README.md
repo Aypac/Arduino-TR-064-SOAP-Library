@@ -82,11 +82,11 @@ Some of the old issues are:
 * Extend doorbell example to also send telegram messages :)
 
 <hr />
-<p width="100%">
-<p align="center">
+
+<p align="justify" style="text-align:justify;">
 	<table style="text-align:center;">
 		<tr><td>◽</td><td>◾</td><td>◽</td></tr>
 		<tr><td>◾</td><td>◽</td><td>◽</td></tr>
 		<tr><td>◾</td><td>◾</td><td>◾</td></tr>
 	</table>
-</p></p>
+</p>
