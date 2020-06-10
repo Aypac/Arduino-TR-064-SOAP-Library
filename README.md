@@ -31,6 +31,7 @@ If you know more/have tested a device not on the list, please let me know!
 				<li> Fritz!Box 7490 (tested by Dirk Kaben)</li>
 				<li> Fritz!Box 7580</li>
 				<li> Fritz!Box 7590</li>
+				<li> FRITZ!Box 6590 Cable (tested by <a href='https://github.com/jipp'>Wolfgang (jipp)</a>)</li>
 				<li> Fritz!Box 5490 (<a href='https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/21'>not finally confirmed</a>, tested by <a href='https://github.com/Paul760'>Paul760</a>)</li>
 				<li> FRITZ!DECT 200 (tested by Oliver-André Urban)</li>
 				<li> FRITZ!DECT 210 (test by Thorsten Godau)</li>
