@@ -109,12 +109,13 @@ void loop() {
 }
 
 
+
 void switchGuestWifi(bool status) {
+  String params[][2] = {{"NewEnable", "0"}};
   if (status) {
-    String params[][2] = {{"NewEnable", "1"}};
+    params[0][1] = "1";
     Serial.println ("Set status: on");
   } else {
-    String params[][2] = {{"NewEnable", "0"}};
     Serial.println ("Set status: off");
   }
   String req[][2] = {{}};
