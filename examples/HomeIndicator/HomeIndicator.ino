@@ -1,5 +1,5 @@
 /**
- * home-indicator.ino
+ * HomeIndicator.ino
  *  René Vollmer
  *  Example code for the home-indicator-project [ https://www.instructables.com/id/Who-Is-Home-Indicator-aka-Weasley-Clock-Based-on-T ].
  *  
