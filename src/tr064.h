@@ -75,9 +75,9 @@ class TR064 {
         void init();
         void initNonce();
 
-        String& action(const String&service, const String&act);
-        String& action(const String&service, const String& act, String params[][2], int nParam);
-        String& action(const String&service, const String& act, String params[][2], int nParam, String (*req)[2], int nReq);
+        bool action(const String& service, const String& act);
+        bool action(const String& service, const String& act, String params[][2], int nParam);
+        bool action(const String& service, const String& act, String params[][2], int nParam, String (*req)[2], int nReq);
         String xmlTakeParam(const String& inStr, String needParam);
         String xmlTakeInsensitiveParam(const String& inStr,String needParam);
         String xmlTakeSensitiveParam(const String& inStr,String needParam);
@@ -95,13 +95,14 @@ class TR064 {
         void initServiceURLs();
         void deb_print(const String& message, int level);
         void deb_println(const String& message, int level);
-        String& action_raw(const String& service,const String& act, String params[][2], int nParam);
+        bool action_raw(const String& service,const String& act, String params[][2], int nParam);
         void takeNonce(const String& xml);
-        String& httpRequest(const String& url, const  String& xml, const  String& action);
-        String& httpRequest(const String& url,  const String& xml, const  String& action, bool retry);
+        bool httpRequest(const String& url, const  String& xml, const  String& action);
+        bool httpRequest(const String& url,  const String& xml, const  String& action, bool retry);
         String generateAuthToken();
         String generateAuthXML();
         String findServiceURL(const String& service);
+        String clearOldServiceName(const String& service);
         String _xmlTakeParam(const String& inStr, String needParam);
         void clear();
         int _state;

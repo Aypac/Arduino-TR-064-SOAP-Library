@@ -71,7 +71,7 @@ void setup() {
 
 	// Connect to wifi
 	ensureWIFIConnection();
-	
+	connection.init();
 	// Port as input
 	pinMode(BUTTON, INPUT);
 }
@@ -100,23 +100,28 @@ void loop() {
 void callWahlhilfe() {
 	ensureWIFIConnection();
 
+  if(connection.state()<0){
+    connection.init();
+  }
 	String params[][2] = {{"NewX_AVM-DE_PhoneNumber", "**799"}};
 	String req[][2] = {{}};
-
-	connection.action("urn:dslforum-org:service:X_VoIP:1", "X_AVM-DE_DialNumber", params, 1, req, 0);
+  connection.action("X_VoIP:1", "X_AVM-DE_DialNumber", params, 1, req, 0);
+	//connection.action("urn:dslforum-org:service:X_VoIP:1", "X_AVM-DE_DialNumber", params, 1, req, 0);
 }
 
 void callDect() {
 	ensureWIFIConnection();
 
 	String params[][2] = {{"NewAIN", "12345 0123456"}, {"NewSwitchState", "TOGGLE"}};
-	connection.action("urn:dslforum-org:service:X_AVM-DE_Homeauto:1", "SetSwitch", params, 2);
+	connection.action("X_AVM-DE_Homeauto:1", "SetSwitch", params, 2);
+ // connection.action("urn:dslforum-org:service:X_AVM-DE_Homeauto:1", "SetSwitch", params, 2);
 }
 
 String getStatus() {
 	String paramsb[][2] = {{"NewAIN", "12345 0123456"}};
 	String reqb[][2] = {{"NewDeviceId", ""}, {"NewSwitchState", ""}};
-	connection.action("urn:dslforum-org:service:X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", paramsb, 1, reqb, 2);
+  connection.action("X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", paramsb, 1, reqb, 2);
+	//connection.action("urn:dslforum-org:service:X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", paramsb, 1, reqb, 2);
 	return reqb[1][1];
 }
 
