@@ -101,38 +101,48 @@ void TR064::initServiceURLs() {
         if (httpCode == HTTP_CODE_OK) {
             deb_println("[TR064] get the Stream ", DEBUG_INFO);
             // get tcp _client
-            WiFiClient * stream = http.getStreamPtr();
+            //WiFiClient * stream = http.getStreamPtr();
+            // get tcp stream
+            WiFiClient * stream = &tr064client;
             int i = 0;
             
+            // get lenght of document (is -1 when Server sends no Content-Length header)
             int len = http.getSize();
-            deb_println("[TR064] sizeof Stream: "+ String(len), DEBUG_INFO);
-            int size = stream->available();
-            deb_println("[TR064] Stream available: "+ String(size), DEBUG_VERBOSE);
-            if(!stream->available())deb_println("[TR064] Stream notavailable: "+ String(size), DEBUG_VERBOSE);
 
-            while (stream->available()>0) {
-                if(!stream->find("<service>") && _state<0){
-                    _state = TR064_NO_SERVICES;
-                    deb_println("[TR064]<Error> Failed, DidNOT find Services ", DEBUG_ERROR);
-                    return;
-                }else{
+            deb_println("[TR064] sizeof Stream: "+ String(len), DEBUG_INFO);
+            
+           // read all data from server
+            while (http.connected() ) {
                     
-                    deb_println("[TR064]sizeof services: "+ String(i), DEBUG_VERBOSE);
-                    if(stream->find("<serviceType>urn:dslforum-org:service:")){
-                        ++i;
-                        const String servicename = stream->readStringUntil('<');
-                        //String servicename = xmlTakeParam(serviceXML, "serviceType");
-                        deb_println("[TR064]readServiceName: "+ servicename, DEBUG_VERBOSE);
-                        _services[i][0] = servicename;
-                        if(stream->find("<controlURL>")){
-                            const String controlurl = stream->readStringUntil('<');
-                            //String controlurl = xmlTakeParam(serviceXML, "controlURL");
-                            deb_println("[TR064]readServiceUrl: "+ controlurl, DEBUG_VERBOSE);
-                            _services[i][1] = controlurl;
-                            _state = TR064_SERVICES_LOADED;
+
+                    if(!stream->find("<service>") && _state<0){
+                        _state = TR064_NO_SERVICES;
+                        deb_println("[TR064]<Error> Failed, DidNOT find Services ", DEBUG_ERROR);
+                        break;
+                    }else{
+                        
+                        deb_println("[TR064] sizeof services: "+ String(i), DEBUG_VERBOSE);
+                        if(stream->find("<serviceType>urn:dslforum-org:service:")){
+                            ++i;
+                            const String servicename = stream->readStringUntil('<');
+                            //String servicename = xmlTakeParam(serviceXML, "serviceType");
+                            deb_println("[TR064]readServiceName: "+ servicename, DEBUG_VERBOSE);
+                            _services[i][0] = servicename;
+                            if(stream->find("<controlURL>")){
+                                const String controlurl = stream->readStringUntil('<');
+                                //String controlurl = xmlTakeParam(serviceXML, "controlURL");
+                                deb_println("[TR064] readServiceUrl: "+ controlurl, DEBUG_VERBOSE);
+                                _services[i][1] = controlurl;
+                                _state = TR064_SERVICES_LOADED;
+                            }else{
+                                deb_println("[TR064] somthing wrong on readServiceUrl: "+ String(i), DEBUG_VERBOSE);
+                                break;
+                            }
                         }
+                    } 
+                    if(stream->available()<1){
+                        break;
                     }
-                }                
             }
             
             deb_println("[TR064] message: reading done", DEBUG_INFO);                 
