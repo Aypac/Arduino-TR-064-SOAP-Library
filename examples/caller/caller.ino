@@ -71,6 +71,9 @@ void setup() {
 
 	// Connect to wifi
 	ensureWIFIConnection();
+  
+  //activate for Debug Output
+  //connection.debug_level = connection.DEBUG_VERBOSE;
 	connection.init();
 	// Port as input
 	pinMode(BUTTON, INPUT);
