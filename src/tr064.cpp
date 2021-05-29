@@ -532,7 +532,7 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
         } else {
             deb_println("[TR064] <Error> Giving up.", DEBUG_ERROR);
             _payload="";
-            return _payload;
+            return false;
         }
     }
     
