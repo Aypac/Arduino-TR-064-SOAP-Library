@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a report to help us improve
 title: ''
-labels: bug
+labels: ''
 assignees: ''
 
 ---
@@ -20,9 +20,9 @@ A clear and concise description of what you wanted to achieve/expected to happen
 Shot relevant code segments. Use the (code-formatting markdown)[https://guides.github.com/features/mastering-markdown/] please!
 
 **Logs**
-If applicable, add logs to help explain your problem. Use `<details><summary>(Click to show)</summary>```
-looooong log
-```</details>`
+If applicable, add logs to help explain your problem. Use
+`<details><summary>(Click to show)</summary>```looooong log```</details>`
+to keep it readable.
 
 **µController**
  - Which chip and board are you using?
