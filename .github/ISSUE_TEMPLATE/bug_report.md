@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a report to help us improve
 title: ''
-labels: ''
+labels: bug
 assignees: ''
 
 ---
@@ -27,8 +27,8 @@ to keep it readable.
 **µController**
  - Which chip and board are you using?
 
-**Additional context**
-Add any other context about the problem here.
+**Router model and firmware version**
+- Brand, model and firmware version of the router you are using.
 
 **Related issues**
 Please check if you can find any other [issues here](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues) that might be related to this one.
