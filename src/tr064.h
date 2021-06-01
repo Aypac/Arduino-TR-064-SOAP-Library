@@ -38,15 +38,12 @@
 #define arr_len( x )  ( sizeof( x ) / sizeof( *x ) ) ///< Gives the length of an array
 
 // Different debug level
-/* #define DEBUG_NONE 0        ///< Print no debug messages whatsoever
+#define DEBUG_NONE 0        ///< Print no debug messages whatsoever
 #define DEBUG_ERROR 1        ///< Only print error messages
 #define DEBUG_WARNING 2        ///< Only print error and warning messages
 #define DEBUG_INFO 3        ///< Print error, warning and info messages
-#define DEBUG_VERBOSE 4        ///< Print all messages */
+#define DEBUG_VERBOSE 4        ///< Print all messages
 
-// Possible values for client.state()
-#define TR064_NO_SERVICES           -1
-#define TR064_SERVICES_LOADED       0
 
 /**************************************************************************/
 /*! 
@@ -58,39 +55,31 @@
 
 class TR064 {
     public:
-        enum LoggingLevels {DEBUG_NONE, DEBUG_ERROR, DEBUG_WARNING, DEBUG_INFO, DEBUG_VERBOSE};
         TR064(int port, String ip, String user, String pass);
         void init();
         void initNonce();
-        bool action(String service, String act);
-        bool action(String service, String act, String params[][2], int nParam);
-        bool action(String service, String act, String params[][2], int nParam, String (*req)[2], int nReq);
+        String action(String service, String act);
+        String action(String service, String act, String params[][2], int nParam);
+        String action(String service, String act, String params[][2], int nParam, String (*req)[2], int nReq);
         String xmlTakeParam(String inStr, String needParam);
         String xmlTakeInsensitiveParam(String inStr, String needParam);
         String xmlTakeSensitiveParam(String inStr, String needParam);
         String md5String(String s);
         String byte2hex(byte number);
         int debug_level; ///< Available levels are `DEBUG_NONE`, `DEBUG_ERROR`, `DEBUG_WARNING`, `DEBUG_INFO`, and `DEBUG_VERBOSE`.
-        int state();  
     private:
         //TODO: More consistent naming.
-
-        WiFiClient tr064client;
-        HTTPClient http;
-
         void initServiceURLs();
         void deb_print(String message, int level);
         void deb_println(String message, int level);
-        bool action_raw(String service, String act, String params[][2], int nParam);
+        String action_raw(String service, String act, String params[][2], int nParam);
         void takeNonce(String xml);
-        bool httpRequest(String url, String xml, String action);
-        bool httpRequest(String url, String xml, String action, bool retry);
+        String httpRequest(String url, String xml, String action);
+        String httpRequest(String url, String xml, String action, bool retry);
         String generateAuthToken();
         String generateAuthXML();
         String findServiceURL(String service);
         String _xmlTakeParam(String inStr, String needParam);
-        void clear();
-        int _state;
         String _ip;
         int _port;
         String _user;
@@ -106,7 +95,6 @@ class TR064 {
         TODO: Remove 100 services limits here
         */
         String _services[100][2];
-        String _payload;
 };
 
 #endif
