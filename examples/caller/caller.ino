@@ -88,11 +88,7 @@ void loop() {
 		// char* status=getStatus();
 		delay(20000);
 	} else {
-		if (Serial) {
-			Serial.println();
-			Serial.printf("Button not pressed");
-		}
-		delay(50);
+		
 	}
 }
 
