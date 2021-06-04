@@ -116,13 +116,13 @@ void TR064::initServiceURLs() {
                         deb_println("[TR064] somthing wrong on readServiceUrl: "+ String(i), DEBUG_VERBOSE);
                         _state = TR064_NO_SERVICES;
                         break;
-                    }                    
-                }                
+                    } 
+                } 
             }
             if(stream->available()<1){
                 break;
             }
-                            
+
             delay(10);
         }
         deb_println("[TR064] message: reading done", DEBUG_INFO); 
@@ -135,7 +135,7 @@ void TR064::initServiceURLs() {
         
         
     }
-    http.end();    
+    http.end();
 }
 
 
@@ -219,7 +219,7 @@ String TR064::action(const String& service, const String& act) {
 /**************************************************************************/
 String TR064::action(const String& service, const String& act, String params[][2], int nParam, String (*req)[2], int nReq) {
     deb_println("[action] with extraction", DEBUG_VERBOSE);
-    String xmlR = action(service, act, params, nParam);    
+    String xmlR = action(service, act, params, nParam);
     String body = xmlTakeParam(xmlR, "s:Body");
 
     if (nReq > 0) {
@@ -297,8 +297,8 @@ String TR064::action(const String& service, const String& act, String params[][2
     }
     
     if (tries >= 3) {
-        deb_println("[action]<error> Giving up the request ", DEBUG_ERROR);        
-    } else {    
+        deb_println("[action]<error> Giving up the request ", DEBUG_ERROR);
+    } else {
         deb_println("[action] Done.", DEBUG_INFO);
         takeNonce(xmlR);
     }
@@ -345,7 +345,7 @@ String TR064::action_raw(const String& service, const String& act, String params
 /**************************************************************************/
 /*!
     @brief  This method will extract and remember the nonce of the current
-            TR-064 call for the next one.    
+            TR-064 call for the next one.
 */
 /**************************************************************************/
 void TR064::takeNonce(const String& xml) {
@@ -407,7 +407,7 @@ String TR064::findServiceURL(const String& service) {
     @return The response from the device.
 */
 /**************************************************************************/
-String TR064::httpRequest(const String& url, const  String& xml, const  String& soapaction) {
+String TR064::httpRequest(const String& url, const String& xml, const String& soapaction) {
     return httpRequest(url, xml, soapaction, true);
 }
 
@@ -427,12 +427,12 @@ String TR064::httpRequest(const String& url, const  String& xml, const  String& 
     @return The response from the device.
 */
 /**************************************************************************/
-String TR064::httpRequest(const String& url, const  String& xml, const  String& soapaction, bool retry) {
+String TR064::httpRequest(const String& url, const String& xml, const String& soapaction, bool retry) {
     deb_println("[HTTP] prepare request to URL: http://" + _ip + ":" + _port + url, DEBUG_INFO);
     
     WiFiClient tr064client;
     HTTPClient http; //must be declared after WiFiClient for correct destruction order, because used by http.begin(client,...)
-    http.begin(tr064client, _ip, _port, url);   
+    http.begin(tr064client, _ip, _port, url);
     if (soapaction != "") {
         http.addHeader("CONTENT-TYPE", "text/xml"); //; charset=\"utf-8\"
         http.addHeader("SOAPACTION", soapaction);
@@ -572,7 +572,7 @@ String TR064::xmlTakeParam(const String& inStr, String needParam) {
 /**************************************************************************/
 String TR064::xmlTakeSensitiveParam(const String& inStr, String needParam) {
     // where is location?
-    //Serial.print("inStr - xmlTakeSensitivParam - ");Serial.println((unsigned int)&inStr, HEX);    
+    //Serial.print("inStr - xmlTakeSensitivParam - ");Serial.println((unsigned int)&inStr, HEX);
     return _xmlTakeParam(inStr, needParam);
 }
 
@@ -661,6 +661,12 @@ void TR064::deb_println(String message, int level) {
     }
 }
 
+/**************************************************************************/
+/*!
+    @brief  Returns the State of Service Load
+    @return The State. TR064_NO_SERVICES / TR064_SERVICES_LOADED
+*/
+/**************************************************************************/
 int TR064::state() {    
     return this->_state;
 }

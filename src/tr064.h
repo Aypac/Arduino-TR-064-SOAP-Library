@@ -45,7 +45,7 @@
 #define DEBUG_VERBOSE 4        ///< Print all messages
 
 // Possible values for client.state()
-#define TR064_NO_SERVICES           -1
+#define TR064_NO_SERVICES          -1
 #define TR064_SERVICES_LOADED       0
 
 /**************************************************************************/
@@ -79,8 +79,8 @@ class TR064 {
         void deb_println(String message, int level);
         String action_raw(const String& service,const String& act, String params[][2], int nParam);
         void takeNonce(const String& xml);
-        String httpRequest(const String& url, const  String& xml, const  String& action);
-        String httpRequest(const String& url, const  String& xml, const  String& action, bool retry);
+        String httpRequest(const String& url, const String& xml, const String& action);
+        String httpRequest(const String& url, const String& xml, const String& action, bool retry);
         String generateAuthToken();
         String generateAuthXML();
         String findServiceURL(const String& service);
@@ -101,7 +101,7 @@ class TR064 {
         * possibilities of their device(s) - see #9 on Github.
         TODO: Remove 100 services limits here
         */
-        String _services[100][2];        
+        String _services[100][2];
 };
 
 #endif
