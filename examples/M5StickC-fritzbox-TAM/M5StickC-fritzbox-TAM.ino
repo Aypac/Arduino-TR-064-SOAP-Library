@@ -5,6 +5,8 @@
    https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf
 
 */
+//#define M5Stick_C //uncomment this line if the board match
+#if defined(M5Stick_C)
 
 #include <M5StickC.h>
 #include <tr064.h>
@@ -126,3 +128,12 @@ int refreshScreen(int value) {
   }
   return value;
 }
+
+#else
+void setup() {
+
+}
+void loop() {
+  yield();
+}
+#endif
