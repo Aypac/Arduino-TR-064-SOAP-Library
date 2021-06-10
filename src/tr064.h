@@ -111,7 +111,6 @@ class TR064 {
         String _realm; //To be requested from the router
         String _secretH; //to be generated
         String _nonce = "";
-        String _authtoken ="";
 
         const char* const _requestStart = "<?xml version=\"1.0\"?><s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">";
         const char* const _detectPage = "/tr64desc.xml";

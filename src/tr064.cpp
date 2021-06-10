@@ -124,16 +124,16 @@ void TR064::initServiceURLs() {
 */
 /**************************************************************************/
 String TR064::generateAuthXML() {
-    // String token;
+    String token;
     if (_nonce == "") {
         // If we do not have a nonce yet, we need to use a different header
-        _authtoken = "<s:Header><h:InitChallenge xmlns:h=\"http://soap-authentication.org/digest/2001/10/\" s:mustUnderstand=\"1\"><UserID>" + _user + "</UserID></h:InitChallenge ></s:Header>";
+        token = "<s:Header><h:InitChallenge xmlns:h=\"http://soap-authentication.org/digest/2001/10/\" s:mustUnderstand=\"1\"><UserID>" + _user + "</UserID></h:InitChallenge ></s:Header>";
     } else {
         // Otherwise we produce an authorisation header
-        _authtoken = generateAuthToken();
-        _authtoken = "<s:Header><h:ClientAuth xmlns:h=\"http://soap-authentication.org/digest/2001/10/\" s:mustUnderstand=\"1\"><Nonce>" + _nonce + "</Nonce><Auth>" + _authtoken + "</Auth><UserID>" + _user + "</UserID><Realm>" + _realm + "</Realm></h:ClientAuth></s:Header>";
+        token = generateAuthToken();
+        token = "<s:Header><h:ClientAuth xmlns:h=\"http://soap-authentication.org/digest/2001/10/\" s:mustUnderstand=\"1\"><Nonce>" + _nonce + "</Nonce><Auth>" + _authtoken + "</Auth><UserID>" + _user + "</UserID><Realm>" + _realm + "</Realm></h:ClientAuth></s:Header>";
     }
-    return _authtoken;
+    return token;
 }
 
 /**************************************************************************/
