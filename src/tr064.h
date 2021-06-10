@@ -55,6 +55,9 @@
 #define TR064_NO_SERVICES           -1
 #define TR064_SERVICES_LOADED       0
 
+// Possible values for client.state()
+#define TR064_NO_SERVICES          -1
+#define TR064_SERVICES_LOADED       0
 
 /**************************************************************************/
 /*! 
@@ -77,10 +80,11 @@ class TR064 {
 
         bool action(const String& service, const String& act);
         bool action(const String& service, const String& act, String params[][2], int nParam);
-        bool action(const String& service, const String& act, String params[][2], int nParam, String (*req)[2], int nReq);
-        
+        bool action(const String& service, const String& act, String params[][2], int nParam, String (*req)[2], int nReq);        
+
         String md5String(const String& s);
         String byte2hex(byte number);
+        int state();
         int debug_level; ///< Available levels are `DEBUG_NONE`, `DEBUG_ERROR`, `DEBUG_WARNING`, `DEBUG_INFO`, and `DEBUG_VERBOSE`.
         boolean connected();
         void disconnect(bool disconnect_package = false);
@@ -90,6 +94,7 @@ class TR064 {
         HTTPClient http;
         
         //TODO: More consistent naming.
+        
         void initServiceURLs();
         void deb_print(const String& message, int level);
         void deb_println(const String& message, int level);

@@ -61,6 +61,7 @@ TR064::TR064() {
    this->_state = TR064_NO_SERVICES;
 }
 
+
 /**************************************************************************/
 /*!
     @brief  Initializes the library. Needs to be explicitly called.
@@ -78,10 +79,12 @@ void TR064::init() {
     @brief  Fetches a list of all services and the associated URLs for internal use.
 */
 /**************************************************************************/
+/**************************************************************************/
 void TR064::initServiceURLs() {
     /* TODO: We should give access to this data for users to inspect the
      * possibilities of their device(s) - see #9 on Github.
      */
+
     _state = TR064_NO_SERVICES;
     if(httpRequest(_detectPage, "", "", true)){
     // httpCode will be negative on error
@@ -113,9 +116,6 @@ void TR064::initServiceURLs() {
     _state = TR064_SERVICES_LOADED;
     http.end();
 }
-
-
-
 
 /**************************************************************************/
 /*!
@@ -240,13 +240,16 @@ bool TR064::action(const String& service, const String& act, String params[][2],
     while (status == "unauthenticated" && tries < 3) {
        
         ++tries;
+        
         while ((_nonce == "" || _realm == "") && tries <= 3) {
             deb_println("[action] no nonce/realm found. requesting...", DEBUG_INFO);
             // TODO: Is this request supported by all devices or should we use a different one here?
             String a[][2] = {{"NewAssociatedDeviceIndex", "1"}};
+
             String wlanService = "WLANConfiguration:1", deviceInfo="GetGenericAssociatedDeviceInfo";
             action_raw(wlanService, deviceInfo, a, 1);
             takeNonce();
+
             if (_nonce == "" || _realm == "") {
                 ++tries;
                 deb_println("[action]<error> nonce/realm request not successful!", DEBUG_ERROR);
@@ -257,6 +260,7 @@ bool TR064::action(const String& service, const String& act, String params[][2],
         
         action_raw(service, act, params, nParam);
         xmlTakeParam(status, "Status");
+
         deb_println("[action] Response status: "+status, DEBUG_INFO);
         status.toLowerCase();
         // If we already have a nonce, but the request comes back unauthenticated. 
@@ -293,9 +297,8 @@ bool TR064::action(const String& service, const String& act, String params[][2],
     @return The response from the device.
 */
 /**************************************************************************/
+
 bool TR064::action_raw(const String& service, const String& act, String params[][2], int nParam) {
-    // for 
-    
     // Generate the XML-envelop
     String xml = _requestStart + generateAuthXML() + "<s:Body><u:"+act+" xmlns:u=\"" + _servicePrefix + service + "\">";
     // Add request-parameters to XML
@@ -315,21 +318,18 @@ bool TR064::action_raw(const String& service, const String& act, String params[]
     String soapaction = _servicePrefix + serviceName+"#"+act;
     
     // Send the http-Request
-    return httpRequest(findServiceURL(_servicePrefix + serviceName), xml, soapaction, true);   
-    
+    return httpRequest(findServiceURL(_servicePrefix + serviceName), xml, soapaction, true);
 }
 /**************************************************************************/
 /*!
     @brief  This method will extract and remember the nonce of the current
             TR-064 call for the next one.
-    @param    xml
-                The XML as received from the TR-064 host (e.g. router).
 */
 /**************************************************************************/
+
 void TR064::takeNonce() {
     // Extract the Nonce for the next action/authToken.
-    if (xmlTakeParam(_nonce, "Nonce")) {
-        
+    if (xmlTakeParam(_nonce, "Nonce")) {        
         deb_println("[TR064] Extracted the nonce '" + _nonce + "' from the last request.", DEBUG_INFO);
     }
     if (_realm == "" && xmlTakeParam( _realm, "Realm")) {
@@ -386,6 +386,25 @@ String TR064::findServiceURL(const String& service) {
     return "";
 }
 
+
+/**************************************************************************/
+/*!
+    @brief  Transmits a http-Request to the given url (relative to _ip on _port)
+            - if specified POSTs xml and adds soapaction as header field.
+            - otherwise just GETs the url
+    @param    url
+                The service URL
+    @param    soapaction
+                The requested action
+    @param    xml
+                The request XML
+    @return The response from the device.
+*/
+/**************************************************************************/
+String TR064::httpRequest(const String& url, const String& xml, const String& soapaction) {
+    return httpRequest(url, xml, soapaction, true);
+}
+
 /**************************************************************************/
 /*!
     @brief  Transmits a http-Request to the given url (relative to _ip on _port)
@@ -402,6 +421,7 @@ String TR064::findServiceURL(const String& service) {
     @return The response from the device.
 */
 /**************************************************************************/
+
 bool TR064::httpRequest(const String& url, const String& xml, const String& soapaction, bool retry) {
     deb_println("[TR064] prepare request to URL: http://" + _ip + ":" + _port + url, DEBUG_INFO);
     
@@ -410,7 +430,7 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
     }
     
     http.begin(tr064client, _ip, _port, url,false);
-    
+
     if (soapaction != "") {
         http.addHeader("CONTENT-TYPE", "text/xml"); //; charset=\"utf-8\"
         http.addHeader("SOAPACTION", soapaction);
@@ -430,8 +450,6 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
         deb_println("[TR064] GET...", DEBUG_VERBOSE);
     }
 
-    
-    
     // httpCode will be negative on error
     deb_println("[TR064] request code: " + String(httpCode), DEBUG_INFO);
     if (httpCode > 0) {
@@ -447,9 +465,9 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
         // TODO: Proper error-handling? See also #12 on github
         
         String httperr = http.errorToString(httpCode).c_str();
+
         deb_println("[TR064]<Error> Failed, message: '" + httperr + "'", DEBUG_ERROR);
-        
-        
+
         if (retry) {
             _nonce = "";
             deb_println("[TR064] <Error> Trying again in 1s.", DEBUG_ERROR);
@@ -512,6 +530,7 @@ String TR064::byte2hex(byte number){
     @return The content of the requested XML tag (as `String`).
 */
 /**************************************************************************/
+
 bool TR064::xmlTakeParam(String& value, const String& needParam) {
     
     while(1) {
@@ -526,11 +545,10 @@ bool TR064::xmlTakeParam(String& value, const String& needParam) {
                 value = stream->readStringUntil('<');                
                 break;
             }       
-        }       
+        } 
     }
     return true;
 }
-
 
 /**************************************************************************/
 /*!
@@ -544,6 +562,7 @@ bool TR064::xmlTakeParam(String& value, const String& needParam) {
 void TR064::deb_print(const String& message, int level) {
     if (Serial) {
         if (debug_level >= level) {
+            // where is location?
             Serial.print(message);
             //Serial.flush();
         }
@@ -569,6 +588,15 @@ void TR064::deb_println(const String& message, int level) {
     }
 }
 
+/**************************************************************************/
+/*!
+    @brief  Returns the State of Service Load
+    @return The State. TR064_NO_SERVICES / TR064_SERVICES_LOADED
+*/
+/**************************************************************************/
+int TR064::state() {    
+    return this->_state;
+}
 
 TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, const String& pass){
     this->_ip = ip;
