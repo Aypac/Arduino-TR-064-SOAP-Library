@@ -67,20 +67,18 @@
 class TR064 {
     public:
         enum LoggingLevels {DEBUG_NONE, DEBUG_ERROR, DEBUG_WARNING, DEBUG_INFO, DEBUG_VERBOSE};
-
+        
         TR064();
-        TR064(uint16_t port, const String&ip, const String&user, const String&pass);
-        virtual ~TR064() {}
-        TR064& setServer(String ip, uint16_t port, String user, String pass);
+        TR064(uint16_t port, const String& ip, const String& user, const String& pass);
+        ~TR064() {}
+        TR064& setServer(uint16_t port, const String& ip, const String& user, const String& pass);
         void init();
         void initNonce();
 
         bool action(const String& service, const String& act);
         bool action(const String& service, const String& act, String params[][2], int nParam);
         bool action(const String& service, const String& act, String params[][2], int nParam, String (*req)[2], int nReq);
-        String xmlTakeParam(const String& inStr, String needParam);
-        String xmlTakeInsensitiveParam(const String& inStr,String needParam);
-        String xmlTakeSensitiveParam(const String& inStr,String needParam);
+        
         String md5String(const String& s);
         String byte2hex(byte number);
         int debug_level; ///< Available levels are `DEBUG_NONE`, `DEBUG_ERROR`, `DEBUG_WARNING`, `DEBUG_INFO`, and `DEBUG_VERBOSE`.
@@ -96,14 +94,14 @@ class TR064 {
         void deb_print(const String& message, int level);
         void deb_println(const String& message, int level);
         bool action_raw(const String& service,const String& act, String params[][2], int nParam);
-        void takeNonce(const String& xml);
+        void takeNonce();
         bool httpRequest(const String& url, const  String& xml, const  String& action);
         bool httpRequest(const String& url,  const String& xml, const  String& action, bool retry);
         String generateAuthToken();
         String generateAuthXML();
         String findServiceURL(const String& service);
         String clearOldServiceName(const String& service);
-        String _xmlTakeParam(const String& inStr, String needParam);
+        bool xmlTakeParam(String& value, const String& needParam);
         void clear();
         int _state;
         String _ip;
@@ -125,8 +123,6 @@ class TR064 {
         TODO: Remove 100 services limits here
         */
         String _services[100][2];
-        String _payload;
-        int _returnCode = 0;
 };
 
 #endif
