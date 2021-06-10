@@ -523,8 +523,7 @@ bool TR064::xmlTakeParam(String& value, const String& needParam) {
         if(stream->find("<")){
             const String htmltag = stream->readStringUntil('>');
             if(htmltag.equalsIgnoreCase(needParam)){
-                value = stream->readStringUntil('<');
-                deb_print("[TR064] xmlTakeParam = " + value , DEBUG_VERBOSE);
+                value = stream->readStringUntil('<');                
                 break;
             }       
         }       
