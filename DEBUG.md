@@ -20,12 +20,7 @@ connection.init();
 
 very Usefull to see the actual HTTP Call/Responce handling.
 
-<<<<<<< Updated upstream
-![httpclient logo](\src\HTTP_Client_Debug.png)  
-=======
 ![httpclient logo](HTTP_Client_Debug.png)
-
->>>>>>> Stashed changes
 
 https://github.com/esp8266/Arduino/blob/master/doc/Troubleshooting/debugging.rst
 
