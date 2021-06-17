@@ -77,9 +77,9 @@ class TR064 {
         void init();
         int state();       
         
-        bool action(const String& service, const String& act);
-        bool action(const String& service, const String& act, String params[][2], int nParam);
-        bool action(const String& service, const String& act, String params[][2], int nParam, String (*req)[2], int nReq);        
+        bool action(const String& service, const String& act, const String& url = "");
+        bool action(const String& service, const String& act, String params[][2], int nParam, const String& url = "");
+        bool action(const String& service, const String& act, String params[][2], int nParam, String (*req)[2], int nReq, const String& url = "");
 
         String md5String(const String& s);
         String byte2hex(byte number);
@@ -95,7 +95,7 @@ class TR064 {
         void initServiceURLs();
         void deb_print(const String& message, int level);
         void deb_println(const String& message, int level);
-        bool action_raw(const String& service,const String& act, String params[][2], int nParam);
+        bool action_raw(const String& service,const String& act, String params[][2], int nParam, const String& url = "");
         void takeNonce();
         bool httpRequest(const String& url,  const String& xml, const  String& action, bool retry);
         String generateAuthToken();
