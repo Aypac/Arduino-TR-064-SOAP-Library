@@ -1,3 +1,4 @@
+#include "arduino_secrets.h"
 /**
  * home-indicator.ino
  *  René Vollmer
@@ -31,30 +32,17 @@
 // Put your router settings here
 //-------------------------------------------------------------------------------------
 
-// Wifi network name (SSID)
-const char* wifi_ssid = "WLANSID"; 
+///////please enter your sensitive data in the Secret tab/arduino_secrets_example.h 
+///////Then RENAME to arduino_secrets.h
 
-// Wifi network password
-const char* wifi_password = "XXXXXXXXXXXXXXXXXXXXX";
+char wifi_ssid[] = SECRET_WIFI_SSID;
+char wifi_password[] = SECRET_WIFI_PASSWORD;
 
-// The username if you created an account, "admin" otherwise
-const char* fuser = "homechecker";
+char fuser[] = SECRET_FUSER;
+char fpass[] = SECRET_FPASS;
 
-// The password for the aforementioned account.
-const char* fpass = "this_shouldBEaDecentPassword!";
-
-// IP address of your router. This should be "192.168.179.1" for most FRITZ!Boxes
-const char* IP = "192.168.179.1";
-
-// Port of the API of your router. This should be 49000 for all TR-064 devices.
-const int PORT = 49000;
-
-// Put the settings for the devices to detect here
-//   The number of different people/user you want to be able to detect
-const int numUser = 3;
-
-//   The maximum amount of devices per user
-const int maxDevices = 3;
+char IP[] = SECRET_IP;
+int PORT = 49000;
 
 //-------------------------------------------------------------------------------------
 
