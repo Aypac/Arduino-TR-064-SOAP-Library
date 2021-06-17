@@ -117,15 +117,15 @@ void TR064::initServiceURLs() {
 
     _state = TR064_NO_SERVICES;
     if(httpRequest(_detectPage, "", "", true)){
-            deb_println("[TR064] get the Stream ", DEBUG_INFO);
+            deb_println("[TR064][initServiceURLs] get the Stream ", DEBUG_INFO);
             int i = 0;
             while(1) {
                 if(!http.connected()) {
-                    deb_println("[TR064] xmlTakeParam : http connection lost", DEBUG_INFO);
+                    deb_println("[TR064][initServiceURLs] xmlTakeParam : http connection lost", DEBUG_INFO);
                     break;                      
                 }
                 if(xmlTakeParam(_services[i][0], "sErviceType")){
-                    deb_print("[TR064] "+ String(i) + "\treadServiceName: "+ _services[i][0] , DEBUG_VERBOSE);
+                    deb_print("[TR064][initServiceURLs] "+ String(i) + "\treadServiceName: "+ _services[i][0] , DEBUG_VERBOSE);
                     if(xmlTakeParam(_services[i][1], "controlURL")){
                         deb_println(" @ readServiceUrl: "+ _services[i][1], DEBUG_VERBOSE);
                         i++;
@@ -138,10 +138,10 @@ void TR064::initServiceURLs() {
                     break;
                 }
             }            
-            deb_println("[TR064] message: reading done", DEBUG_INFO);                 
+            deb_println("[TR064][initServiceURLs] message: reading done", DEBUG_INFO);                 
             
     } else {  
-        deb_println("[TR064]<Error> initServiceUrls failed", DEBUG_ERROR);  
+        deb_println("[TR064][initServiceURLs]<Error> initServiceUrls failed", DEBUG_ERROR);  
         return;      
     }
     _state = TR064_SERVICES_LOADED;
@@ -175,10 +175,9 @@ String TR064::generateAuthXML() {
 /**************************************************************************/
 String TR064::generateAuthToken() {
     String token = md5String(_secretH + ":" + _nonce);
-    deb_println("The auth token is '" + token + "'", DEBUG_INFO);
+    deb_println("[TR064][generateAuthToken] The auth token is '" + token + "'", DEBUG_INFO);
     return token;
 }
-
 
 /**************************************************************************/
 /*!
@@ -189,13 +188,15 @@ String TR064::generateAuthToken() {
                 The name of the service you want to adress.
     @param    act
                 The action you want to perform on the service.
+    @param    url
+                The url you want to call.
     @return success state.
 */
 /**************************************************************************/
-bool TR064::action(const String& service, const String& act) {
-    deb_println("[action] simple", DEBUG_VERBOSE);
+bool TR064::action(const String& service, const String& act, const String& url) {
+    deb_println("[TR064][action] simple", DEBUG_VERBOSE);
     String p[][2] = {{}};
-    return action(service, act, p, 0);
+    return action(service, act, p, 0, url);
 }
 
 
@@ -223,12 +224,14 @@ bool TR064::action(const String& service, const String& act) {
               `req[][2] = {{ "resp1", "value1" }, { "resp2", "value2" }}`
     @param    nReq
                 The number of response parameters you passed.
+    @param    url
+                The url you want to call.
     @return success state.
 */
 /**************************************************************************/
-bool TR064::action(const String& service, const String& act, String params[][2], int nParam, String (*req)[2], int nReq) {
-    deb_println("[action] with extraction", DEBUG_VERBOSE);
-    if(action(service, act, params, nParam)){   
+bool TR064::action(const String& service, const String& act, String params[][2], int nParam, String (*req)[2], int nReq, const String& url) {
+    deb_println("[TR064][action] with extraction", DEBUG_VERBOSE);
+    if(action(service, act, params, nParam, url)){
         if (nReq > 0) {
             for (int i=0; i<nReq; ++i) {
                 if (req[i][0] != "") {
@@ -241,6 +244,7 @@ bool TR064::action(const String& service, const String& act, String params[][2],
     return false;
 }
 
+ 
 /**************************************************************************/
 /*!
     @brief  This function will call an action on the service of the device
@@ -256,59 +260,62 @@ bool TR064::action(const String& service, const String& act, String params[][2],
               `params[][2] = {{ "arg1", "value1" }, { "arg2", "value2" }}`.
     @param    nParam
                 The number of input parameters you passed.
+    @param    url
+                The url you want to call.
     @return success state.
 */
 /**************************************************************************/
-bool TR064::action(const String& service, const String& act, String params[][2], int nParam) {
-    deb_println("[action] with parameters", DEBUG_VERBOSE);
-    String xmlR = "";
-    if(state()<TR064_SERVICES_LOADED){
-        deb_println("[HTTP]<error> Services NOT Loaded. ", DEBUG_ERROR);
-        return false;
-    }
+bool TR064::action(const String& service, const String& act, String params[][2], int nParam, const String& url) {
+    deb_println("[TR064][action] with parameters", DEBUG_VERBOSE);
+    
     String status = "unauthenticated";
-    //String xmlR = "";
     int tries = 0; // Keep track on the number of times we tried to request.
     while (status == "unauthenticated" && tries < 3) {
        
         ++tries;
         
         while ((_nonce == "" || _realm == "") && tries <= 3) {
-            deb_println("[action] no nonce/realm found. requesting...", DEBUG_INFO);
+            deb_println("[TR064][action] no nonce/realm found. requesting...", DEBUG_INFO);
             // TODO: Is this request supported by all devices or should we use a different one here?
             String a[][2] = {{"NewAssociatedDeviceIndex", "1"}};
 
             String wlanService = "WLANConfiguration:1", deviceInfo="GetGenericAssociatedDeviceInfo";
-            action_raw(wlanService, deviceInfo, a, 1);
+            action_raw(wlanService, deviceInfo, a, 1, "/upnp/control/wlanconfig1");
             takeNonce();
 
             if (_nonce == "" || _realm == "") {
                 ++tries;
-                deb_println("[action]<error> nonce/realm request not successful!", DEBUG_ERROR);
-                deb_println("[action]<error> Retrying in 5s", DEBUG_ERROR);
+                deb_println("[TR064][action]<error> nonce/realm request not successful!", DEBUG_ERROR);
+                deb_println("[TR064][action]<error> Retrying in 5s", DEBUG_ERROR);
                 delay(5000);
             }
-        }http.end();
+        }//http.end();
         
-        action_raw(service, act, params, nParam);
-        xmlTakeParam(status, "Status");
+        if(action_raw(service, act, params, nParam, url)){
+            xmlTakeParam(status, "Status");
 
-        deb_println("[action] Response status: "+status, DEBUG_INFO);
-        status.toLowerCase();
-        // If we already have a nonce, but the request comes back unauthenticated. 
-        if (status == "unauthenticated" && tries < 3) {
-            deb_println("[action]<error> got an unauthenticated error. Using the new nonce and trying again in 3s.", DEBUG_ERROR);
-            takeNonce();
-            delay(3000);
+            deb_println("[TR064][action] Response status: "+status, DEBUG_INFO);
+            status.toLowerCase();
+            // If we already have a nonce, but the request comes back unauthenticated. 
+            if (status == "unauthenticated" && tries < 3) {
+                deb_println("[TR064][action]<error> got an unauthenticated error. Using the new nonce and trying again in 3s.", DEBUG_ERROR);
+                takeNonce();
+                delay(3000);
+            }
+            
+        }else{
+            http.end();
+            return false;
         }
     }
     
     if (tries >= 3) {
-        deb_println("[action]<error> Giving up the request ", DEBUG_ERROR);
+        deb_println("[TR064][action]<error> Giving up the request ", DEBUG_ERROR);
         return false;
     } 
-    takeNonce();
-    deb_println("[action] Done.", DEBUG_INFO);
+    //takeNonce();
+    deb_println("[TR064][action] Done.", DEBUG_INFO);
+    http.end();
     return true;
 }
 
@@ -326,31 +333,38 @@ bool TR064::action(const String& service, const String& act, String params[][2],
               `params[][2] = {{ "arg1", "value1" }, { "arg2", "value2" }}`.
     @param    nParam
                 The number of input parameters you passed (in `params`).
+    @param    url
+                The url you want to call.
     @return success state.
 */
 /**************************************************************************/
 
-bool TR064::action_raw(const String& service, const String& act, String params[][2], int nParam) {
+bool TR064::action_raw(const String& service, const String& act, String params[][2], int nParam, const String& url) {
     // Generate the XML-envelop
-    String xml = _requestStart + generateAuthXML() + "<s:Body><u:"+act+" xmlns:u=\"" + _servicePrefix + service + "\">";
+    String serviceName = clearOldServiceName(service);
+    String xml = _requestStart + generateAuthXML() + "<s:Body><u:"+act+" xmlns:u=\"" + _servicePrefix + serviceName + "\">";
     // Add request-parameters to XML
     if (nParam > 0) {
         for (int i=0; i<nParam; ++i) {
             if (params[i][0] != "") {
-                deb_println("[action] with parameter, "+params[i][0], DEBUG_VERBOSE);
-                deb_println("[action] with parametervalue, "+params[i][1], DEBUG_VERBOSE);
+                deb_println("[TR064][action_raw] with parameter, "+params[i][0], DEBUG_VERBOSE);
+                deb_println("[TR064][action_raw] with parametervalue, "+params[i][1], DEBUG_VERBOSE);
                 xml += "<"+params[i][0]+">"+params[i][1]+"</"+params[i][0]+">";
             }
         }
     }
     // Close the envelop
     xml += "</u:" + act + "></s:Body></s:Envelope>";
-    String serviceName = clearOldServiceName(service);
+    
     // The SOAPACTION-header is in the format service#action
     String soapaction = _servicePrefix + serviceName+"#"+act;
     
     // Send the http-Request
-    return httpRequest(findServiceURL(_servicePrefix + serviceName), xml, soapaction, true);
+    if(url !=""){
+        return httpRequest(url, xml, soapaction, true);
+    }else{
+        return httpRequest(findServiceURL(_servicePrefix + serviceName), xml, soapaction, true);
+    }
 }
 /**************************************************************************/
 /*!
@@ -362,14 +376,14 @@ bool TR064::action_raw(const String& service, const String& act, String params[]
 void TR064::takeNonce() {
     // Extract the Nonce for the next action/authToken.
     if (xmlTakeParam(_nonce, "Nonce")) {        
-        deb_println("[TR064] Extracted the nonce '" + _nonce + "' from the last request.", DEBUG_INFO);
+        deb_println("[TR064][takeNonce] Extracted the nonce '" + _nonce + "' from the last request.", DEBUG_INFO);
     }
     if (_realm == "" && xmlTakeParam( _realm, "Realm")) {
         // Now we have everything to generate our hashed secret.
         String secr = _user + ":" + _realm + ":" + _pass;
-        deb_println("[TR064] Your secret is is '" + secr + "'", DEBUG_INFO);
+        deb_println("[TR064][takeNonce] Your secret is is '" + secr + "'", DEBUG_INFO);
         _secretH = md5String(secr);
-        deb_println("[TR064] Your hashed secret is '" + _secretH + "'", DEBUG_INFO);
+        deb_println("[TR064][takeNonce] Your hashed secret is '" + _secretH + "'", DEBUG_INFO);
     }
    
 }
@@ -398,7 +412,7 @@ int TR064::state() {
 */
 /**************************************************************************/
 String TR064::clearOldServiceName(const String& service) {
-    deb_println("[TR064] searching for prefix in Servicename: "+service, DEBUG_VERBOSE);
+    deb_println("[TR064][clearOldServiceName] searching for prefix in Servicename: "+service, DEBUG_VERBOSE);
     if(service.startsWith(_servicePrefix)){
         return service.substring(strlen(_servicePrefix));        
     }
@@ -414,17 +428,21 @@ String TR064::clearOldServiceName(const String& service) {
 */
 /**************************************************************************/
 String TR064::findServiceURL(const String& service) {
-    deb_println("[TR064] searching for service: "+service, DEBUG_VERBOSE);
+    if(state()<TR064_SERVICES_LOADED){
+        deb_println("[TR064][findServiceURL]<error> Services NOT Loaded. ", DEBUG_ERROR);
+        return "";
+    }else{
+    
+        deb_println("[TR064][findServiceURL] searching for service: "+service, DEBUG_VERBOSE);
 
-    for (int i=0;i<arr_len(_services);++i) {
-        
-        if (service.equalsIgnoreCase(_services[i][0])) {
-            deb_println("[TR064] found services: "+service+" = "+ _services[i][0]+" , "+ _services[i][1], DEBUG_VERBOSE);
-            return _services[i][1];
+        for (int i=0;i<arr_len(_services);++i) {
+            
+            if (service.equalsIgnoreCase(_services[i][0])) {
+                deb_println("[TR064][findServiceURL] found services: "+service+" = "+ _services[i][0]+" , "+ _services[i][1], DEBUG_VERBOSE);
+                return _services[i][1];
+            }
         }
     }
-    //Service not found error!
-    // TODO: Proper error-handling? See also #12 on github
     return "";
 }
 
@@ -446,13 +464,12 @@ String TR064::findServiceURL(const String& service) {
 */
 /**************************************************************************/
 bool TR064::httpRequest(const String& url, const String& xml, const String& soapaction, bool retry) {
-    deb_println("[TR064] prepare request to URL: http://" + _ip + ":" + _port + url, DEBUG_INFO);
-    
     if(url==""){
-        ;return false;
+        deb_println("[TR064][httpRequest] URL is empty, abort http request.", DEBUG_INFO);
+        return false;
     }
-    
-    http.begin(tr064client, _ip, _port, url,false);
+    deb_println("[TR064][httpRequest] prepare request to URL: http://" + _ip + ":" + _port + url, DEBUG_INFO);
+    http.begin(tr064client, _ip, _port, url);
 
     if (soapaction != "") {
         http.addHeader("CONTENT-TYPE", "text/xml"); //; charset=\"utf-8\"
@@ -461,24 +478,23 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
 
     int httpCode=0;
     if (xml!= "") {
-        deb_println("[TR064] Posting XML:", DEBUG_VERBOSE);
-        deb_println("[TR064] ---------------------------------", DEBUG_VERBOSE);
+        deb_println("[TR064][httpRequest] Posting XML:", DEBUG_VERBOSE);
+        deb_println("[TR064][httpRequest] ---------------------------------", DEBUG_VERBOSE);
         deb_println(xml, DEBUG_VERBOSE);
-        deb_println("[TR064] ---------------------------------\n", DEBUG_VERBOSE);
+        deb_println("[TR064][httpRequest] ---------------------------------\n", DEBUG_VERBOSE);
         
         httpCode = http.POST(xml);
-        deb_println("[TR064] POST... SOAPACTION: '" + soapaction + "'", DEBUG_VERBOSE);
+        deb_println("[TR064][httpRequest] POST... SOAPACTION: '" + soapaction + "'", DEBUG_VERBOSE);
     } else {
         httpCode = http.GET();
-        deb_println("[TR064] GET...", DEBUG_VERBOSE);
+        deb_println("[TR064][httpRequest] GET...", DEBUG_VERBOSE);
     }
 
     // httpCode will be negative on error
-    deb_println("[TR064] request code: " + String(httpCode), DEBUG_INFO);
+    deb_println("[TR064][httpRequest] response code: " + String(httpCode), DEBUG_INFO);
     if (httpCode > 0) {
         // HTTP header has been send and Server response header has been handled
         
-        // file found at server
         if (httpCode == HTTP_CODE_OK) {
            return true;
         }
@@ -489,15 +505,15 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
         
         String httperr = http.errorToString(httpCode).c_str();
 
-        deb_println("[TR064]<Error> Failed, message: '" + httperr + "'", DEBUG_ERROR);
+        deb_println("[TR064][httpRequest]<Error> Failed, message: '" + httperr + "'", DEBUG_ERROR);
 
         if (retry) {
             _nonce = "";
-            deb_println("[TR064] <Error> Trying again in 1s.", DEBUG_ERROR);
+            deb_println("[TR064][httpRequest] <Error> Trying again in 1s.", DEBUG_ERROR);
             delay(1000);
             return httpRequest(url, xml, soapaction, false);
         } else {
-            deb_println("[TR064] <Error> Giving up.", DEBUG_ERROR);
+            deb_println("[TR064][httpRequest] <Error> Giving up.", DEBUG_ERROR);
             return false;
         }
     }    
@@ -557,7 +573,7 @@ bool TR064::xmlTakeParam(String& value, const String& needParam) {
     WiFiClient * stream = &tr064client;    
     while(1) {
         if(!http.connected()) {
-            deb_println("[TR064] xmlTakeParam : http connection lost", DEBUG_INFO);
+            deb_println("[TR064][xmlTakeParam] http connection lost", DEBUG_INFO);
             return false;                      
         }
        
