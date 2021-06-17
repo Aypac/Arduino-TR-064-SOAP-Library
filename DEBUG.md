@@ -11,10 +11,9 @@ Different debug level
 `DEBUG_VERBOSE`      Print all messages  
 
 To change the Level add following line to your code before the init call.
-```
-connection.debug_level = DEBUG_VERBOSE;
+
+connection.debug_level = connection.DEBUG_VERBOSE;
 connection.init();
-```
 
 ## HTTP_Client Debug
 
@@ -29,4 +28,3 @@ https://github.com/esp8266/Arduino/blob/master/doc/Troubleshooting/debugging.rst
 ### with Fritzbox generating the Trace
 
 https://www.it-techblog.de/fritzbox-und-wireshark-wlan-router-von-avm-monitoren-teil-1/11/2017/
-

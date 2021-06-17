@@ -39,17 +39,9 @@
 
 #define arr_len( x )  ( sizeof( x ) / sizeof( *x ) ) ///< Gives the length of an array
 
-// MQTT_SOCKET_TIMEOUT: socket timeout interval in Seconds
-#ifndef TR064_SOCKET_TIMEOUT
-#define TR064_SOCKET_TIMEOUT 1500
-#endif
-
-// Different debug level
-// #define DEBUG_NONE 0        ///< Print no debug messages whatsoever
-// #define DEBUG_ERROR 1        ///< Only print error messages
-// #define DEBUG_WARNING 2        ///< Only print error and warning messages
-// #define DEBUG_INFO 3        ///< Print error, warning and info messages
-// #define DEBUG_VERBOSE 4        ///< Print all messages
+// Possible values for client.state()
+#define TR064_NO_SERVICES           -1 ///< No Service actions will not execute
+#define TR064_SERVICES_LOADED       0 ///< Service loaded
 
 // Possible values for client.state()
 #define TR064_NO_SERVICES           -1
@@ -69,15 +61,22 @@
 
 class TR064 {
     public:
-        enum LoggingLevels {DEBUG_NONE, DEBUG_ERROR, DEBUG_WARNING, DEBUG_INFO, DEBUG_VERBOSE};
+        /*!  Different debug level
+         *   DEBUG_NONE         ///< Print no debug messages whatsoever
+         *   DEBUG_ERROR        ///< Only print error messages
+         *   DEBUG_WARNING      ///< Only print error and warning messages
+         *   DEBUG_INFO         ///< Print error, warning and info messages
+         *   DEBUG_VERBOSE      ///< Print all messages
+         */
+        enum LoggingLevels {DEBUG_NONE, DEBUG_ERROR, DEBUG_WARNING, DEBUG_INFO, DEBUG_VERBOSE}; 
         
         TR064();
         TR064(uint16_t port, const String& ip, const String& user, const String& pass);
         ~TR064() {}
         TR064& setServer(uint16_t port, const String& ip, const String& user, const String& pass);
         void init();
-        void initNonce();
-
+        int state();       
+        
         bool action(const String& service, const String& act);
         bool action(const String& service, const String& act, String params[][2], int nParam);
         bool action(const String& service, const String& act, String params[][2], int nParam, String (*req)[2], int nReq);        
@@ -86,9 +85,7 @@ class TR064 {
         String byte2hex(byte number);
         int state();
         int debug_level; ///< Available levels are `DEBUG_NONE`, `DEBUG_ERROR`, `DEBUG_WARNING`, `DEBUG_INFO`, and `DEBUG_VERBOSE`.
-        boolean connected();
-        void disconnect(bool disconnect_package = false);
-        int state();        
+         
     private:
         WiFiClient tr064client;
         HTTPClient http;
@@ -100,14 +97,13 @@ class TR064 {
         void deb_println(const String& message, int level);
         bool action_raw(const String& service,const String& act, String params[][2], int nParam);
         void takeNonce();
-        bool httpRequest(const String& url, const  String& xml, const  String& action);
         bool httpRequest(const String& url,  const String& xml, const  String& action, bool retry);
         String generateAuthToken();
         String generateAuthXML();
         String findServiceURL(const String& service);
         String clearOldServiceName(const String& service);
         bool xmlTakeParam(String& value, const String& needParam);
-        void clear();
+        
         int _state;
         String _ip;
         uint16_t _port;

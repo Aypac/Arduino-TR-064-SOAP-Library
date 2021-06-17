@@ -56,6 +56,36 @@ TR064::TR064(uint16_t port, const String& ip, const String& user, const String& 
     this->_state = TR064_NO_SERVICES;
 }
 
+
+/**************************************************************************/
+/*!
+    @brief  Set the Server Parameter, needed because of empty Constructor
+    @return Refernce to this Class
+
+    @param    port
+                Port number to be used to establish the TR-064 connection.
+    @param    ip
+                IP address to be used to establish the TR-064 connection.
+    @param    user
+                User name to be used to establish the TR-064 connection.
+    @param    pass
+                Password to be used to establish the TR-064 connection.
+*/
+/**************************************************************************/
+TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, const String& pass){
+    this->_ip = ip;
+    this->_port = port;
+    this->_user = user;
+    this->_pass = pass;
+    return *this;
+}
+
+/**************************************************************************/
+/*! 
+    @brief  Library/Class to easily make TR-064 calls. Do not construct this
+            unless you have a working connection to the device!   
+*/
+/**************************************************************************/
 TR064::TR064() {
    debug_level = DEBUG_NONE;
    this->_state = TR064_NO_SERVICES;
@@ -87,12 +117,13 @@ void TR064::initServiceURLs() {
 
     _state = TR064_NO_SERVICES;
     if(httpRequest(_detectPage, "", "", true)){
-    // httpCode will be negative on error
             deb_println("[TR064] get the Stream ", DEBUG_INFO);
-            //WiFiClient * stream = &tr064client;
             int i = 0;
             while(1) {
-                
+                if(!http.connected()) {
+                    deb_println("[TR064] xmlTakeParam : http connection lost", DEBUG_INFO);
+                    break;                      
+                }
                 if(xmlTakeParam(_services[i][0], "sErviceType")){
                     deb_print("[TR064] "+ String(i) + "\treadServiceName: "+ _services[i][0] , DEBUG_VERBOSE);
                     if(xmlTakeParam(_services[i][1], "controlURL")){
@@ -158,7 +189,7 @@ String TR064::generateAuthToken() {
                 The name of the service you want to adress.
     @param    act
                 The action you want to perform on the service.
-    @return The response from the device.
+    @return success state.
 */
 /**************************************************************************/
 bool TR064::action(const String& service, const String& act) {
@@ -192,21 +223,22 @@ bool TR064::action(const String& service, const String& act) {
               `req[][2] = {{ "resp1", "value1" }, { "resp2", "value2" }}`
     @param    nReq
                 The number of response parameters you passed.
-    @return The response from the device.
+    @return success state.
 */
 /**************************************************************************/
 bool TR064::action(const String& service, const String& act, String params[][2], int nParam, String (*req)[2], int nReq) {
     deb_println("[action] with extraction", DEBUG_VERBOSE);
-    bool r = action(service, act, params, nParam);
-   
-    if (nReq > 0) {
-        for (int i=0; i<nReq; ++i) {
-            if (req[i][0] != "") {
-                xmlTakeParam(req[i][1], req[i][0]);
+    if(action(service, act, params, nParam)){   
+        if (nReq > 0) {
+            for (int i=0; i<nReq; ++i) {
+                if (req[i][0] != "") {
+                    xmlTakeParam(req[i][1], req[i][0]);
+                }
             }
         }
+        return true;
     }
-    return r;
+    return false;
 }
 
 /**************************************************************************/
@@ -224,7 +256,7 @@ bool TR064::action(const String& service, const String& act, String params[][2],
               `params[][2] = {{ "arg1", "value1" }, { "arg2", "value2" }}`.
     @param    nParam
                 The number of input parameters you passed.
-    @return The response from the device.
+    @return success state.
 */
 /**************************************************************************/
 bool TR064::action(const String& service, const String& act, String params[][2], int nParam) {
@@ -294,7 +326,7 @@ bool TR064::action(const String& service, const String& act, String params[][2],
               `params[][2] = {{ "arg1", "value1" }, { "arg2", "value2" }}`.
     @param    nParam
                 The number of input parameters you passed (in `params`).
-    @return The response from the device.
+    @return success state.
 */
 /**************************************************************************/
 
@@ -340,6 +372,16 @@ void TR064::takeNonce() {
         deb_println("[TR064] Your hashed secret is '" + _secretH + "'", DEBUG_INFO);
     }
    
+}
+
+/**************************************************************************/
+/*!
+    @brief  Returns the State of Service Load
+    @return The State. TR064_NO_SERVICES / TR064_SERVICES_LOADED
+*/
+/**************************************************************************/
+int TR064::state() {    
+    return this->_state;
 }
 
 // ----------------------------
@@ -398,30 +440,11 @@ String TR064::findServiceURL(const String& service) {
                 The requested action
     @param    xml
                 The request XML
-    @return The response from the device.
-*/
-/**************************************************************************/
-String TR064::httpRequest(const String& url, const String& xml, const String& soapaction) {
-    return httpRequest(url, xml, soapaction, true);
-}
-
-/**************************************************************************/
-/*!
-    @brief  Transmits a http-Request to the given url (relative to _ip on _port)
-            - if specified POSTs xml and adds soapaction as header field.
-            - otherwise just GETs the url
-    @param    url
-                The service URL
-    @param    soapaction
-                The requested action
-    @param    xml
-                The request XML
     @param    retry
                 Should the request be repeated with a new nonce, if it fails?
-    @return The response from the device.
+    @return success state.
 */
 /**************************************************************************/
-
 bool TR064::httpRequest(const String& url, const String& xml, const String& soapaction, bool retry) {
     deb_println("[TR064] prepare request to URL: http://" + _ip + ":" + _port + url, DEBUG_INFO);
     
@@ -527,25 +550,26 @@ String TR064::byte2hex(byte number){
                 The XML from which to extract.
     @param    needParam
                 The name of the XML tag, you want the content of.
-    @return The content of the requested XML tag (as `String`).
+    @return success state.
 */
 /**************************************************************************/
-
 bool TR064::xmlTakeParam(String& value, const String& needParam) {
-    
+    WiFiClient * stream = &tr064client;    
     while(1) {
         if(!http.connected()) {
-            deb_println("[TR064] http: connection lost", DEBUG_INFO);
+            deb_println("[TR064] xmlTakeParam : http connection lost", DEBUG_INFO);
             return false;                      
         }
-        WiFiClient * stream = &tr064client;
+       
         if(stream->find("<")){
             const String htmltag = stream->readStringUntil('>');
             if(htmltag.equalsIgnoreCase(needParam)){
                 value = stream->readStringUntil('<');                
                 break;
             }       
-        } 
+        } else{
+            return false;    
+        }
     }
     return true;
 }
@@ -586,27 +610,4 @@ void TR064::deb_println(const String& message, int level) {
             //Serial.flush();
         }
     }
-}
-
-/**************************************************************************/
-/*!
-    @brief  Returns the State of Service Load
-    @return The State. TR064_NO_SERVICES / TR064_SERVICES_LOADED
-*/
-/**************************************************************************/
-int TR064::state() {    
-    return this->_state;
-}
-
-TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, const String& pass){
-    this->_ip = ip;
-    this->_port = port;
-    this->_user = user;
-    this->_pass = pass;
-    this->init();
-    return *this;
-}
-
-int TR064::state() {    
-    return this->_state;
 }
