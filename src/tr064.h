@@ -110,9 +110,10 @@ class TR064 {
         const char* const _servicePrefix = "urn:dslforum-org:service:";
         unsigned long lastOutActivity;
         unsigned long lastInActivity;
-        /* TODO: We should give access to this data for users to inspect the
+        /* 
+		* TODO: We should give access to this data for users to inspect the
         * possibilities of their device(s) - see #9 on Github.
-        TODO: Remove 100 services limits here
+        * TODO: Remove 100 services limits here
         */
         String _services[100][2];
 };

@@ -11,7 +11,7 @@
  * A descriptor of the protocol can be found <a href="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf" target="_blank">here</a>.
  * 
  * Initial version: November 2016<br />
- * Last updated: Feb 2020
+ * Last updated: June 2021
  *
  * @section dependencies Dependencies
  *
@@ -58,29 +58,6 @@ TR064::TR064(uint16_t port, const String& ip, const String& user, const String& 
 
 
 /**************************************************************************/
-/*!
-    @brief  Set the Server Parameter, needed because of empty Constructor
-    @return Refernce to this Class
-
-    @param    port
-                Port number to be used to establish the TR-064 connection.
-    @param    ip
-                IP address to be used to establish the TR-064 connection.
-    @param    user
-                User name to be used to establish the TR-064 connection.
-    @param    pass
-                Password to be used to establish the TR-064 connection.
-*/
-/**************************************************************************/
-TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, const String& pass){
-    this->_ip = ip;
-    this->_port = port;
-    this->_user = user;
-    this->_pass = pass;
-    return *this;
-}
-
-/**************************************************************************/
 /*! 
     @brief  Library/Class to easily make TR-064 calls. Do not construct this
             unless you have a working connection to the device!   
@@ -104,11 +81,34 @@ void TR064::init() {
     initServiceURLs();
 }
 
+
+/**************************************************************************/
+/*!
+    @brief  Set the server parameters, needed if the empty constructor was used.
+    @return Reference to this object
+
+    @param    port
+                Port number to be used to establish the TR-064 connection.
+    @param    ip
+                IP address to be used to establish the TR-064 connection.
+    @param    user
+                User name to be used to establish the TR-064 connection.
+    @param    pass
+                Password to be used to establish the TR-064 connection.
+*/
+/**************************************************************************/
+TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, const String& pass){
+    this->_ip = ip;
+    this->_port = port;
+    this->_user = user;
+    this->_pass = pass;
+    return *this;
+}
+
 /**************************************************************************/
 /*!
     @brief  Fetches a list of all services and the associated URLs for internal use.
 */
-/**************************************************************************/
 /**************************************************************************/
 void TR064::initServiceURLs() {
     /* TODO: We should give access to this data for users to inspect the
@@ -116,34 +116,34 @@ void TR064::initServiceURLs() {
      */
 
     _state = TR064_NO_SERVICES;
-    if(httpRequest(_detectPage, "", "", true)){
-            deb_println("[TR064][initServiceURLs] get the Stream ", DEBUG_INFO);
+    if (httpRequest(_detectPage, "", "", true)) {
+            deb_println("[TR064][initServiceURLs] Get the Stream ", DEBUG_INFO);
             int i = 0;
-            while(1) {
-                if(!http.connected()) {
+            while (1) {
+                if (!http.connected()) {
                     deb_println("[TR064][initServiceURLs] xmlTakeParam : http connection lost", DEBUG_INFO);
                     break;                      
                 }
-                if(xmlTakeParam(_services[i][0], "sErviceType")){
+                if (xmlTakeParam(_services[i][0], "sErviceType")) {
                     deb_print("[TR064][initServiceURLs] "+ String(i) + "\treadServiceName: "+ _services[i][0] , DEBUG_VERBOSE);
-                    if(xmlTakeParam(_services[i][1], "controlURL")){
+                    if (xmlTakeParam(_services[i][1], "controlURL")) {
                         deb_println(" @ readServiceUrl: "+ _services[i][1], DEBUG_VERBOSE);
-                        i++;
-                    }else{
-                        deb_println(" @ readServiceUrl: NOTFOUND", DEBUG_VERBOSE);
+                        ++i;
+                    } else {
+                        deb_println(" @ readServiceUrl: NOT FOUND", DEBUG_VERBOSE);
                         break;
                     }
-                }else{
-                    deb_println(" @ sErviceType: NOTFOUND", DEBUG_VERBOSE);
+                } else {
+                    deb_println("No more serviceType found.", DEBUG_VERBOSE);
                     break;
                 }
-            }            
-            deb_println("[TR064][initServiceURLs] message: reading done", DEBUG_INFO);                 
+            }
             
     } else {  
-        deb_println("[TR064][initServiceURLs]<Error> initServiceUrls failed", DEBUG_ERROR);  
+        deb_println("[TR064][initServiceURLs]<Error> initServiceUrls failed", DEBUG_ERROR);
         return;      
     }
+	deb_println("[TR064][initServiceURLs]<Message> Reading done. Found "+String(i)+" services" , DEBUG_INFO);
     _state = TR064_SERVICES_LOADED;
     http.end();
 }
@@ -275,7 +275,7 @@ bool TR064::action(const String& service, const String& act, String params[][2],
         ++tries;
         
         while ((_nonce == "" || _realm == "") && tries <= 3) {
-            deb_println("[TR064][action] no nonce/realm found. requesting...", DEBUG_INFO);
+            deb_println("[TR064][action] No nonce/realm found. Requesting...", DEBUG_INFO);
             // TODO: Is this request supported by all devices or should we use a different one here?
             String a[][2] = {{"NewAssociatedDeviceIndex", "1"}};
 
@@ -285,25 +285,25 @@ bool TR064::action(const String& service, const String& act, String params[][2],
 
             if (_nonce == "" || _realm == "") {
                 ++tries;
-                deb_println("[TR064][action]<error> nonce/realm request not successful!", DEBUG_ERROR);
-                deb_println("[TR064][action]<error> Retrying in 5s", DEBUG_ERROR);
+                deb_println("[TR064][action]<Error> Nonce/realm request not successful!", DEBUG_ERROR);
+                deb_println("[TR064][action]<Error> Retrying in 5s", DEBUG_ERROR);
                 delay(5000);
             }
         }//http.end();
         
-        if(action_raw(service, act, params, nParam, url)){
+        if (action_raw(service, act, params, nParam, url)) {
             xmlTakeParam(status, "Status");
 
             deb_println("[TR064][action] Response status: "+status, DEBUG_INFO);
             status.toLowerCase();
             // If we already have a nonce, but the request comes back unauthenticated. 
             if (status == "unauthenticated" && tries < 3) {
-                deb_println("[TR064][action]<error> got an unauthenticated error. Using the new nonce and trying again in 3s.", DEBUG_ERROR);
+                deb_println("[TR064][action]<Error> Got an 'unauthenticated'-error. Using the new nonce and trying again in 3s.", DEBUG_ERROR);
                 takeNonce();
                 delay(3000);
             }
             
-        }else{
+        } else {
             http.end();
             return false;
         }
@@ -341,7 +341,7 @@ bool TR064::action(const String& service, const String& act, String params[][2],
 
 bool TR064::action_raw(const String& service, const String& act, String params[][2], int nParam, const String& url) {
     // Generate the XML-envelop
-    String serviceName = clearOldServiceName(service);
+    String serviceName = cleanOldServiceName(service);
     String xml = _requestStart + generateAuthXML() + "<s:Body><u:"+act+" xmlns:u=\"" + _servicePrefix + serviceName + "\">";
     // Add request-parameters to XML
     if (nParam > 0) {
@@ -405,14 +405,14 @@ int TR064::state() {
 
 /**************************************************************************/
 /*!
-    @brief  Helper function, which deletes the prefix befor the servicename.
+    @brief  Helper function, which deletes the prefix before the servicename.
     @param    service
                 The name of the service you want to adress.
     @return String servicename without prefix
 */
 /**************************************************************************/
-String TR064::clearOldServiceName(const String& service) {
-    deb_println("[TR064][clearOldServiceName] searching for prefix in Servicename: "+service, DEBUG_VERBOSE);
+String TR064::cleanOldServiceName(const String& service) {
+    deb_println("[TR064][cleanOldServiceName] searching for prefix in servicename: "+service, DEBUG_VERBOSE);
     if(service.startsWith(_servicePrefix)){
         return service.substring(strlen(_servicePrefix));        
     }
@@ -428,11 +428,10 @@ String TR064::clearOldServiceName(const String& service) {
 */
 /**************************************************************************/
 String TR064::findServiceURL(const String& service) {
-    if(state()<TR064_SERVICES_LOADED){
-        deb_println("[TR064][findServiceURL]<error> Services NOT Loaded. ", DEBUG_ERROR);
+    if (state() < TR064_SERVICES_LOADED) {
+        deb_println("[TR064][findServiceURL]<Error> Services were NOT loaded. Load to use this function.", DEBUG_ERROR);
         return "";
-    }else{
-    
+    } else {
         deb_println("[TR064][findServiceURL] searching for service: "+service, DEBUG_VERBOSE);
 
         for (int i=0;i<arr_len(_services);++i) {
@@ -443,6 +442,7 @@ String TR064::findServiceURL(const String& service) {
             }
         }
     }
+	deb_println("[TR064][findServiceURL]<Error> The requested service could not be found!", DEBUG_ERROR);
     return "";
 }
 
@@ -464,7 +464,7 @@ String TR064::findServiceURL(const String& service) {
 */
 /**************************************************************************/
 bool TR064::httpRequest(const String& url, const String& xml, const String& soapaction, bool retry) {
-    if(url==""){
+    if (url=="") {
         deb_println("[TR064][httpRequest] URL is empty, abort http request.", DEBUG_INFO);
         return false;
     }
@@ -478,7 +478,7 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
 
     int httpCode=0;
     if (xml!= "") {
-        deb_println("[TR064][httpRequest] Posting XML:", DEBUG_VERBOSE);
+        deb_println("[TR064][httpRequest] Posting XML:", DEBUG_INFO);
         deb_println("[TR064][httpRequest] ---------------------------------", DEBUG_VERBOSE);
         deb_println(xml, DEBUG_VERBOSE);
         deb_println("[TR064][httpRequest] ---------------------------------\n", DEBUG_VERBOSE);
@@ -491,7 +491,7 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
     }
 
     // httpCode will be negative on error
-    deb_println("[TR064][httpRequest] response code: " + String(httpCode), DEBUG_INFO);
+    deb_println("[TR064][httpRequest] Response code: " + String(httpCode), DEBUG_INFO);
     if (httpCode > 0) {
         // HTTP header has been send and Server response header has been handled
         
