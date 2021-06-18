@@ -264,13 +264,8 @@ float getPwrAIN(const char *FbApiAIN) {
  */
 void ensureWIFIConnection() {
   if ((WiFiMulti.run() != WL_CONNECTED)) {
-    WiFiMulti.setAutoConnect(true);
-    WiFiMulti.setAutoReconnect(true);
-    WiFiMulti.softAPdisconnect(true);
-
     WiFiMulti.addAP(wifi_ssid, wifi_password);
-    
-    WiFiMulti.persistent(true);
+    //WiFiMulti.run();
     while ((WiFiMulti.run() != WL_CONNECTED)) {
       delay(100);
     }

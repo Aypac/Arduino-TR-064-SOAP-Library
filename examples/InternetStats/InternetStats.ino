@@ -69,39 +69,39 @@ TR064 connection(PORT, IP, fuser, fpass);
 //###########################################################################################
 
 void setup() {
-	// Start the serial connection
-	// Not required for production, but helpful for development.
-	// You might also want to change the baud-rate.
-	Serial.begin(115200);
+  // Start the serial connection
+  // Not required for production, but helpful for development.
+  // You might also want to change the baud-rate.
+  Serial.begin(115200);
 
-	// Clear some space in the serial monitor.
-	if(Serial) {
-		Serial.println();
-		Serial.println();
-		Serial.println();
-	}
-	
-	// Wait a few secs for warm-up (dunno why, was in the default code for http connections).
-	delay(5000);
-
-	// Connect to wifi
-	ensureWIFIConnection();
+  // Clear some space in the serial monitor.
+  if(Serial) {
+    Serial.println();
+    Serial.println();
+    Serial.println();
+  }
   
-	// Set debug level. Available levels are:
-	//  DEBUG_NONE         ///< Print no debug messages whatsoever (production)
-	//  DEBUG_ERROR        ///< Only print error messages
-	//  DEBUG_WARNING      ///< Only print error and warning messages
-	//  DEBUG_INFO         ///< Print error, warning and info messages
-	//  DEBUG_VERBOSE      ///< Print all messages
+  // Wait a few secs for warm-up (dunno why, was in the default code for http connections).
+  delay(5000);
+
+  // Connect to wifi
+  ensureWIFIConnection();
+  
+  // Set debug level. Available levels are:
+  //  DEBUG_NONE         ///< Print no debug messages whatsoever (production)
+  //  DEBUG_ERROR        ///< Only print error messages
+  //  DEBUG_WARNING      ///< Only print error and warning messages
+  //  DEBUG_INFO         ///< Print error, warning and info messages
+  //  DEBUG_VERBOSE      ///< Print all messages
     connection.debug_level = connection.DEBUG_WARNING;
-	if(Serial) Serial.setDebugOutput(true);
-	
-	// The following line retrieves a list of all available services on the router.
-	// It is not required for operation, so it can be safely commented and save
-	//   ressources on the microcontroller. However, it can be helpful for debugging
-	//     and development to keep it activated.
-	if(Serial) Serial.printf("Initialize TR-064 connection\n\n");
-	connection.init();
+  if(Serial) Serial.setDebugOutput(true);
+  
+  // The following line retrieves a list of all available services on the router.
+  // It is not required for operation, so it can be safely commented and save
+  //   ressources on the microcontroller. However, it can be helpful for debugging
+  //     and development to keep it activated.
+  if(Serial) Serial.printf("Initialize TR-064 connection\n\n");
+  connection.init();
 }
 
 void loop() {
@@ -119,16 +119,11 @@ void loop() {
  * Makes sure there is a WIFI connection and waits until it is (re-)established.
  */
 void ensureWIFIConnection() {
-	if ((WiFiMulti.run() != WL_CONNECTED)) {
-		WiFiMulti.setAutoConnect(true);
-		WiFiMulti.setAutoReconnect(true);
-		WiFiMulti.softAPdisconnect(true);
-
-		WiFiMulti.addAP(wifi_ssid, wifi_password);
-		
-		WiFiMulti.persistent(true);
-		while ((WiFiMulti.run() != WL_CONNECTED)) {
-			delay(100);
-		}
-	}
+  if ((WiFiMulti.run() != WL_CONNECTED)) {
+    WiFiMulti.addAP(wifi_ssid, wifi_password);
+    //WiFiMulti.run();
+    while ((WiFiMulti.run() != WL_CONNECTED)) {
+      delay(100);
+    }
+  }
 }
