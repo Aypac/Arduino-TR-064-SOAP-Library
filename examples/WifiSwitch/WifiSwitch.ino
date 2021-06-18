@@ -52,11 +52,11 @@ const int FbApiPORT = 49000;
 // Hardware settings
 //-------------------------------------------------------------------------------------
 
-// Pin for the push button
-const byte push_button = D3;
+// Pin for the push button, e.g. D3
+const byte push_button = 0;
 
-// Pin for the indicator LED
-const byte led = D5;
+// Pin for the indicator LED, e.g. D5
+const byte led = 1;
 
 //-------------------------------------------------------------------------------------
 // Initializations. No need to change these.
