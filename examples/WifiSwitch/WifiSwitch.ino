@@ -31,22 +31,22 @@
 //-------------------------------------------------------------------------------------
 
 // Wifi network name (SSID)
-const char *wifi_ssid = "WLANSID"; 
+const char *WIFI_SSID = "WLANSID"; 
 
 // Wifi network password
-const char *wifi_password = "XXXXXXXXXXXXXXXXXXXXX";
+const char *WIFI_PW = "XXXXXXXXXXXXXXXXXXXXX";
 
 // The username if you created an account, "admin" otherwise
-const char* FbApiUSER = "homechecker";
+const char* TR_API_USER = "homechecker";
 
 // The password for the aforementioned account.
-const char* FbApiPW = "this_shouldBEaDecentPassword!";
+const char* TR_API_PW = "this_shouldBEaDecentPassword!";
 
 // IP address of your router. This should be "192.168.179.1" for most FRITZ!Boxes
-const char* FbApiIP = "192.168.179.1";
+const char* TR_API_IP = "192.168.179.1";
 
 // Port of the API of your router. This should be 49000 for all TR-064 devices.
-const int FbApiPORT = 49000;
+const int TR_API_PORT = 49000;
 
 //-------------------------------------------------------------------------------------
 // Hardware settings
@@ -62,7 +62,7 @@ const byte led = 1;
 // Initializations. No need to change these.
 //-------------------------------------------------------------------------------------
 // TR-064 connection
-TR064 connection(PORT, IP, fuser, fpass);
+TR064 connection(TR_API_PORT, TR_API_IP, TR_API_USER, TR_API_PW);
 bool flag, switch_state, state;
 
 // -------------------------------------------------------------------------------------
@@ -163,7 +163,7 @@ void switchGuestWifi(bool status) {
  */
 void ensureWIFIConnection() {
   if ((WiFiMulti.run() != WL_CONNECTED)) {
-  	WiFiMulti.addAP(wifi_ssid, wifi_password);
+  	WiFiMulti.addAP(WIFI_SSID, WIFI_PW);
     //WiFiMulti.run();
   	while ((WiFiMulti.run() != WL_CONNECTED)) {
       delay(100);
