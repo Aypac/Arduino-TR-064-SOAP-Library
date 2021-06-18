@@ -1,5 +1,5 @@
 # Arduino-TR-064-SOAP-Library [![Build Status](https://travis-ci.com/Aypac/Arduino-TR-064-SOAP-Library.svg?branch=master)](https://travis-ci.com/Aypac/Arduino-TR-064-SOAP-Library)
-Arduino library to facilitate the use of the TR-064 protocol ([definition](https://www.broadband-forum.org/technical/download/TR-064.pdf) and [description](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf)), most commonly used by Fritz!Box.
+Arduino library to facilitate the use of the TR-064 protocol ([my "simple" explanation](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-does-the-TR-064-protocol-work%3F), the [definition](https://www.broadband-forum.org/technical/download/TR-064.pdf) and an official [description](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf)), most commonly used by Fritz!Box.
 
 This library has been developed on an ESP8266 and tested on an ESP32.
 
@@ -8,7 +8,7 @@ To get started, I recommend to check out the [examples folder](https://github.co
 If you still have question please don't hesistate to [open an issue here on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new). If you made something cool with this library please provide it as an example. Please create a pull request (or, if you don't know how, [an issue](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new)) to do that.
 
 ## Installation and usage
-Simply go to `Tools→Manage Libraries...` in the Arduino IDE and search for `TR-064`. Press install. The examples can then also be found in the IDE under `Examples→TR-064 SOAP Library`.
+Simply go to `Tools → Manage Libraries...` in the Arduino IDE and search for `TR-064`. Press install. The examples can then also be found in the IDE under `Examples → TR-064 SOAP Library`.
 
 Don't forget that you also need to [add the board you are using to the IDE](https://learn.adafruit.com/add-boards-arduino-v164/setup); 
 <details><summary>Example board URLs</summary>
@@ -31,6 +31,7 @@ If you know more/have tested a device not on the list, please let me know!
 				<li> Fritz!Box 7490 (tested by Dirk Kaben)</li>
 				<li> Fritz!Box 7580</li>
 				<li> Fritz!Box 7590</li>
+				<li> FRITZ!Box 6590 Cable (tested by <a href='https://github.com/jipp'>Wolfgang (jipp)</a>)</li>
 				<li> Fritz!Box 5490 (<a href='https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/21'>not finally confirmed</a>, tested by <a href='https://github.com/Paul760'>Paul760</a>)</li>
 				<li> FRITZ!DECT 200 (tested by Oliver-André Urban)</li>
 				<li> FRITZ!DECT 210 (test by Thorsten Godau)</li>
@@ -60,21 +61,20 @@ Some of the old issues are:
 ### Library
 
 * Add yield()'s (where sensible)
-* figure out the occasional crashes (might be fixed, but please report if still encountered)
-* Make code more efficient
 * Do some (better) error-handeling
   * Return proper errors
-* Add some more comments
-* Create a sophisticated debug/verbose mode (and silence the non-debug mode!)
+* Reduce occasional crashes (should be fixed, but please report if still encountered)
+* Should some of the calls of the examples be included into the library?
 
 ### Examples
 
 * Add yield()'s (where sensible)
+* Try to find a way to externalize the settings (WIFI etc)
 * Add a few more nice examples
   * turning on/off (guest) wifi
-  * read out and display connection speed
+  * read out connection speed
   * alternate WPS button
-  * Emergency dial-up to relatives or emergency services
+  * emergency dial-up to relatives or emergency services
   * recognize when devices (like washing machines) are done (along the lines of [this](https://github.com/dl9sec/ArduinoSIP/tree/master/examples/LaundryNotifier)
   * Start devices through e.g. telegram messages (e.g. coffee machine, washing machine, ...)
 * WhoIsHomeIndicator
@@ -83,10 +83,11 @@ Some of the old issues are:
 * Extend doorbell example to also send telegram messages :)
 
 <hr />
-<center>
-	<table>
+
+<p align="justify" style="text-align:justify;">
+	<table style="text-align:center;">
 		<tr><td>◽</td><td>◾</td><td>◽</td></tr>
 		<tr><td>◾</td><td>◽</td><td>◽</td></tr>
 		<tr><td>◾</td><td>◾</td><td>◾</td></tr>
 	</table>
-</center>
+</p>
