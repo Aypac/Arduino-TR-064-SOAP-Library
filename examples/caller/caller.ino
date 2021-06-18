@@ -90,23 +90,8 @@ void setup() {
 	// Define button port as input
 	pinMode(BUTTON, INPUT);
 	
-	// **************************************************
 	// Wait a few secs for warm-up (dunno why, was in the default code for http connections).
-	// You might be able to remove this block
-	for(uint8_t t = 4; t > 0; t--) {
-	if(Serial) Serial.printf("[SETUP] WAIT %d...\n", t);
-		for (int i=0;i<numUser;++i) {
-			digitalWrite(userPins[i], HIGH);
-		}
-		delay(300);
-		for (int i=0;i<numUser;++i) {
-			digitalWrite(userPins[i], LOW);
-		}
-		delay(700);
-		if(Serial) Serial.flush();
-	}
-	// **************************************************
-	
+	delay(5000);
 
 	// Connect to wifi
 	ensureWIFIConnection();
@@ -129,7 +114,6 @@ void setup() {
 }
 
 void loop() {
-	int button_state = digitalRead(BUTTON);
 	if (digitalRead(BUTTON) == LOW) {
 		if (Serial) {
 			Serial.println();
