@@ -82,7 +82,7 @@ class TR064 {
         WiFiClient tr064client;
         HTTPClient http;
         
-        //TODO: More consistent naming.
+        //TODO: More consistent naming
         
         void initServiceURLs();
         void deb_print(const String& message, int level);
@@ -93,7 +93,7 @@ class TR064 {
         String generateAuthToken();
         String generateAuthXML();
         String findServiceURL(const String& service);
-        String clearOldServiceName(const String& service);
+        String cleanOldServiceName(const String& service);
         bool xmlTakeParam(String& value, const String& needParam);
         
         int _state;
@@ -101,8 +101,8 @@ class TR064 {
         uint16_t _port;
         String _user;
         String _pass;
-        String _realm; //To be requested from the router
-        String _secretH; //to be generated
+        String _realm; // To be requested from the router
+        String _secretH; // To be generated
         String _nonce = "";
 
         const char* const _requestStart = "<?xml version=\"1.0\"?><s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">";
