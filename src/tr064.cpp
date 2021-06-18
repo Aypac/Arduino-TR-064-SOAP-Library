@@ -116,9 +116,9 @@ void TR064::initServiceURLs() {
      */
 
     _state = TR064_NO_SERVICES;
+    int i = 0;
     if (httpRequest(_detectPage, "", "", true)) {
             deb_println("[TR064][initServiceURLs] Get the Stream ", DEBUG_INFO);
-            int i = 0;
             while (1) {
                 if (!http.connected()) {
                     deb_println("[TR064][initServiceURLs] xmlTakeParam : http connection lost", DEBUG_INFO);
@@ -434,7 +434,7 @@ String TR064::findServiceURL(const String& service) {
     } else {
         deb_println("[TR064][findServiceURL] searching for service: "+service, DEBUG_VERBOSE);
 
-        for (int i=0;i<arr_len(_services);++i) {
+        for (uint16_t i=0;i<arr_len(_services);++i) {
             
             if (service.equalsIgnoreCase(_services[i][0])) {
                 deb_println("[TR064][findServiceURL] found services: "+service+" = "+ _services[i][0]+" , "+ _services[i][1], DEBUG_VERBOSE);
