@@ -1,33 +1,27 @@
 /**
- * caller.ino
- *  Oliver-André Urban
- *   based on
- *    home-indicator.ino
- *      by René Vollmer
- *   improved by
- *    Karsten Sauer (gsg2820)
- * 
- * Example code for placing internal DECT phone calls.
- * 
+ * InternetStats.ino
+ *  René Vollmer
+ *  
  * Please adjust your data below.
  *  
- * Created on: 07.06.2017
+ * Created on: 18.06.2021
  *  Latest update: 18.06.2021
+ *
  */
 
-#include <Arduino.h>
+ 
 #if defined(ESP8266)
-	//Imports for ESP8266
-	#include <ESP8266WiFi.h>
-	#include <ESP8266WiFiMulti.h>
-	#include <ESP8266HTTPClient.h>
-	ESP8266WiFiMulti WiFiMulti;
+    //Imports for ESP8266
+    #include <ESP8266WiFi.h>
+    #include <ESP8266WiFiMulti.h>
+    #include <ESP8266HTTPClient.h>
+    ESP8266WiFiMulti WiFiMulti;
 #elif defined(ESP32)
-	//Imports for ESP32
-	#include <WiFi.h>
-	#include <WiFiMulti.h>
-	#include <HTTPClient.h>
-	WiFiMulti WiFiMulti;
+    //Imports for ESP32
+    #include <WiFi.h>
+    #include <WiFiMulti.h>
+    #include <HTTPClient.h>
+    WiFiMulti WiFiMulti;
 #endif
 
 #include <tr064.h>
@@ -70,7 +64,7 @@ TR064 connection(PORT, IP, fuser, fpass);
 
 // -------------------------------------------------------------------------------------
 
-//###########################################################################################
+/###########################################################################################
 //############################ OKAY, LET'S DO THIS! #########################################
 //###########################################################################################
 
@@ -86,9 +80,6 @@ void setup() {
 		Serial.println();
 		Serial.println();
 	}
-	
-	// Define button port as input
-	pinMode(BUTTON, INPUT);
 	
 	// Wait a few secs for warm-up (dunno why, was in the default code for http connections).
 	delay(5000);
@@ -114,59 +105,21 @@ void setup() {
 }
 
 void loop() {
-	if (digitalRead(BUTTON) == LOW) {
-		if (Serial) {
-			Serial.println();
-			Serial.printf("Button pressed");
-		}
-		callWahlhilfe();
-		// callDect();
-		// char* status=getStatus();
-		delay(20000); // 20s
-		if(Serial) Serial.println("-------------------------------------------");
-	} else {
-		// You can add a debug message here if you want.
-	}
+    ensureWIFIConnection();
+  
+    // Query up- and down-link speed and transfer rate
+    // Query external IP address
+    // Print results
+    if(Serial) Serial.println("-------------------------------------------");
+
+    delay(1000);
 }
-
-
-void callWahlhilfe() {
-	ensureWIFIConnection();
-
-	if(connection.state()<0){
-		connection.init();
-	}
-	String params[][2] = {{"NewX_AVM-DE_PhoneNumber", "**799"}};
-	String req[][2] = {{}};
-	connection.action("X_VoIP:1", "X_AVM-DE_DialNumber", params, 1, req, 0);
-	//connection.action("urn:dslforum-org:service:X_VoIP:1", "X_AVM-DE_DialNumber", params, 1, req, 0);
-}
-
-void callDect() {
-	ensureWIFIConnection();
-
-	String params[][2] = {{"NewAIN", "12345 0123456"}, {"NewSwitchState", "TOGGLE"}};
-	connection.action("X_AVM-DE_Homeauto:1", "SetSwitch", params, 2);
-	// connection.action("urn:dslforum-org:service:X_AVM-DE_Homeauto:1", "SetSwitch", params, 2);
-}
-
-String getStatus() {
-	ensureWIFIConnection();
-	
-	String paramsb[][2] = {{"NewAIN", "12345 0123456"}};
-	String reqb[][2] = {{"NewDeviceId", ""}, {"NewSwitchState", ""}};
-	connection.action("X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", paramsb, 1, reqb, 2);
-	//connection.action("urn:dslforum-org:service:X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", paramsb, 1, reqb, 2);
-	return reqb[1][1];
-}
-
 
 /**
  * Makes sure there is a WIFI connection and waits until it is (re-)established.
  */
 void ensureWIFIConnection() {
 	if ((WiFiMulti.run() != WL_CONNECTED)) {
-		
 		WiFiMulti.setAutoConnect(true);
 		WiFiMulti.setAutoReconnect(true);
 		WiFiMulti.softAPdisconnect(true);

@@ -5,9 +5,8 @@
  *  
  *  Please adjust your data below.
  *  
- *  Created on: 09.12.2015,
- *  latest update: 18.06.2021
- *
+ * Created on: 09.12.2015
+ *  Latest update: 18.06.2021
  */
 
  
@@ -344,8 +343,14 @@ void verboseStatus(String r[4][2]) {
  */
 void ensureWIFIConnection() {
 	if ((WiFiMulti.run() != WL_CONNECTED)) {
+		WiFiMulti.setAutoConnect(true);
+		WiFiMulti.setAutoReconnect(true);
+		WiFiMulti.softAPdisconnect(true);
+		
 		WiFiMulti.addAP(wifi_ssid, wifi_password);
 		WiFiMulti.run();
+		
+		WiFiMulti.persistent(true);
 		while ((WiFiMulti.run() != WL_CONNECTED)) {
 			//Flash all LED's to indicate, that the connection was lost.
 			for (int i = 0; i < numUser; ++i) {
