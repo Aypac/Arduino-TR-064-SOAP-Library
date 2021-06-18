@@ -59,6 +59,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="class_t_r064-members.html">List of all members</a>  </div>
@@ -72,40 +73,50 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="tr064_8h_source.html">tr064.h</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a0db08c50d9c1cc3a25695ae8f897847f"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#a0db08c50d9c1cc3a25695ae8f897847f">LoggingLevels</a> { <br />
+&#160;&#160;<b>DEBUG_NONE</b>, 
+<b>DEBUG_ERROR</b>, 
+<b>DEBUG_WARNING</b>, 
+<b>DEBUG_INFO</b>, 
+<br />
+&#160;&#160;<b>DEBUG_VERBOSE</b>
+<br />
+ }</td></tr>
+<tr class="separator:a0db08c50d9c1cc3a25695ae8f897847f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae74957192c84eedfd66fcf6d775c6802"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#ae74957192c84eedfd66fcf6d775c6802">TR064</a> (int port, String ip, String user, String pass)</td></tr>
-<tr class="memdesc:ae74957192c84eedfd66fcf6d775c6802"><td class="mdescLeft">&#160;</td><td class="mdescRight">Library/Class to easily make TR-064 calls. Do not construct this unless you have a working connection to the device!  <a href="#ae74957192c84eedfd66fcf6d775c6802">More...</a><br /></td></tr>
-<tr class="separator:ae74957192c84eedfd66fcf6d775c6802"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a006c2bf08a9689561faf91495c0ab5f4"><td class="memItemLeft" align="right" valign="top"><a id="a006c2bf08a9689561faf91495c0ab5f4"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#a006c2bf08a9689561faf91495c0ab5f4">TR064</a> ()</td></tr>
+<tr class="memdesc:a006c2bf08a9689561faf91495c0ab5f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Library/Class to easily make TR-064 calls. Do not construct this unless you have a working connection to the device! <br /></td></tr>
+<tr class="separator:a006c2bf08a9689561faf91495c0ab5f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8923e9f7492aae334eac11c40ba6420b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#a8923e9f7492aae334eac11c40ba6420b">TR064</a> (uint16_t port, const String &amp;ip, const String &amp;user, const String &amp;pass)</td></tr>
+<tr class="memdesc:a8923e9f7492aae334eac11c40ba6420b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Library/Class to easily make TR-064 calls. Do not construct this unless you have a working connection to the device!  <a href="#a8923e9f7492aae334eac11c40ba6420b">More...</a><br /></td></tr>
+<tr class="separator:a8923e9f7492aae334eac11c40ba6420b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d29d54466f3f737f41d61b010701b07"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r064.html">TR064</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#a3d29d54466f3f737f41d61b010701b07">setServer</a> (uint16_t port, const String &amp;ip, const String &amp;user, const String &amp;pass)</td></tr>
+<tr class="memdesc:a3d29d54466f3f737f41d61b010701b07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the Server Parameter, needed because of empty Constructor.  <a href="#a3d29d54466f3f737f41d61b010701b07">More...</a><br /></td></tr>
+<tr class="separator:a3d29d54466f3f737f41d61b010701b07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac28a7bab6b18d22bd039e580db28ed1c"><td class="memItemLeft" align="right" valign="top"><a id="ac28a7bab6b18d22bd039e580db28ed1c"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#ac28a7bab6b18d22bd039e580db28ed1c">init</a> ()</td></tr>
 <tr class="memdesc:ac28a7bab6b18d22bd039e580db28ed1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the library. Needs to be explicitly called. There should already be a working connection to the device. <br /></td></tr>
 <tr class="separator:ac28a7bab6b18d22bd039e580db28ed1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b0cd92b5b1bae21b1b6de9735b8bc1c"><td class="memItemLeft" align="right" valign="top"><a id="a0b0cd92b5b1bae21b1b6de9735b8bc1c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#a0b0cd92b5b1bae21b1b6de9735b8bc1c">initNonce</a> ()</td></tr>
-<tr class="memdesc:a0b0cd92b5b1bae21b1b6de9735b8bc1c"><td class="mdescLeft">&#160;</td><td class="mdescRight"><b>Deprecated, not required anymore.</b> Only here for backwards-compatibility. Fetches the initial nonce and the realm for internal use. <br /></td></tr>
-<tr class="separator:a0b0cd92b5b1bae21b1b6de9735b8bc1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67a5e9151da16c90fe66de214c158987"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#a67a5e9151da16c90fe66de214c158987">action</a> (String service, String act)</td></tr>
-<tr class="memdesc:a67a5e9151da16c90fe66de214c158987"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function will call an action on the service of the device. In order to understand how to construct such a call, please consult <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-to-create-your-first-own-API-call">the Github page</a>.  <a href="#a67a5e9151da16c90fe66de214c158987">More...</a><br /></td></tr>
-<tr class="separator:a67a5e9151da16c90fe66de214c158987"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ae52182a7f89a42bc9177e948056878"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#a7ae52182a7f89a42bc9177e948056878">action</a> (String service, String act, String params[][2], int nParam)</td></tr>
-<tr class="memdesc:a7ae52182a7f89a42bc9177e948056878"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function will call an action on the service of the device with certain parameters. In order to understand how to construct such a call, please consult <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-to-create-your-first-own-API-call">the Github page</a>.  <a href="#a7ae52182a7f89a42bc9177e948056878">More...</a><br /></td></tr>
-<tr class="separator:a7ae52182a7f89a42bc9177e948056878"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb086d425e11e6fa3b1d7c437fb9e885"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#aeb086d425e11e6fa3b1d7c437fb9e885">action</a> (String service, String act, String params[][2], int nParam, String(*req)[2], int nReq)</td></tr>
-<tr class="memdesc:aeb086d425e11e6fa3b1d7c437fb9e885"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function will call an action on the service of the device with certain parameters and return values. It will fill the array <code>req</code> with the values of the assiciated return variables of the request. In order to understand how to construct such a call, please consult <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-to-create-your-first-own-API-call">the Github page</a>.  <a href="#aeb086d425e11e6fa3b1d7c437fb9e885">More...</a><br /></td></tr>
-<tr class="separator:aeb086d425e11e6fa3b1d7c437fb9e885"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8de77947c476b4a0e68d8d04af2ce462"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#a8de77947c476b4a0e68d8d04af2ce462">xmlTakeParam</a> (String inStr, String needParam)</td></tr>
-<tr class="memdesc:a8de77947c476b4a0e68d8d04af2ce462"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract the content of an XML element with a certain tag. It tries with case-sensitive matching first, but resorts to case-insensitive matching, when failing.  <a href="#a8de77947c476b4a0e68d8d04af2ce462">More...</a><br /></td></tr>
-<tr class="separator:a8de77947c476b4a0e68d8d04af2ce462"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a508666ab0fac537b374a61f0baa8ded7"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#a508666ab0fac537b374a61f0baa8ded7">xmlTakeInsensitiveParam</a> (String inStr, String needParam)</td></tr>
-<tr class="memdesc:a508666ab0fac537b374a61f0baa8ded7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract the content of an XML element with a certain tag, with case-insensitive matching. Not recommend to use directly/as default, since XML is case-sensitive by definition/specification, this is just made to be used as backup, if the case-sensitive method failed.  <a href="#a508666ab0fac537b374a61f0baa8ded7">More...</a><br /></td></tr>
-<tr class="separator:a508666ab0fac537b374a61f0baa8ded7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf463cc8c8bca19e4f8b49ba018ad677"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#aaf463cc8c8bca19e4f8b49ba018ad677">xmlTakeSensitiveParam</a> (String inStr, String needParam)</td></tr>
-<tr class="memdesc:aaf463cc8c8bca19e4f8b49ba018ad677"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract the content of an XML element with a certain tag, with case-sensitive matching.  <a href="#aaf463cc8c8bca19e4f8b49ba018ad677">More...</a><br /></td></tr>
-<tr class="separator:aaf463cc8c8bca19e4f8b49ba018ad677"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aafb3fc544aeb50bf62749b3808338f6d"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#aafb3fc544aeb50bf62749b3808338f6d">md5String</a> (String s)</td></tr>
-<tr class="memdesc:aafb3fc544aeb50bf62749b3808338f6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Translates a string into its MD5 hash.  <a href="#aafb3fc544aeb50bf62749b3808338f6d">More...</a><br /></td></tr>
-<tr class="separator:aafb3fc544aeb50bf62749b3808338f6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3bde6cab9302dbf8ea0d4a4cd48c27d7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#a3bde6cab9302dbf8ea0d4a4cd48c27d7">state</a> ()</td></tr>
+<tr class="memdesc:a3bde6cab9302dbf8ea0d4a4cd48c27d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the State of Service Load.  <a href="#a3bde6cab9302dbf8ea0d4a4cd48c27d7">More...</a><br /></td></tr>
+<tr class="separator:a3bde6cab9302dbf8ea0d4a4cd48c27d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a977f76f9da19199983f4067131607e46"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#a977f76f9da19199983f4067131607e46">action</a> (const String &amp;service, const String &amp;act, const String &amp;url=&quot;&quot;)</td></tr>
+<tr class="memdesc:a977f76f9da19199983f4067131607e46"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function will call an action on the service of the device. In order to understand how to construct such a call, please consult <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-to-create-your-first-own-API-call">the Github page</a>.  <a href="#a977f76f9da19199983f4067131607e46">More...</a><br /></td></tr>
+<tr class="separator:a977f76f9da19199983f4067131607e46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac42868bc1c6e054d7dccf08b7c970e54"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#ac42868bc1c6e054d7dccf08b7c970e54">action</a> (const String &amp;service, const String &amp;act, String params[][2], int nParam, const String &amp;url=&quot;&quot;)</td></tr>
+<tr class="memdesc:ac42868bc1c6e054d7dccf08b7c970e54"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function will call an action on the service of the device with certain parameters. In order to understand how to construct such a call, please consult <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-to-create-your-first-own-API-call">the Github page</a>.  <a href="#ac42868bc1c6e054d7dccf08b7c970e54">More...</a><br /></td></tr>
+<tr class="separator:ac42868bc1c6e054d7dccf08b7c970e54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4cae33979cc5ee4d2d6c9033a3b21de0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#a4cae33979cc5ee4d2d6c9033a3b21de0">action</a> (const String &amp;service, const String &amp;act, String params[][2], int nParam, String(*req)[2], int nReq, const String &amp;url=&quot;&quot;)</td></tr>
+<tr class="memdesc:a4cae33979cc5ee4d2d6c9033a3b21de0"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function will call an action on the service of the device with certain parameters and return values. It will fill the array <code>req</code> with the values of the assiciated return variables of the request. In order to understand how to construct such a call, please consult <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-to-create-your-first-own-API-call">the Github page</a>.  <a href="#a4cae33979cc5ee4d2d6c9033a3b21de0">More...</a><br /></td></tr>
+<tr class="separator:a4cae33979cc5ee4d2d6c9033a3b21de0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a137de6a536937ed7fb7cec3af9daa47c"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#a137de6a536937ed7fb7cec3af9daa47c">md5String</a> (const String &amp;s)</td></tr>
+<tr class="memdesc:a137de6a536937ed7fb7cec3af9daa47c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Translates a string into its MD5 hash.  <a href="#a137de6a536937ed7fb7cec3af9daa47c">More...</a><br /></td></tr>
+<tr class="separator:a137de6a536937ed7fb7cec3af9daa47c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa69f3f80c1f6336e3461515307d92f98"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#aa69f3f80c1f6336e3461515307d92f98">byte2hex</a> (byte number)</td></tr>
 <tr class="memdesc:aa69f3f80c1f6336e3461515307d92f98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Translates a byte number into a hex number.  <a href="#aa69f3f80c1f6336e3461515307d92f98">More...</a><br /></td></tr>
 <tr class="separator:aa69f3f80c1f6336e3461515307d92f98"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -119,9 +130,25 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class to easily make TR-064 calls. This is the main class of this library. An object of this class keeps track of. </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ae74957192c84eedfd66fcf6d775c6802"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae74957192c84eedfd66fcf6d775c6802">&#9670;&nbsp;</a></span>TR064()</h2>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="a0db08c50d9c1cc3a25695ae8f897847f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0db08c50d9c1cc3a25695ae8f897847f">&#9670;&nbsp;</a></span>LoggingLevels</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="class_t_r064.html#a0db08c50d9c1cc3a25695ae8f897847f">TR064::LoggingLevels</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Different debug level DEBUG_NONE ///&lt; Print no debug messages whatsoever DEBUG_ERROR ///&lt; Only print error messages DEBUG_WARNING ///&lt; Only print error and warning messages DEBUG_INFO ///&lt; Print error, warning and info messages DEBUG_VERBOSE ///&lt; Print all messages </p>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a8923e9f7492aae334eac11c40ba6420b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8923e9f7492aae334eac11c40ba6420b">&#9670;&nbsp;</a></span>TR064()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -129,25 +156,25 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
         <tr>
           <td class="memname">TR064::TR064 </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">uint16_t&#160;</td>
           <td class="paramname"><em>port</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">String&#160;</td>
+          <td class="paramtype">const String &amp;&#160;</td>
           <td class="paramname"><em>ip</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">String&#160;</td>
+          <td class="paramtype">const String &amp;&#160;</td>
           <td class="paramname"><em>user</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">String&#160;</td>
+          <td class="paramtype">const String &amp;&#160;</td>
           <td class="paramname"><em>pass</em>&#160;</td>
         </tr>
         <tr>
@@ -172,23 +199,101 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a67a5e9151da16c90fe66de214c158987"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a67a5e9151da16c90fe66de214c158987">&#9670;&nbsp;</a></span>action() <span class="overload">[1/3]</span></h2>
+<a id="a3d29d54466f3f737f41d61b010701b07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d29d54466f3f737f41d61b010701b07">&#9670;&nbsp;</a></span>setServer()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">String TR064::action </td>
+          <td class="memname"><a class="el" href="class_t_r064.html">TR064</a> &amp; TR064::setServer </td>
           <td>(</td>
-          <td class="paramtype">String&#160;</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>port</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const String &amp;&#160;</td>
+          <td class="paramname"><em>ip</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const String &amp;&#160;</td>
+          <td class="paramname"><em>user</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const String &amp;&#160;</td>
+          <td class="paramname"><em>pass</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the Server Parameter, needed because of empty Constructor. </p>
+<dl class="section return"><dt>Returns</dt><dd>Refernce to this Class</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">port</td><td>Port number to be used to establish the TR-064 connection. </td></tr>
+    <tr><td class="paramname">ip</td><td>IP address to be used to establish the TR-064 connection. </td></tr>
+    <tr><td class="paramname">user</td><td>User name to be used to establish the TR-064 connection. </td></tr>
+    <tr><td class="paramname">pass</td><td>Password to be used to establish the TR-064 connection. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a3bde6cab9302dbf8ea0d4a4cd48c27d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3bde6cab9302dbf8ea0d4a4cd48c27d7">&#9670;&nbsp;</a></span>state()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int TR064::state </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the State of Service Load. </p>
+<dl class="section return"><dt>Returns</dt><dd>The State. TR064_NO_SERVICES / TR064_SERVICES_LOADED </dd></dl>
+
+</div>
+</div>
+<a id="a977f76f9da19199983f4067131607e46"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a977f76f9da19199983f4067131607e46">&#9670;&nbsp;</a></span>action() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool TR064::action </td>
+          <td>(</td>
+          <td class="paramtype">const String &amp;&#160;</td>
           <td class="paramname"><em>service</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>act</em>&#160;</td>
+          <td class="paramtype">const String &amp;&#160;</td>
+          <td class="paramname"><em>act</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const String &amp;&#160;</td>
+          <td class="paramname"><em>url</em> = <code>&quot;&quot;</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -203,29 +308,30 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
   <table class="params">
     <tr><td class="paramname">service</td><td>The name of the service you want to adress. </td></tr>
     <tr><td class="paramname">act</td><td>The action you want to perform on the service. </td></tr>
+    <tr><td class="paramname">url</td><td>The url you want to call. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The response from the device. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>success state. </dd></dl>
 
 </div>
 </div>
-<a id="a7ae52182a7f89a42bc9177e948056878"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7ae52182a7f89a42bc9177e948056878">&#9670;&nbsp;</a></span>action() <span class="overload">[2/3]</span></h2>
+<a id="ac42868bc1c6e054d7dccf08b7c970e54"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac42868bc1c6e054d7dccf08b7c970e54">&#9670;&nbsp;</a></span>action() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">String TR064::action </td>
+          <td class="memname">bool TR064::action </td>
           <td>(</td>
-          <td class="paramtype">String&#160;</td>
+          <td class="paramtype">const String &amp;&#160;</td>
           <td class="paramname"><em>service</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">String&#160;</td>
+          <td class="paramtype">const String &amp;&#160;</td>
           <td class="paramname"><em>act</em>, </td>
         </tr>
         <tr>
@@ -238,7 +344,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>nParam</em>&#160;</td>
+          <td class="paramname"><em>nParam</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const String &amp;&#160;</td>
+          <td class="paramname"><em>url</em> = <code>&quot;&quot;</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -255,29 +367,30 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
     <tr><td class="paramname">act</td><td>The action you want to perform on the service. </td></tr>
     <tr><td class="paramname">params</td><td>A list of pairs of input parameters and values, e.g <code>params[][2] = {{ "arg1", "value1" }, { "arg2", "value2" }}</code>. </td></tr>
     <tr><td class="paramname">nParam</td><td>The number of input parameters you passed. </td></tr>
+    <tr><td class="paramname">url</td><td>The url you want to call. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The response from the device. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>success state. </dd></dl>
 
 </div>
 </div>
-<a id="aeb086d425e11e6fa3b1d7c437fb9e885"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeb086d425e11e6fa3b1d7c437fb9e885">&#9670;&nbsp;</a></span>action() <span class="overload">[3/3]</span></h2>
+<a id="a4cae33979cc5ee4d2d6c9033a3b21de0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4cae33979cc5ee4d2d6c9033a3b21de0">&#9670;&nbsp;</a></span>action() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">String TR064::action </td>
+          <td class="memname">bool TR064::action </td>
           <td>(</td>
-          <td class="paramtype">String&#160;</td>
+          <td class="paramtype">const String &amp;&#160;</td>
           <td class="paramname"><em>service</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">String&#160;</td>
+          <td class="paramtype">const String &amp;&#160;</td>
           <td class="paramname"><em>act</em>, </td>
         </tr>
         <tr>
@@ -302,7 +415,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>nReq</em>&#160;</td>
+          <td class="paramname"><em>nReq</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const String &amp;&#160;</td>
+          <td class="paramname"><em>url</em> = <code>&quot;&quot;</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -321,129 +440,16 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
     <tr><td class="paramname">nParam</td><td>The number of input parameters you passed. </td></tr>
     <tr><td class="paramname">req</td><td>A list of pairs of response parameters and values, e.g <code>req[][2] = {{ "resp1", "" }, { "resp2", "" }}</code> will be turned into <code>req[][2] = {{ "resp1", "value1" }, { "resp2", "value2" }}</code> </td></tr>
     <tr><td class="paramname">nReq</td><td>The number of response parameters you passed. </td></tr>
+    <tr><td class="paramname">url</td><td>The url you want to call. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The response from the device. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>success state. </dd></dl>
 
 </div>
 </div>
-<a id="a8de77947c476b4a0e68d8d04af2ce462"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8de77947c476b4a0e68d8d04af2ce462">&#9670;&nbsp;</a></span>xmlTakeParam()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">String TR064::xmlTakeParam </td>
-          <td>(</td>
-          <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>inStr</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>needParam</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Extract the content of an XML element with a certain tag. It tries with case-sensitive matching first, but resorts to case-insensitive matching, when failing. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">inStr</td><td>The XML from which to extract. </td></tr>
-    <tr><td class="paramname">needParam</td><td>The name of the XML tag, you want the content of. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The content of the requested XML tag (as <code>String</code>). </dd></dl>
-
-</div>
-</div>
-<a id="a508666ab0fac537b374a61f0baa8ded7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a508666ab0fac537b374a61f0baa8ded7">&#9670;&nbsp;</a></span>xmlTakeInsensitiveParam()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">String TR064::xmlTakeInsensitiveParam </td>
-          <td>(</td>
-          <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>inStr</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>needParam</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Extract the content of an XML element with a certain tag, with case-insensitive matching. Not recommend to use directly/as default, since XML is case-sensitive by definition/specification, this is just made to be used as backup, if the case-sensitive method failed. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">inStr</td><td>The XML from which to extract. </td></tr>
-    <tr><td class="paramname">needParam</td><td>The name of the XML tag, you want the content of. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The content of the requested XML tag (as <code>String</code>). </dd></dl>
-
-</div>
-</div>
-<a id="aaf463cc8c8bca19e4f8b49ba018ad677"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaf463cc8c8bca19e4f8b49ba018ad677">&#9670;&nbsp;</a></span>xmlTakeSensitiveParam()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">String TR064::xmlTakeSensitiveParam </td>
-          <td>(</td>
-          <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>inStr</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>needParam</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Extract the content of an XML element with a certain tag, with case-sensitive matching. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">inStr</td><td>The XML from which to extract. </td></tr>
-    <tr><td class="paramname">needParam</td><td>The name of the XML tag, you want the content of. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The content of the requested XML tag (as <code>String</code>). </dd></dl>
-
-</div>
-</div>
-<a id="aafb3fc544aeb50bf62749b3808338f6d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aafb3fc544aeb50bf62749b3808338f6d">&#9670;&nbsp;</a></span>md5String()</h2>
+<a id="a137de6a536937ed7fb7cec3af9daa47c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a137de6a536937ed7fb7cec3af9daa47c">&#9670;&nbsp;</a></span>md5String()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -451,7 +457,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
         <tr>
           <td class="memname">String TR064::md5String </td>
           <td>(</td>
-          <td class="paramtype">String&#160;</td>
+          <td class="paramtype">const String &amp;&#160;</td>
           <td class="paramname"><em>text</em></td><td>)</td>
           <td></td>
         </tr>
