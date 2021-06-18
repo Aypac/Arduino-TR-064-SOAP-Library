@@ -143,7 +143,7 @@ void setup() {
 	// Initialize the TR-064 library
 	// (IMPORTANT!)
 	if(Serial) Serial.printf("Initialize TR-064 connection\n\n");
-    connection.debug_level = DEBUG_VERBOSE; //0: None, 1: Errors, 2: Warning, 3: Info, 4: Verbose
+    connection.debug_level = connection.DEBUG_VERBOSE; //0: None, 1: Errors, 2: Warning, 3: Info, 4: Verbose
 	connection.init();
 
 	// Request the number of (connected) Wifi-Devices
@@ -220,7 +220,7 @@ void loop() {
 int getWifiNumber() {
 	String params[][2] = {{}};
 	String req[][2] = {{"NewTotalAssociations", ""}};
-	connection.action("urn:dslforum-org:service:WLANConfiguration:1", "GetTotalAssociations", params, 0, req, 1);
+	connection.action("WLANConfiguration:1", "GetTotalAssociations", params, 0, req, 1);
 	int numDev = (req[0][1]).toInt();
 	return numDev;
 }
@@ -244,7 +244,7 @@ void getStatusOfAllWifi(int numDev) {
 	for (int i=0;i<numDev;++i) {
 		String params[][2] = {{"NewAssociatedDeviceIndex", String(i)}};
 		String req[][2] = {{"NewAssociatedDeviceAuthState", ""}, {"NewAssociatedDeviceMACAddress", ""}, {"NewAssociatedDeviceIPAddress", ""}};
-		connection.action("urn:dslforum-org:service:WLANConfiguration:1", "GetGenericAssociatedDeviceInfo", params, 1, req, 2);
+		connection.action("WLANConfiguration:1", "GetGenericAssociatedDeviceInfo", params, 1, req, 2);
 		if(Serial) {
 			Serial.printf("%d:\t", i);
 			Serial.println((req[1][1])+" is online "+(req[0][1]));
@@ -262,7 +262,7 @@ void getStatusOfMACwifi(String mac, String (&r)[4][2]) {
 	mac.toUpperCase();
 	String params[][2] = {{"NewAssociatedDeviceMACAddress", mac}};
 	String req[][2] = {{"NewAssociatedDeviceIPAddress", ""}, {"NewAssociatedDeviceAuthState", ""}};
-	connection.action("urn:dslforum-org:service:WLANConfiguration:1", "GetSpecificAssociatedDeviceInfo", params, 1, req, 2);
+	connection.action("WLANConfiguration:1", "GetSpecificAssociatedDeviceInfo", params, 1, req, 2);
 	if(Serial) {
 		Serial.println(mac + " is online " + (req[2][1]));
 		Serial.flush();
@@ -285,7 +285,7 @@ void getStatusOfMACwifi(String mac, String (&r)[4][2]) {
 int getDeviceNumber() {
 	String params[][2] = {{}};
 	String req[][2] = {{"NewHostNumberOfEntries", ""}};
-	connection.action("urn:dslforum-org:service:Hosts:1", "GetHostNumberOfEntries", params, 0, req, 1);
+	connection.action("Hosts:1", "GetHostNumberOfEntries", params, 0, req, 1);
 	int numDev = (req[0][1]).toInt();
 	return numDev;
 }
@@ -298,7 +298,7 @@ void getStatusOfMAC(String mac, String (&r)[4][2]) {
 	//Ask for one specific device
 	String params[][2] = {{"NewMACAddress", mac}};
 	String req[][2] = {{"NewIPAddress", ""}, {"NewActive", ""}, {"NewHostName", ""}};
-	connection.action("urn:dslforum-org:service:Hosts:1", "GetSpecificHostEntry", params, 1, req, 2);
+	connection.action("Hosts:1", "GetSpecificHostEntry", params, 1, req, 2);
 	if(Serial) {
 		Serial.println(mac + " is online " + (req[1][1]));
 		Serial.flush();

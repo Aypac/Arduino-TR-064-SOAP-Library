@@ -1,16 +1,19 @@
 /**
  * caller.ino
- *  Oliver-André Urban
- *   based on
- *    home-indicator.ino
+ *  based on
+ * 		Oliver-André Urban
+ *   		based on
+ *    	home-indicator.ino
  *      by René Vollmer
  * 
  *  Example code for placing internal DECT phone calls
+ *  Without calling for init.
+ *  No Services will beloaded.
  * 
  *  Please adjust your data below.
  *  
- *  created on: 07.06.2017
- *  latest update: 11.06.2019
+ *  created on: 17.06.2021
+ *  latest update: 17.06.2021
  */
 
 #include <Arduino.h>
@@ -74,7 +77,9 @@ void setup() {
   
   //activate for Debug Output
   //connection.debug_level = connection.DEBUG_VERBOSE;
-	connection.init();
+	
+	// dont need init if you know the url
+	//connection.init();
 	// Port as input
 	pinMode(BUTTON, INPUT);
 }
@@ -103,23 +108,20 @@ void callWahlhilfe() {
   }
 	String params[][2] = {{"NewX_AVM-DE_PhoneNumber", "**799"}};
 	String req[][2] = {{}};
-  connection.action("X_VoIP:1", "X_AVM-DE_DialNumber", params, 1, req, 0);
-	//connection.action("urn:dslforum-org:service:X_VoIP:1", "X_AVM-DE_DialNumber", params, 1, req, 0);
+    connection.action("X_VoIP:1", "X_AVM-DE_DialNumber", params, 1, req, 0, "/upnp/control/x_voip");
 }
 
 void callDect() {
 	ensureWIFIConnection();
 
 	String params[][2] = {{"NewAIN", "12345 0123456"}, {"NewSwitchState", "TOGGLE"}};
-	connection.action("X_AVM-DE_Homeauto:1", "SetSwitch", params, 2);
- // connection.action("urn:dslforum-org:service:X_AVM-DE_Homeauto:1", "SetSwitch", params, 2);
+	connection.action("X_AVM-DE_Homeauto:1", "SetSwitch", params, 2, "/upnp/control/x_homeauto"); 
 }
 
 String getStatus() {
 	String paramsb[][2] = {{"NewAIN", "12345 0123456"}};
 	String reqb[][2] = {{"NewDeviceId", ""}, {"NewSwitchState", ""}};
-  connection.action("X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", paramsb, 1, reqb, 2);
-	//connection.action("urn:dslforum-org:service:X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", paramsb, 1, reqb, 2);
+    connection.action("X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", paramsb, 1, reqb, 2, "/upnp/control/x_homeauto");	
 	return reqb[1][1];
 }
 
