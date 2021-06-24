@@ -45,7 +45,8 @@ char IP[] = SECRET_IP;
 int PORT = 49000;
 
 //-------------------------------------------------------------------------------------
-
+// Put the settings for the devices to detect here
+//-------------------------------------------------------------------------------------
 
 // The number of different people/user you want to be able to detect
 const int numUser = 3;
@@ -100,70 +101,70 @@ const int STATUS_HOSTNAME_INDEX = 2;
 //###########################################################################################
 
 void setup() {
-  // Start the serial connection
-  // Not required for production, but helpful for development.
-  // You might also want to change the baud-rate.
-  Serial.begin(115200);
+	// Start the serial connection
+	// Not required for production, but helpful for development.
+	// You might also want to change the baud-rate.
+	Serial.begin(115200);
 
-  // Clear some space in the serial monitor.
-  if(Serial) {
-    Serial.println();
-    Serial.println();
-    Serial.println();
-  }
+	// Clear some space in the serial monitor.
+	if(Serial) {
+		Serial.println();
+		Serial.println();
+		Serial.println();
+	}
 
-  //Define the pins for the LEDs as outputs.
-  for (int i=0;i<numUser;i++) {
-    pinMode(userPins[i], OUTPUT);
-  }
+	//Define the pins for the LEDs as outputs.
+	for (int i=0;i<numUser;i++) {
+		pinMode(userPins[i], OUTPUT);
+	}
 
-  // **************************************************
-  // Wait a few secs for warm-up (dunno why, was in the default code for http connections).
-  // You might be able to remove this block
-  for(uint8_t t = 4; t > 0; t--) {
-  if(Serial) Serial.printf("[SETUP] WAIT %d...\n", t);
-    for (int i=0;i<numUser;++i) {
-      digitalWrite(userPins[i], HIGH);
-    }
-    delay(300);
-    for (int i=0;i<numUser;++i) {
-      digitalWrite(userPins[i], LOW);
-    }
-    delay(700);
-    if(Serial) Serial.flush();
-  }
-  // **************************************************
+	// **************************************************
+	// Wait a few secs for warm-up (dunno why, was in the default code for http connections).
+	// You might be able to remove this block
+	for(uint8_t t = 4; t > 0; t--) {
+	if(Serial) Serial.printf("[SETUP] WAIT %d...\n", t);
+		for (int i=0;i<numUser;++i) {
+			digitalWrite(userPins[i], HIGH);
+		}
+		delay(300);
+		for (int i=0;i<numUser;++i) {
+			digitalWrite(userPins[i], LOW);
+		}
+		delay(700);
+		if(Serial) Serial.flush();
+	}
+	// **************************************************
 
 
-  // Connect to wifi
-  ensureWIFIConnection();
+	// Connect to wifi
+	ensureWIFIConnection();
 
-  // Set debug level. Available levels are:
-  //  DEBUG_NONE         ///< Print no debug messages whatsoever (production)
-  //  DEBUG_ERROR        ///< Only print error messages
-  //  DEBUG_WARNING      ///< Only print error and warning messages
-  //  DEBUG_INFO         ///< Print error, warning and info messages
-  //  DEBUG_VERBOSE      ///< Print all messages
+	// Set debug level. Available levels are:
+	//  DEBUG_NONE         ///< Print no debug messages whatsoever (production)
+	//  DEBUG_ERROR        ///< Only print error messages
+	//  DEBUG_WARNING      ///< Only print error and warning messages
+	//  DEBUG_INFO         ///< Print error, warning and info messages
+	//  DEBUG_VERBOSE      ///< Print all messages
     connection.debug_level = connection.DEBUG_WARNING;
-  if(Serial) Serial.setDebugOutput(true);
-  
-  // The following line retrieves a list of all available services on the router.
-  // It is not required for operation, so it can be safely commented and save
-  //   ressources on the microcontroller. However, it can be helpful for debugging
-  //     and development to keep it activated.
-  if(Serial) Serial.printf("Initialize TR-064 connection\n\n");
-  connection.init();
+	if(Serial) Serial.setDebugOutput(true);
+	
+	// The following line retrieves a list of all available services on the router.
+	// It is not required for operation, so it can be safely commented and save
+	//   ressources on the microcontroller. However, it can be helpful for debugging
+	//     and development to keep it activated.
+	if(Serial) Serial.printf("Initialize TR-064 connection\n\n");
+	connection.init();
 
-  // Request the number of (connected) Wifi-Devices
-  int numDev = getWifiNumber();
-  if(Serial) Serial.printf("WIFI has %d (connected) devices.\n", numDev);
+	// Request the number of (connected) Wifi-Devices
+	int numDev = getWifiNumber();
+	if(Serial) Serial.printf("WIFI has %d (connected) devices.\n", numDev);
 
-  // Check the status of all the devices connected to wifi
-  getStatusOfAllWifi(numDev);
+	// Check the status of all the devices connected to wifi
+	getStatusOfAllWifi(numDev);
 
-  // Get the number of all devices, that are known to this router
-  numDev = getDeviceNumber();
-  if (Serial) Serial.printf("Router has %d known devices.\n", numDev);
+	// Get the number of all devices, that are known to this router
+	numDev = getDeviceNumber();
+	if (Serial) Serial.printf("Router has %d known devices.\n", numDev);
 }
 
 void loop() {
@@ -226,11 +227,11 @@ void loop() {
  *  return (int)
  */
 int getWifiNumber() {
-  String params[][2] = {{}};
-  String req[][2] = {{"NewTotalAssociations", ""}};
-  connection.action("WLANConfiguration:1", "GetTotalAssociations", params, 0, req, 1);
-  int numDev = (req[0][1]).toInt();
-  return numDev;
+	String params[][2] = {{}};
+	String req[][2] = {{"NewTotalAssociations", ""}};
+	connection.action("WLANConfiguration:1", "GetTotalAssociations", params, 0, req, 1);
+	int numDev = (req[0][1]).toInt();
+	return numDev;
 }
 
 /** Print the status of all devices that were connected to the WIFI lastly

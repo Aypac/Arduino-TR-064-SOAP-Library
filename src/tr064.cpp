@@ -11,7 +11,7 @@
  * A descriptor of the protocol can be found <a href="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf" target="_blank">here</a>.
  * 
  * Initial version: November 2016<br />
- * Last updated: Feb 2020
+ * Last updated: June 2021
  *
  * @section dependencies Dependencies
  *
@@ -81,6 +81,7 @@ TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, con
 }
 
 /**************************************************************************/
+
 /*! 
     @brief  Library/Class to easily make TR-064 calls. Do not construct this
             unless you have a working connection to the device!   
@@ -102,6 +103,30 @@ void TR064::init() {
     delay(100); // TODO: REMOVE (after testing, that it still works!)
     // Get a list of all services and the associated urls        
     initServiceURLs();
+}
+
+
+/**************************************************************************/
+/*!
+    @brief  Set the server parameters, needed if the empty constructor was used.
+    @return Reference to this object
+
+    @param    port
+                Port number to be used to establish the TR-064 connection.
+    @param    ip
+                IP address to be used to establish the TR-064 connection.
+    @param    user
+                User name to be used to establish the TR-064 connection.
+    @param    pass
+                Password to be used to establish the TR-064 connection.
+*/
+/**************************************************************************/
+TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, const String& pass){
+    this->_ip = ip;
+    this->_port = port;
+    this->_user = user;
+    this->_pass = pass;
+    return *this;
 }
 
 /**************************************************************************/
@@ -178,9 +203,6 @@ String TR064::generateAuthToken() {
     deb_println("[TR064][generateAuthToken] The auth token is '" + token + "'", DEBUG_INFO);
     return token;
 }
-
-
-
 
 /**************************************************************************/
 /*!
@@ -396,14 +418,14 @@ String TR064::errorToString(int error)
 
 /**************************************************************************/
 /*!
-    @brief  Helper function, which deletes the prefix befor the servicename.
+    @brief  Helper function, which deletes the prefix before the servicename.
     @param    service
                 The name of the service you want to adress.
     @return String servicename without prefix
 */
 /**************************************************************************/
 String TR064::cleanOldServiceName(const String& service) {
-    deb_println("[TR064][cleanOldServiceName] searching for prefix in Servicename: "+service, DEBUG_VERBOSE);
+    deb_println("[TR064][cleanOldServiceName] searching for prefix in servicename: "+service, DEBUG_VERBOSE);
     if(service.startsWith(_servicePrefix)){
         return service.substring(strlen(_servicePrefix));        
     }
@@ -426,8 +448,7 @@ String TR064::findServiceURL(const String& service) {
     
         deb_println("[TR064][findServiceURL] searching for service: "+service, DEBUG_VERBOSE);
 
-        for (int i=0;i<arr_len(_services);++i) {
-            
+        for (int i=0;i<arr_len(_services);++i) {            
             if (service.equalsIgnoreCase(_services[i][0])) {
                 deb_println("[TR064][findServiceURL] found services: "+service+" = "+ _services[i][0]+" , "+ _services[i][1], DEBUG_VERBOSE);
                 return _services[i][1];
@@ -455,7 +476,7 @@ String TR064::findServiceURL(const String& service) {
 */
 /**************************************************************************/
 bool TR064::httpRequest(const String& url, const String& xml, const String& soapaction, bool retry) {
-    if(url==""){
+    if (url=="") {
         deb_println("[TR064][httpRequest] URL is empty, abort http request.", DEBUG_INFO);
         return false;
     }
@@ -470,7 +491,7 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
 
     int httpCode=0;
     if (xml!= "") {
-        deb_println("[TR064][httpRequest] Posting XML:", DEBUG_VERBOSE);
+        deb_println("[TR064][httpRequest] Posting XML:", DEBUG_INFO);
         deb_println("[TR064][httpRequest] ---------------------------------", DEBUG_VERBOSE);
         deb_println(xml, DEBUG_VERBOSE);
         deb_println("[TR064][httpRequest] ---------------------------------\n", DEBUG_VERBOSE);
@@ -483,7 +504,7 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
     }
 
     // httpCode will be negative on error
-    deb_println("[TR064][httpRequest] response code: " + String(httpCode), DEBUG_INFO);
+    deb_println("[TR064][httpRequest] Response code: " + String(httpCode), DEBUG_INFO);
     if (httpCode > 0) {
         // HTTP header has been send and Server response header has been handled
         
