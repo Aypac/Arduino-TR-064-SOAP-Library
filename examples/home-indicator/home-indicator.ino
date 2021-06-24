@@ -32,8 +32,7 @@
 // Put your router settings here
 //-------------------------------------------------------------------------------------
 
-///////please enter your sensitive data in the Secret tab/arduino_secrets_example.h 
-///////Then RENAME to arduino_secrets.h
+///////please enter your sensitive data in the Secret tab/arduino_secrets.h 
 
 char wifi_ssid[] = SECRET_WIFI_SSID;
 char wifi_password[] = SECRET_WIFI_PASSWORD;
