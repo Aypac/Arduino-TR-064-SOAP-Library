@@ -285,12 +285,14 @@ bool TR064::action(const String& service, const String& act, String params[][2],
             }
             return action(service, act, params, nParam, req, nReq, url);
         }
-        
+        deb_println("[TR064][action] Done.", DEBUG_INFO);
+        http.end();
+        return true;
         
     }
-    deb_println("[TR064][action] Done.", DEBUG_INFO);
+    deb_println("[TR064][action]<error> Request Failed ", DEBUG_ERROR);
     http.end();
-    return true;
+    return false;
 }
 
 /**************************************************************************/
