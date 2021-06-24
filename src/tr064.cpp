@@ -56,30 +56,6 @@ TR064::TR064(uint16_t port, const String& ip, const String& user, const String& 
     this->_state = TR064_NO_SERVICES;
 }
 
-
-/**************************************************************************/
-/*!
-    @brief  Set the Server Parameter, needed because of empty Constructor
-    @return Refernce to this Class
-
-    @param    port
-                Port number to be used to establish the TR-064 connection.
-    @param    ip
-                IP address to be used to establish the TR-064 connection.
-    @param    user
-                User name to be used to establish the TR-064 connection.
-    @param    pass
-                Password to be used to establish the TR-064 connection.
-*/
-/**************************************************************************/
-TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, const String& pass){
-    this->_ip = ip;
-    this->_port = port;
-    this->_user = user;
-    this->_pass = pass;
-    return *this;
-}
-
 /**************************************************************************/
 
 /*! 
