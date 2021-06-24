@@ -7,7 +7,7 @@
  *  Please adjust your data below.
  *  
  *  Created on: 09.12.2015,
- *  latest update: 18.06.2021
+ *  latest update: 24.06.2021
  *
  */
 
@@ -32,8 +32,7 @@
 // Put your router settings here
 //-------------------------------------------------------------------------------------
 
-///////please enter your sensitive data in the Secret tab/arduino_secrets_example.h 
-///////Then RENAME to arduino_secrets.h
+///////please enter your sensitive data in the Secret tab/arduino_secrets.h 
 
 char wifi_ssid[] = SECRET_WIFI_SSID;
 char wifi_password[] = SECRET_WIFI_PASSWORD;
@@ -261,7 +260,7 @@ void getStatusOfAllWifi(int numDev) {
       }
     }else{
       if(Serial) {
-        Serial.printf("%d:\t Fehler");        
+        Serial.printf("\t Fehler");        
         Serial.flush();
       }
     }

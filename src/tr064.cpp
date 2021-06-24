@@ -56,30 +56,6 @@ TR064::TR064(uint16_t port, const String& ip, const String& user, const String& 
     this->_state = TR064_NO_SERVICES;
 }
 
-
-/**************************************************************************/
-/*!
-    @brief  Set the Server Parameter, needed because of empty Constructor
-    @return Refernce to this Class
-
-    @param    port
-                Port number to be used to establish the TR-064 connection.
-    @param    ip
-                IP address to be used to establish the TR-064 connection.
-    @param    user
-                User name to be used to establish the TR-064 connection.
-    @param    pass
-                Password to be used to establish the TR-064 connection.
-*/
-/**************************************************************************/
-TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, const String& pass){
-    this->_ip = ip;
-    this->_port = port;
-    this->_user = user;
-    this->_pass = pass;
-    return *this;
-}
-
 /**************************************************************************/
 
 /*! 
@@ -448,7 +424,7 @@ String TR064::findServiceURL(const String& service) {
     
         deb_println("[TR064][findServiceURL] searching for service: "+service, DEBUG_VERBOSE);
 
-        for (int i=0;i<arr_len(_services);++i) {            
+        for (uint16_t i=0;i<arr_len(_services);++i) {            
             if (service.equalsIgnoreCase(_services[i][0])) {
                 deb_println("[TR064][findServiceURL] found services: "+service+" = "+ _services[i][0]+" , "+ _services[i][1], DEBUG_VERBOSE);
                 return _services[i][1];
