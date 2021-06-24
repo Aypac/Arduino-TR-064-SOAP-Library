@@ -11,41 +11,25 @@ branches:
 git:
   depth: false
   quiet: true
-addons:
-  apt:
-    sources:
-      - llvm-toolchain-trusty-5.0
-      - key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
-    packages:
-      - python3-pip
-      - python3-wheel
-      - clang-format-5.0
 env:
   global:
-#    - ARDUINO_IDE_VERSION="1.8.10"
+     - ARDUINO_IDE_VERSION="1.8.13"
      - PRETTYNAME="Arduino TR-064 Library"
 # Optional, will default to "$TRAVIS_BUILD_DIR/Doxyfile"
 #    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxyfile
  
 before_install:
    - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
-   - curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/run-clang-format.py > run-clang-format.py
-   # Arduino IDE adds a lot of noise caused by network traffic, trying to firewall it off
-  - sudo iptables -P INPUT DROP
-  - sudo iptables -P FORWARD DROP
-  - sudo iptables -P OUTPUT ACCEPT
-  - sudo iptables -A INPUT -i lo -j ACCEPT
-  - sudo iptables -A OUTPUT -o lo -j ACCEPT
-  - sudo iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 install:
    - arduino --install-library "ConfigManager"
-
+ 
 script:
-   - build_main_platforms
+   - build_platform esp8266
+   - build_platform esp32
  
 # Generate and deploy documentation
 after_success:
   # Currently not doing anything
   - source <(curl -SLs  https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/library_check.sh)
   # Now create doxy documentation
-  #- source <(curl -SLs  https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/doxy_gen_and_deploy.sh)
+  - source <(curl -SLs  https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/doxy_gen_and_deploy.sh)
