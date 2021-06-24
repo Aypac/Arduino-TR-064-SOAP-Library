@@ -13,13 +13,21 @@ git:
   quiet: true
 env:
   global:
-     - ARDUINO_IDE_VERSION="1.8.13"
+     - ARDUINO_IDE_VERSION="1.8.15"
      - PRETTYNAME="Arduino TR-064 Library"
 # Optional, will default to "$TRAVIS_BUILD_DIR/Doxyfile"
 #    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxyfile
  
 before_install:
    - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
+   # Arduino IDE adds a lot of noise caused by network traffic, trying to firewall it off
+   # https://forum.arduino.cc/t/arduino-1-8-2-w-travis-ci-causes-many-warnings-1-8-1-and-older-does-not-why/451140/15
+  - sudo iptables -P INPUT DROP
+  - sudo iptables -P FORWARD DROP
+  - sudo iptables -P OUTPUT ACCEPT
+  - sudo iptables -A INPUT -i lo -j ACCEPT
+  - sudo iptables -A OUTPUT -o lo -j ACCEPT
+  - sudo iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 install:
    - arduino --install-library "ConfigManager"
 
