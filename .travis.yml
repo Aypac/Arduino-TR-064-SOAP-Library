@@ -11,6 +11,15 @@ branches:
 git:
   depth: false
   quiet: true
+addons:
+  apt:
+    sources:
+      - llvm-toolchain-trusty-5.0
+      - key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
+    packages:
+      - python3-pip
+      - python3-wheel
+      - clang-format-5.0
 env:
   global:
      - ARDUINO_IDE_VERSION="1.8.13"
