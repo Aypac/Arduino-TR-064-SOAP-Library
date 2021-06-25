@@ -260,7 +260,7 @@ void getStatusOfAllWifi(int numDev) {
 		}
 		}else{
 			if(Serial) {
-				Serial.printf("Fehler");        
+        Serial.printf("Fehler");        
 				Serial.flush();
 			}
 		}
