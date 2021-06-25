@@ -196,14 +196,7 @@ String TR064::generateAuthToken() {
                 A list of pairs of input parameters and values, e.g
               `params[][2] = {{ "arg1", "value1" }, { "arg2", "value2" }}`.
     @param    nParam
-                The number of input parameters you passed.
-    @param    req
-                A list of pairs of response parameters and values, e.g
-              `req[][2] = {{ "resp1", "" }, { "resp2", "" }}`
-              will be turned into
-              `req[][2] = {{ "resp1", "value1" }, { "resp2", "value2" }}`
-    @param    nReq
-                The number of response parameters you passed.
+                The number of input parameters you passed.   
     @param    url
                 The url you want to call.
     @return success state.
@@ -238,6 +231,13 @@ bool TR064::action(const String& service, const String& act, String params[][2],
               `params[][2] = {{ "arg1", "value1" }, { "arg2", "value2" }}`.
     @param    nParam
                 The number of input parameters you passed.
+    @param    req
+                A list of pairs of response parameters and values, e.g
+              `req[][2] = {{ "resp1", "" }, { "resp2", "" }}`
+              will be turned into
+              `req[][2] = {{ "resp1", "value1" }, { "resp2", "value2" }}`
+    @param    nReq
+                The number of response parameters you passed.                
     @param    url
                 The url you want to call.
     @return success state.
