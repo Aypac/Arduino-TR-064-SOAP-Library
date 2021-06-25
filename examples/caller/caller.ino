@@ -160,7 +160,7 @@ String getStatus() {
  
   	// without loading available services through init() you have to set the url
   	//connection.action("X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", paramsb, 1, reqb, 2, "/upnp/control/x_homeauto");
-  
+	return reqb[1][1];
 }
 
 /**
