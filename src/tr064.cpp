@@ -424,7 +424,7 @@ String TR064::findServiceURL(const String& service) {
     
         deb_println("[TR064][findServiceURL] searching for service: "+service, DEBUG_VERBOSE);
 
-        for (int i=0;i<arr_len(_services);++i) {            
+        for (uint16_t i=0;i<arr_len(_services);++i) {            
             if (service.equalsIgnoreCase(_services[i][0])) {
                 deb_println("[TR064][findServiceURL] found services: "+service+" = "+ _services[i][0]+" , "+ _services[i][1], DEBUG_VERBOSE);
                 return _services[i][1];

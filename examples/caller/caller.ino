@@ -135,8 +135,8 @@ void callWahlhilfe() {
 	connection.action("X_VoIP:1", "X_AVM-DE_DialNumber", params, 1, req, 0);
 	//connection.action("urn:dslforum-org:service:X_VoIP:1", "X_AVM-DE_DialNumber", params, 1, req, 0);
   
-  // without loading available services through init() you have to set the url
-  //connection.action("X_VoIP:1", "X_AVM-DE_DialNumber", params, 1, req, 0, "/upnp/control/x_voip");
+  	// without loading available services through init() you have to set the url
+  	//connection.action("X_VoIP:1", "X_AVM-DE_DialNumber", params, 1, req, 0, "/upnp/control/x_voip");
 }
 
 void callDect() {
@@ -146,20 +146,20 @@ void callDect() {
 	connection.action("X_AVM-DE_Homeauto:1", "SetSwitch", params, 2);
 	// connection.action("urn:dslforum-org:service:X_AVM-DE_Homeauto:1", "SetSwitch", params, 2);
   
-  // without loading available services through init() you have to set the url
-  //connection.action("X_AVM-DE_Homeauto:1", "SetSwitch", params, 2, "/upnp/control/x_homeauto");
+  	// without loading available services through init() you have to set the url
+  	//connection.action("X_AVM-DE_Homeauto:1", "SetSwitch", params, 2, "/upnp/control/x_homeauto");
 }
 
 String getStatus() {
-  ensureWIFIConnection();
+	ensureWIFIConnection();
   
 	String paramsb[][2] = {{"NewAIN", "12345 0123456"}};
 	String reqb[][2] = {{"NewDeviceId", ""}, {"NewSwitchState", ""}};
-  connection.action("X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", paramsb, 1, reqb, 2);
+  	connection.action("X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", paramsb, 1, reqb, 2);
 	//connection.action("urn:dslforum-org:service:X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", paramsb, 1, reqb, 2);
  
-  // without loading available services through init() you have to set the url
-  //connection.action("X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", paramsb, 1, reqb, 2, "/upnp/control/x_homeauto");
+  	// without loading available services through init() you have to set the url
+  	//connection.action("X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", paramsb, 1, reqb, 2, "/upnp/control/x_homeauto");
   
 }
 
