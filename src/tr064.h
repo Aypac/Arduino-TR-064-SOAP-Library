@@ -37,12 +37,33 @@
     //INCOMPATIBLE!
 #endif
 
+/// HTTP codes see RFC7231
+typedef enum {
+    
+     //TR064_CODE_UNAUTHORIZED = 401, //If a user is not authenticated, 401 (“Unauthorized”) will be returned.
+     TR064_CODE_UNKNOWNACTION = 401, ////If an unknown action is used the returned code is 401. This return code is used for obsoleted actions, too. 
+     TR064_CODE_FALSEARGUMENTS = 402, //If a user is not authenticated, 401 (“Unauthorized”) will be returned.
+     TR064_CODE_ACTIONNOTAUTHORIZED = 606, //If a user is authenticated but has not the needed rights, 606 (“Action not authorized”) will be returned
+     TR064_CODE_SECONDFACTORAUTHREQUIRED = 866, //If an action needs 2FA, the status code 866 (“second factor authentication required”)
+     TR064_CODE_SECONDFACTORAUTHBLOCKED = 867, // (“second factor authentication blocked”) or 
+     TR064_CODE_SECONDFACTORAUTHBUSY = 868, // (“second factorauthentication busy”) will be returned and the 2FA procedure    
+} t_tr064_codes;
+
+
+
 #define arr_len( x )  ( sizeof( x ) / sizeof( *x ) ) ///< Gives the length of an array
 
 // Possible values for client.state()
 #define TR064_NO_SERVICES           -1 ///< No Service actions will not execute
 #define TR064_SERVICES_LOADED       0 ///< Service loaded
 
+// Possible values for client.state()
+#define TR064_NO_SERVICES           -1
+#define TR064_SERVICES_LOADED       0
+
+// Possible values for client.state()
+#define TR064_NO_SERVICES          -1
+#define TR064_SERVICES_LOADED       0
 
 /**************************************************************************/
 /*! 
@@ -63,6 +84,23 @@ class TR064 {
          */
         enum LoggingLevels {DEBUG_NONE, DEBUG_ERROR, DEBUG_WARNING, DEBUG_INFO, DEBUG_VERBOSE}; 
         
+        /// HTTP codes see RFC7231
+        enum tr064_codes{
+            
+            //TR064_CODE_UNAUTHORIZED = 401, //If a user is not authenticated, 401 (“Unauthorized”) will be returned.
+            TR064_CODE_UNKNOWNACTION = 401, ////If an unknown action is used the returned code is 401. This return code is used for obsoleted actions, too. 
+            TR064_CODE_FALSEARGUMENTS = 402, //If a user is not authenticated, 401 (“Unauthorized”) will be returned.
+            TR064_CODE_AUTHFAILED = 503, //If a user is not authenticated, 401 (“Unauthorized”) will be returned.
+            TR064_CODE_ARGUMENTVALUEINVALIDE = 600, //  Argument Value Invalid
+            TR064_CODE_ACTIONNOTAUTHORIZED = 606, //If a user is authenticated but has not the needed rights, 606 (“Action not authorized”) will be returned
+            TR064_CODE_ARRAYINDEXINVALID = 713, //SpecifiedArrayIndexInvalid
+            TR064_CODE_NOSUCHENTRY = 714, //No such array entry in array
+            TR064_CODE_INTERNALERROR = 820, // Internal Error
+            TR064_CODE_SECONDFACTORAUTHREQUIRED = 866, //If an action needs 2FA, the status code 866 (“second factor authentication required”)
+            TR064_CODE_SECONDFACTORAUTHBLOCKED = 867, // (“second factor authentication blocked”) or 
+            TR064_CODE_SECONDFACTORAUTHBUSY = 868, // (“second factorauthentication busy”) will be returned and the 2FA procedure    
+        } ;
+
         TR064();
         TR064(uint16_t port, const String& ip, const String& user, const String& pass);
         ~TR064() {}
@@ -70,49 +108,52 @@ class TR064 {
         void init();
         int state();       
         
-        bool action(const String& service, const String& act, const String& url = "");
-        bool action(const String& service, const String& act, String params[][2], int nParam, const String& url = "");
+        bool action(const String& service, const String& act, String params[][2] = {}, int nParam = 0,const String& url = "");
+        //bool action(const String& service, const String& act, String params[][2], int nParam, const String& url = "");
         bool action(const String& service, const String& act, String params[][2], int nParam, String (*req)[2], int nReq, const String& url = "");
 
         String md5String(const String& s);
-        String byte2hex(byte number);
+        String byte2hex(byte number);        
         int debug_level; ///< Available levels are `DEBUG_NONE`, `DEBUG_ERROR`, `DEBUG_WARNING`, `DEBUG_INFO`, and `DEBUG_VERBOSE`.
          
     private:
         WiFiClient tr064client;
         HTTPClient http;
         
-        //TODO: More consistent naming.
+        //TODO: More consistent naming
         
         void initServiceURLs();
         void deb_print(const String& message, int level);
         void deb_println(const String& message, int level);
         bool action_raw(const String& service,const String& act, String params[][2], int nParam, const String& url = "");
-        void takeNonce();
         bool httpRequest(const String& url,  const String& xml, const  String& action, bool retry);
         String generateAuthToken();
         String generateAuthXML();
         String findServiceURL(const String& service);
-        String clearOldServiceName(const String& service);
+        String cleanOldServiceName(const String& service);
+        bool xmlTakeParam(String (*params)[2], int nParam);
         bool xmlTakeParam(String& value, const String& needParam);
-        
+        static String errorToString(int error);
+
         int _state;
         String _ip;
         uint16_t _port;
         String _user;
         String _pass;
-        String _realm; //To be requested from the router
-        String _secretH; //to be generated
+        String _realm; // To be requested from the router
+        String _secretH; // To be generated
         String _nonce = "";
+        String _status;
 
         const char* const _requestStart = "<?xml version=\"1.0\"?><s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">";
         const char* const _detectPage = "/tr64desc.xml";
         const char* const _servicePrefix = "urn:dslforum-org:service:";
         unsigned long lastOutActivity;
         unsigned long lastInActivity;
-        /* TODO: We should give access to this data for users to inspect the
+        /* 
+    		* TODO: We should give access to this data for users to inspect the
         * possibilities of their device(s) - see #9 on Github.
-        TODO: Remove 100 services limits here
+        * TODO: Remove 100 services limits here
         */
         String _services[100][2];
 };

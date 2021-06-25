@@ -1,28 +1,29 @@
+#include "arduino_secrets.h"
 /**
  * home-indicator.ino
- *  René Vollmer
+ *  by René Vollmer
  *  Example code for the home-indicator-project [ https://www.instructables.com/id/Who-Is-Home-Indicator-aka-Weasley-Clock-Based-on-T ].
  *  
-  * Please adjust your data below.
+ *  Please adjust your data below.
  *  
  *  Created on: 09.12.2015,
- *  latest update: 11.06.2019
+ *  latest update: 24.06.2021
  *
  */
 
  
 #if defined(ESP8266)
-	//Imports for ESP8266
-	#include <ESP8266WiFi.h>
-	#include <ESP8266WiFiMulti.h>
-	#include <ESP8266HTTPClient.h>
-	ESP8266WiFiMulti WiFiMulti;
+  //Imports for ESP8266
+  #include <ESP8266WiFi.h>
+  #include <ESP8266WiFiMulti.h>
+  #include <ESP8266HTTPClient.h>
+  ESP8266WiFiMulti WiFiMulti;
 #elif defined(ESP32)
-	//Imports for ESP32
-	#include <WiFi.h>
-	#include <WiFiMulti.h>
-	#include <HTTPClient.h>
-	WiFiMulti WiFiMulti;
+  //Imports for ESP32
+  #include <WiFi.h>
+  #include <WiFiMulti.h>
+  #include <HTTPClient.h>
+  WiFiMulti WiFiMulti;
 #endif
 
 #include <tr064.h>
@@ -31,34 +32,26 @@
 // Put your router settings here
 //-------------------------------------------------------------------------------------
 
-// Wifi network name (SSID)
-const char* wifi_ssid = "WLANSID"; 
+///////please enter your sensitive data in the Secret tab/arduino_secrets.h 
 
-// Wifi network password
-const char* wifi_password = "XXXXXXXXXXXXXXXXXXXXX";
+char wifi_ssid[] = SECRET_WIFI_SSID;
+char wifi_password[] = SECRET_WIFI_PASSWORD;
 
-// The username if you created an account, "admin" otherwise
-const char* fuser = "homechecker";
+char fuser[] = SECRET_FUSER;
+char fpass[] = SECRET_FPASS;
 
-// The password for the aforementioned account.
-const char* fpass = "this_shouldBEaDecentPassword!";
-
-// IP address of your router. This should be "192.168.179.1" for most FRITZ!Boxes
-const char* IP = "192.168.179.1";
-
-// Port of the API of your router. This should be 49000 for all TR-064 devices.
-const int PORT = 49000;
-
-// Put the settings for the devices to detect here
-//   The number of different people/user you want to be able to detect
-const int numUser = 3;
-
-//   The maximum amount of devices per user
-const int maxDevices = 3;
+char IP[] = SECRET_IP;
+int PORT = 49000;
 
 //-------------------------------------------------------------------------------------
+// Put the settings for the devices to detect here
+//-------------------------------------------------------------------------------------
 
+// The number of different people/user you want to be able to detect
+const int numUser = 3;
 
+// The maximum amount of devices per user
+const int maxDevices = 3;
 /*
  * The array of macs. Structure:
  * = {{"mac1:user1", "mac2:user1", ..., "macX:user1"}, {"mac1:user2", "mac2:user2", ..., "macX:user2"}, ..., {"mac1:userY", "mac2:userY", ..., "macX:userY"}};
@@ -69,6 +62,9 @@ const char macsPerUser[numUser][maxDevices][18] =
       {"23:45:67:89:AB:CD"}, //User2, one device
       {"34:56:78:9A:BC:DE", "45:67:89:AB:CD:EF", "56:78:9A:BC:DE:F0"}}; //User3, three devices
 
+//-------------------------------------------------------------------------------------
+// Hardware settings
+//-------------------------------------------------------------------------------------
 /*
  * The pins for the LED output the users
  * Look these pins up. They might depend on your board.
@@ -78,15 +74,17 @@ const char macsPerUser[numUser][maxDevices][18] =
 int userPins[numUser] = {5, 4, 0}; //Three LED's because there are three users
 
 //-------------------------------------------------------------------------------------
+// Initializations. No need to change these.
+//-------------------------------------------------------------------------------------
 
 // TR-064 connection
 TR064 connection(PORT, IP, fuser, fpass);
 
 
-// Status array. No need to change this!
+// Status array. 
 bool onlineUsers[numUser];
 
-// Array-settings. No need to change these!
+// Array-settings.
 const String STATUS_MAC = "MAC";
 const String STATUS_IP = "IP";
 const String STATUS_ACTIVE = "ACTIVE";
@@ -95,17 +93,17 @@ const int STATUS_MAC_INDEX = 0;
 const int STATUS_IP_INDEX = 1;
 const int STATUS_ACTIVE_INDEX = 3;
 const int STATUS_HOSTNAME_INDEX = 2;
-
-
+//-------------------------------------------------------------------------------------
 
 //###########################################################################################
 //############################ OKAY, LET'S DO THIS! #########################################
 //###########################################################################################
 
 void setup() {
-	// You might want to change the baud-rate
+	// Start the serial connection
+	// Not required for production, but helpful for development.
+	// You might also want to change the baud-rate.
 	Serial.begin(115200);
-	if(Serial) Serial.setDebugOutput(true);
 
 	// Clear some space in the serial monitor.
 	if(Serial) {
@@ -140,10 +138,20 @@ void setup() {
 	// Connect to wifi
 	ensureWIFIConnection();
 
-	// Initialize the TR-064 library
-	// (IMPORTANT!)
+	// Set debug level. Available levels are:
+	//  DEBUG_NONE         ///< Print no debug messages whatsoever (production)
+	//  DEBUG_ERROR        ///< Only print error messages
+	//  DEBUG_WARNING      ///< Only print error and warning messages
+	//  DEBUG_INFO         ///< Print error, warning and info messages
+	//  DEBUG_VERBOSE      ///< Print all messages
+    connection.debug_level = connection.DEBUG_WARNING;
+	if(Serial) Serial.setDebugOutput(true);
+	
+	// The following line retrieves a list of all available services on the router.
+	// It is not required for operation, so it can be safely commented and save
+	//   ressources on the microcontroller. However, it can be helpful for debugging
+	//     and development to keep it activated.
 	if(Serial) Serial.printf("Initialize TR-064 connection\n\n");
-    connection.debug_level = connection.DEBUG_VERBOSE; //0: None, 1: Errors, 2: Warning, 3: Info, 4: Verbose
 	connection.init();
 
 	// Request the number of (connected) Wifi-Devices
@@ -159,52 +167,52 @@ void setup() {
 }
 
 void loop() {
-	ensureWIFIConnection();
+  ensureWIFIConnection();
   
-	// For the next round, assume all users are offline
-	for (int i=0;i<numUser;++i) {
-		onlineUsers[i] = false;
-	}
+  // For the next round, assume all users are offline
+  for (int i=0;i<numUser;++i) {
+    onlineUsers[i] = false;
+  }
 
-	// Check for all users if at least one of the macs is online
-	for (int i=0;i<numUser;++i) {
-		if (Serial) Serial.printf("> USER %d -------------------------------\n",i);
-		boolean b = true; //No online device found yet
-		// Check all devices
-		for (int j=0;j<maxDevices && b;++j) {
-			// Get the mac of the device to check
-			String curMac = macsPerUser[i][j];
-			b = (curMac!=""); //If it is empty, we don't need to check it (or the next one)
-			if (b) {
-				// okay, ask the router for the status of this MAC
-				String stat2[4][2];
-				getStatusOfMAC(curMac, stat2);
+  // Check for all users if at least one of the macs is online
+  for (int i=0;i<numUser;++i) {
+    if (Serial) Serial.printf("> USER %d -------------------------------\n",i);
+    boolean b = true; //No online device found yet
+    // Check all devices
+    for (int j=0;j<maxDevices && b;++j) {
+      // Get the mac of the device to check
+      String curMac = macsPerUser[i][j];
+      b = (curMac!=""); //If it is empty, we don't need to check it (or the next one)
+      if (b) {
+        // okay, ask the router for the status of this MAC
+        String stat2[4][2];
+        getStatusOfMAC(curMac, stat2);
 
-				// aaaaaaaaaaaannd??? Is it online?
-				if (stat2[STATUS_ACTIVE_INDEX][1] != "" && stat2[STATUS_ACTIVE_INDEX][1] != "0") {
-					onlineUsers[i] = true;
-					b=true;
-				}
-				// Okay, print the status to the console!
-				verboseStatus(stat2);
-			}
-		}
-	}
-	if(Serial) Serial.println("-------------------------------------------");
+        // aaaaaaaaaaaannd??? Is it online?
+        if (stat2[STATUS_ACTIVE_INDEX][1] != "" && stat2[STATUS_ACTIVE_INDEX][1] != "0") {
+          onlineUsers[i] = true;
+          b=true;
+        }
+        // Okay, print the status to the console!
+        verboseStatus(stat2);
+      }
+    }
+  }
+  if(Serial) Serial.println("-------------------------------------------");
 
-	// Flash all LEDs and then set them to the status we just found
-	for (int i=0;i<numUser;++i) {
-		digitalWrite(userPins[i], HIGH);
-		delay(7);
-		digitalWrite(userPins[i], LOW);
-		delay(7);
-		if (onlineUsers[i]) {
-			digitalWrite(userPins[i], HIGH);
-		} else {
-			digitalWrite(userPins[i], LOW);
-		}
-	}
-	delay(1000);
+  // Flash all LEDs and then set them to the status we just found
+  for (int i=0;i<numUser;++i) {
+    digitalWrite(userPins[i], HIGH);
+    delay(7);
+    digitalWrite(userPins[i], LOW);
+    delay(7);
+    if (onlineUsers[i]) {
+      digitalWrite(userPins[i], HIGH);
+    } else {
+      digitalWrite(userPins[i], LOW);
+    }
+  }
+  delay(1000);
 }
 
 
@@ -230,7 +238,7 @@ int getWifiNumber() {
 *  return nothing as of yet
  */
 void getStatusOfAllWifi() {
-	getStatusOfAllWifi(getWifiNumber());
+  getStatusOfAllWifi(getWifiNumber());
 }
 
 
@@ -240,17 +248,23 @@ void getStatusOfAllWifi() {
  * return nothing as of yet
  */
 void getStatusOfAllWifi(int numDev) {
-	//Query the mac and status of each device
-	for (int i=0;i<numDev;++i) {
-		String params[][2] = {{"NewAssociatedDeviceIndex", String(i)}};
-		String req[][2] = {{"NewAssociatedDeviceAuthState", ""}, {"NewAssociatedDeviceMACAddress", ""}, {"NewAssociatedDeviceIPAddress", ""}};
-		connection.action("WLANConfiguration:1", "GetGenericAssociatedDeviceInfo", params, 1, req, 2);
-		if(Serial) {
-			Serial.printf("%d:\t", i);
-			Serial.println((req[1][1])+" is online "+(req[0][1]));
-			Serial.flush();
-		}
-	}
+  //Query the mac and status of each device
+  for (int i=0;i<numDev;++i) {
+    String params[][2] = {{"NewAssociatedDeviceIndex", String(i)}};
+    String req[][2] = {{"NewAssociatedDeviceAuthState", ""}, {"NewAssociatedDeviceMACAddress", ""}, {"NewAssociatedDeviceIPAddress", ""}};
+    if(connection.action("WLANConfiguration:1", "GetGenericAssociatedDeviceInfo", params, 1, req, 2)){
+      if(Serial) {
+        Serial.printf("%d:\t", i);
+        Serial.println((req[1][1])+" is online "+(req[0][1]));
+        Serial.flush();
+      }
+    }else{
+      if(Serial) {
+        Serial.printf("\t Fehler");        
+        Serial.flush();
+      }
+    }
+  }
 }
 
 /** 
@@ -258,23 +272,29 @@ void getStatusOfAllWifi(int numDev) {
  * return nothing, but fills the array r
  */
 void getStatusOfMACwifi(String mac, String (&r)[4][2]) {
-	// Ask for one specific device
-	mac.toUpperCase();
-	String params[][2] = {{"NewAssociatedDeviceMACAddress", mac}};
-	String req[][2] = {{"NewAssociatedDeviceIPAddress", ""}, {"NewAssociatedDeviceAuthState", ""}};
-	connection.action("WLANConfiguration:1", "GetSpecificAssociatedDeviceInfo", params, 1, req, 2);
-	if(Serial) {
-		Serial.println(mac + " is online " + (req[2][1]));
-		Serial.flush();
-	}
-	r[STATUS_MAC_INDEX][0] = STATUS_MAC;
-	r[STATUS_MAC_INDEX][1] = mac;
-	r[STATUS_IP_INDEX][0] = STATUS_IP;
-	r[STATUS_IP_INDEX][1] = req[0][1];
-	r[STATUS_HOSTNAME_INDEX][0] = STATUS_HOSTNAME;
-	r[STATUS_HOSTNAME_INDEX][1] = "";
-	r[STATUS_ACTIVE_INDEX][0] = STATUS_ACTIVE;
-	r[STATUS_ACTIVE_INDEX][1] = req[1][1];
+  // Ask for one specific device
+  mac.toUpperCase();
+  String params[][2] = {{"NewAssociatedDeviceMACAddress", mac}};
+  String req[][2] = {{"NewAssociatedDeviceIPAddress", ""}, {"NewAssociatedDeviceAuthState", ""}};
+  if(connection.action("WLANConfiguration:1", "GetSpecificAssociatedDeviceInfo", params, 1, req, 2)){
+    if(Serial) {
+      Serial.println(mac + " is online " + (req[2][1]));
+      Serial.flush();
+    }
+    r[STATUS_MAC_INDEX][0] = STATUS_MAC;
+    r[STATUS_MAC_INDEX][1] = mac;
+    r[STATUS_IP_INDEX][0] = STATUS_IP;
+    r[STATUS_IP_INDEX][1] = req[0][1];
+    r[STATUS_HOSTNAME_INDEX][0] = STATUS_HOSTNAME;
+    r[STATUS_HOSTNAME_INDEX][1] = "";
+    r[STATUS_ACTIVE_INDEX][0] = STATUS_ACTIVE;
+    r[STATUS_ACTIVE_INDEX][1] = req[1][1];
+  }else{
+    if(Serial) {
+      Serial.println(mac + " Fehler");
+      Serial.flush();
+    }
+  }
 }
 
 /** 
@@ -283,11 +303,11 @@ void getStatusOfMACwifi(String mac, String (&r)[4][2]) {
  *  return (int)
  */
 int getDeviceNumber() {
-	String params[][2] = {{}};
-	String req[][2] = {{"NewHostNumberOfEntries", ""}};
-	connection.action("Hosts:1", "GetHostNumberOfEntries", params, 0, req, 1);
-	int numDev = (req[0][1]).toInt();
-	return numDev;
+  String params[][2] = {{}};
+  String req[][2] = {{"NewHostNumberOfEntries", ""}};
+  connection.action("Hosts:1", "GetHostNumberOfEntries", params, 0, req, 1);
+  int numDev = (req[0][1]).toInt();
+  return numDev;
 }
 
 /** 
@@ -295,22 +315,28 @@ int getDeviceNumber() {
  * return nothing, but fills the array r
  */
 void getStatusOfMAC(String mac, String (&r)[4][2]) {
-	//Ask for one specific device
-	String params[][2] = {{"NewMACAddress", mac}};
-	String req[][2] = {{"NewIPAddress", ""}, {"NewActive", ""}, {"NewHostName", ""}};
-	connection.action("Hosts:1", "GetSpecificHostEntry", params, 1, req, 2);
-	if(Serial) {
-		Serial.println(mac + " is online " + (req[1][1]));
-		Serial.flush();
-	}
-	r[STATUS_MAC_INDEX][0] = STATUS_MAC;
-	r[STATUS_MAC_INDEX][1] = mac;
-	r[STATUS_IP_INDEX][0] = STATUS_IP;
-	r[STATUS_IP_INDEX][1] = req[0][1];
-	r[STATUS_HOSTNAME_INDEX][0] = STATUS_HOSTNAME;
-	r[STATUS_HOSTNAME_INDEX][1] = req[2][1];
-	r[STATUS_ACTIVE_INDEX][0] = STATUS_ACTIVE;
-	r[STATUS_ACTIVE_INDEX][1] = req[1][1];
+  //Ask for one specific device
+  String params[][2] = {{"NewMACAddress", mac}};
+  String req[][2] = {{"NewIPAddress", ""}, {"NewActive", ""}, {"NewHostName", ""}};
+  if(connection.action("Hosts:1", "GetSpecificHostEntry", params, 1, req, 2)){
+    if(Serial) {
+      Serial.println(mac + " is online " + (req[1][1]));
+      Serial.flush();
+    }
+    r[STATUS_MAC_INDEX][0] = STATUS_MAC;
+    r[STATUS_MAC_INDEX][1] = mac;
+    r[STATUS_IP_INDEX][0] = STATUS_IP;
+    r[STATUS_IP_INDEX][1] = req[0][1];
+    r[STATUS_HOSTNAME_INDEX][0] = STATUS_HOSTNAME;
+    r[STATUS_HOSTNAME_INDEX][1] = req[2][1];
+    r[STATUS_ACTIVE_INDEX][0] = STATUS_ACTIVE;
+    r[STATUS_ACTIVE_INDEX][1] = req[1][1];
+  }else{
+    if(Serial) {
+      Serial.println(mac + " Fehler");
+      Serial.flush();
+    }
+  }
 }
 
 
@@ -319,28 +345,28 @@ void getStatusOfMAC(String mac, String (&r)[4][2]) {
  * return nothing
  */
 void verboseStatus(String r[4][2]) {
-	for (int i=0;i<4;++i) {
-		if(Serial) Serial.print(r[i][0]+"="+r[i][1]+", ");
-	}
-	if(Serial) Serial.print("\n");
+  for (int i=0;i<4;++i) {
+    if(Serial) Serial.print(r[i][0]+"="+r[i][1]+", ");
+  }
+  if(Serial) Serial.print("\n");
 }
 
 /**
  * Makes sure there is a WIFI connection and waits until it is (re-)established.
  */
 void ensureWIFIConnection() {
-	if ((WiFiMulti.run() != WL_CONNECTED)) {
-		WiFiMulti.addAP(wifi_ssid, wifi_password);
-		WiFiMulti.run();
-		while ((WiFiMulti.run() != WL_CONNECTED)) {
-			//Flash all LED's to indicate, that the connection was lost.
-			for (int i = 0; i < numUser; ++i) {
-				digitalWrite(userPins[i], HIGH);
-				delay(7);
-				digitalWrite(userPins[i], LOW);
-				delay(7);
-			}
-			delay(500);
-		}
-	}
+  if ((WiFiMulti.run() != WL_CONNECTED)) {
+    WiFiMulti.addAP(wifi_ssid, wifi_password);
+    WiFiMulti.run();
+    while ((WiFiMulti.run() != WL_CONNECTED)) {
+      //Flash all LED's to indicate, that the connection was lost.
+      for (int i = 0; i < numUser; ++i) {
+        digitalWrite(userPins[i], HIGH);
+        delay(7);
+        digitalWrite(userPins[i], LOW);
+        delay(7);
+      }
+      delay(500);
+    }
+  }
 }
