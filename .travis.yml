@@ -11,18 +11,28 @@ branches:
 git:
   depth: false
   quiet: true
+addons:
+  apt:
+    sources:
+      - llvm-toolchain-trusty-5.0
+      - key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
+    packages:
+      - python3-pip
+      - python3-wheel
+      - clang-format-5.0
 env:
   global:
-     - ARDUINO_IDE_VERSION="1.8.11"
+     - ARDUINO_IDE_VERSION="1.8.15"
      - PRETTYNAME="Arduino TR-064 Library"
 # Optional, will default to "$TRAVIS_BUILD_DIR/Doxyfile"
 #    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxyfile
  
 before_install:
    - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
+   
 install:
    - arduino --install-library "ConfigManager"
-
+ 
 script:
    - build_platform esp8266
    - build_platform esp32
