@@ -1,7 +1,7 @@
 <b>IMPORTANT NOTE</b><br />
 *My ISP forces me to use a proprietary router without TR064. Additionally, I started mostly using [Micropython](https://micropython.org/), so I have a hard time maintaining this code. Therefore I rely on contributions and testing from the community - so YOU. Also, if you feel like maintaining this repo, let me know and we should be able to make you maintainer or even transfer ownership.*
 
-# Arduino-TR-064-SOAP-Library [![Build Status](https://app.travis-ci.com/Aypac/SetupVariableTracker.svg?branch=develop)](https://app.travis-ci.com/Aypac/SetupVariableTracker)
+# Arduino-TR-064-SOAP-Library [![Build Status](https://app.travis-ci.com/Aypac/SetupVariableTracker.svg?branch=master)](https://app.travis-ci.com/Aypac/SetupVariableTracker)
 Arduino library to facilitate the use of the TR-064 protocol ([my "simple" explanation](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-does-the-TR-064-protocol-work%3F), the [definition](https://www.broadband-forum.org/technical/download/TR-064.pdf) and an official [description](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf)), most commonly used by Fritz!Box.
 
 This library has been developed on an ESP8266 and tested on an ESP32.
