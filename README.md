@@ -1,4 +1,4 @@
-# Arduino-TR-064-SOAP-Library [![Build Status](https://travis-ci.com/Aypac/Arduino-TR-064-SOAP-Library.svg?branch=master)](https://travis-ci.com/Aypac/Arduino-TR-064-SOAP-Library)
+# Arduino-TR-064-SOAP-Library [![Build Status](https://app.travis-ci.com/Aypac/SetupVariableTracker.svg?branch=develop)](https://app.travis-ci.com/Aypac/SetupVariableTracker)
 Arduino library to facilitate the use of the TR-064 protocol ([my "simple" explanation](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-does-the-TR-064-protocol-work%3F), the [definition](https://www.broadband-forum.org/technical/download/TR-064.pdf) and an official [description](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf)), most commonly used by Fritz!Box.
 
 This library has been developed on an ESP8266 and tested on an ESP32.
