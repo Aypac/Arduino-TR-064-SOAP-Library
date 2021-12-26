@@ -85,6 +85,24 @@ Public Types</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="separator:a0db08c50d9c1cc3a25695ae8f897847f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c1e088cfe446056298e11285aad8058"><td class="memItemLeft" align="right" valign="top"><a id="a1c1e088cfe446056298e11285aad8058"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#a1c1e088cfe446056298e11285aad8058">tr064_codes</a> { <br />
+&#160;&#160;<b>TR064_CODE_UNKNOWNACTION</b> = 401, 
+<b>TR064_CODE_FALSEARGUMENTS</b> = 402, 
+<b>TR064_CODE_AUTHFAILED</b> = 503, 
+<b>TR064_CODE_ARGUMENTVALUEINVALIDE</b> = 600, 
+<br />
+&#160;&#160;<b>TR064_CODE_ACTIONNOTAUTHORIZED</b> = 606, 
+<b>TR064_CODE_ARRAYINDEXINVALID</b> = 713, 
+<b>TR064_CODE_NOSUCHENTRY</b> = 714, 
+<b>TR064_CODE_INTERNALERROR</b> = 820, 
+<br />
+&#160;&#160;<b>TR064_CODE_SECONDFACTORAUTHREQUIRED</b> = 866, 
+<b>TR064_CODE_SECONDFACTORAUTHBLOCKED</b> = 867, 
+<b>TR064_CODE_SECONDFACTORAUTHBUSY</b> = 868
+<br />
+ }<tr class="memdesc:a1c1e088cfe446056298e11285aad8058"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP codes see RFC7231. <br /></td></tr>
+</td></tr>
+<tr class="separator:a1c1e088cfe446056298e11285aad8058"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -105,14 +123,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a3bde6cab9302dbf8ea0d4a4cd48c27d7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#a3bde6cab9302dbf8ea0d4a4cd48c27d7">state</a> ()</td></tr>
 <tr class="memdesc:a3bde6cab9302dbf8ea0d4a4cd48c27d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the State of Service Load.  <a href="#a3bde6cab9302dbf8ea0d4a4cd48c27d7">More...</a><br /></td></tr>
 <tr class="separator:a3bde6cab9302dbf8ea0d4a4cd48c27d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a977f76f9da19199983f4067131607e46"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#a977f76f9da19199983f4067131607e46">action</a> (const String &amp;service, const String &amp;act, const String &amp;url=&quot;&quot;)</td></tr>
-<tr class="memdesc:a977f76f9da19199983f4067131607e46"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function will call an action on the service of the device. In order to understand how to construct such a call, please consult <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-to-create-your-first-own-API-call">the Github page</a>.  <a href="#a977f76f9da19199983f4067131607e46">More...</a><br /></td></tr>
-<tr class="separator:a977f76f9da19199983f4067131607e46"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac42868bc1c6e054d7dccf08b7c970e54"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#ac42868bc1c6e054d7dccf08b7c970e54">action</a> (const String &amp;service, const String &amp;act, String params[][2], int nParam, const String &amp;url=&quot;&quot;)</td></tr>
-<tr class="memdesc:ac42868bc1c6e054d7dccf08b7c970e54"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function will call an action on the service of the device with certain parameters. In order to understand how to construct such a call, please consult <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-to-create-your-first-own-API-call">the Github page</a>.  <a href="#ac42868bc1c6e054d7dccf08b7c970e54">More...</a><br /></td></tr>
-<tr class="separator:ac42868bc1c6e054d7dccf08b7c970e54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9c7932693273e9b34cdc7a781b02b52"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#ac9c7932693273e9b34cdc7a781b02b52">action</a> (const String &amp;service, const String &amp;act, String params[][2]={}, int nParam=0, const String &amp;url=&quot;&quot;)</td></tr>
+<tr class="memdesc:ac9c7932693273e9b34cdc7a781b02b52"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function will call an action on the service of the device with certain parameters and return values. It will fill the array <code>req</code> with the values of the assiciated return variables of the request. In order to understand how to construct such a call, please consult <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-to-create-your-first-own-API-call">the Github page</a>.  <a href="#ac9c7932693273e9b34cdc7a781b02b52">More...</a><br /></td></tr>
+<tr class="separator:ac9c7932693273e9b34cdc7a781b02b52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4cae33979cc5ee4d2d6c9033a3b21de0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#a4cae33979cc5ee4d2d6c9033a3b21de0">action</a> (const String &amp;service, const String &amp;act, String params[][2], int nParam, String(*req)[2], int nReq, const String &amp;url=&quot;&quot;)</td></tr>
-<tr class="memdesc:a4cae33979cc5ee4d2d6c9033a3b21de0"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function will call an action on the service of the device with certain parameters and return values. It will fill the array <code>req</code> with the values of the assiciated return variables of the request. In order to understand how to construct such a call, please consult <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-to-create-your-first-own-API-call">the Github page</a>.  <a href="#a4cae33979cc5ee4d2d6c9033a3b21de0">More...</a><br /></td></tr>
+<tr class="memdesc:a4cae33979cc5ee4d2d6c9033a3b21de0"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function will call an action on the service of the device with certain parameters. In order to understand how to construct such a call, please consult <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-to-create-your-first-own-API-call">the Github page</a>.  <a href="#a4cae33979cc5ee4d2d6c9033a3b21de0">More...</a><br /></td></tr>
 <tr class="separator:a4cae33979cc5ee4d2d6c9033a3b21de0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a137de6a536937ed7fb7cec3af9daa47c"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r064.html#a137de6a536937ed7fb7cec3af9daa47c">md5String</a> (const String &amp;s)</td></tr>
 <tr class="memdesc:a137de6a536937ed7fb7cec3af9daa47c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Translates a string into its MD5 hash.  <a href="#a137de6a536937ed7fb7cec3af9daa47c">More...</a><br /></td></tr>
@@ -271,53 +286,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 
 </div>
 </div>
-<a id="a977f76f9da19199983f4067131607e46"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a977f76f9da19199983f4067131607e46">&#9670;&nbsp;</a></span>action() <span class="overload">[1/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool TR064::action </td>
-          <td>(</td>
-          <td class="paramtype">const String &amp;&#160;</td>
-          <td class="paramname"><em>service</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const String &amp;&#160;</td>
-          <td class="paramname"><em>act</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const String &amp;&#160;</td>
-          <td class="paramname"><em>url</em> = <code>&quot;&quot;</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>This function will call an action on the service of the device. In order to understand how to construct such a call, please consult <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-to-create-your-first-own-API-call">the Github page</a>. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">service</td><td>The name of the service you want to adress. </td></tr>
-    <tr><td class="paramname">act</td><td>The action you want to perform on the service. </td></tr>
-    <tr><td class="paramname">url</td><td>The url you want to call. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>success state. </dd></dl>
-
-</div>
-</div>
-<a id="ac42868bc1c6e054d7dccf08b7c970e54"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac42868bc1c6e054d7dccf08b7c970e54">&#9670;&nbsp;</a></span>action() <span class="overload">[2/3]</span></h2>
+<a id="ac9c7932693273e9b34cdc7a781b02b52"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9c7932693273e9b34cdc7a781b02b52">&#9670;&nbsp;</a></span>action() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -338,13 +308,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>params</em>[][2], </td>
+          <td class="paramname"><em>params</em>[][2] = <code>{}</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>nParam</em>, </td>
+          <td class="paramname"><em>nParam</em> = <code>0</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -360,7 +330,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
       </table>
 </div><div class="memdoc">
 
-<p>This function will call an action on the service of the device with certain parameters. In order to understand how to construct such a call, please consult <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-to-create-your-first-own-API-call">the Github page</a>. </p>
+<p>This function will call an action on the service of the device with certain parameters and return values. It will fill the array <code>req</code> with the values of the assiciated return variables of the request. In order to understand how to construct such a call, please consult <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-to-create-your-first-own-API-call">the Github page</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">service</td><td>The name of the service you want to adress. </td></tr>
@@ -376,7 +346,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </div>
 </div>
 <a id="a4cae33979cc5ee4d2d6c9033a3b21de0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4cae33979cc5ee4d2d6c9033a3b21de0">&#9670;&nbsp;</a></span>action() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a4cae33979cc5ee4d2d6c9033a3b21de0">&#9670;&nbsp;</a></span>action() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -431,7 +401,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
       </table>
 </div><div class="memdoc">
 
-<p>This function will call an action on the service of the device with certain parameters and return values. It will fill the array <code>req</code> with the values of the assiciated return variables of the request. In order to understand how to construct such a call, please consult <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-to-create-your-first-own-API-call">the Github page</a>. </p>
+<p>This function will call an action on the service of the device with certain parameters. In order to understand how to construct such a call, please consult <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-to-create-your-first-own-API-call">the Github page</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">service</td><td>The name of the service you want to adress. </td></tr>

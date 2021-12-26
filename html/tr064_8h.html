@@ -64,7 +64,8 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#define-members">Macros</a>  </div>
+<a href="#define-members">Macros</a> &#124;
+<a href="#enum-members">Enumerations</a>  </div>
   <div class="headertitle">
 <div class="title">tr064.h File Reference</div>  </div>
 </div><!--header-->
@@ -94,6 +95,37 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tr064_8h.html#a43d4901e3c856c4875e051c63bd97118">TR064_SERVICES_LOADED</a>&#160;&#160;&#160;0</td></tr>
 <tr class="memdesc:a43d4901e3c856c4875e051c63bd97118"><td class="mdescLeft">&#160;</td><td class="mdescRight">Service loaded. <br /></td></tr>
 <tr class="separator:a43d4901e3c856c4875e051c63bd97118"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3067a89a3d5481bda3cc26e96716723d"><td class="memItemLeft" align="right" valign="top"><a id="a3067a89a3d5481bda3cc26e96716723d"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tr064_8h.html#a3067a89a3d5481bda3cc26e96716723d">TR064_NO_SERVICES</a>&#160;&#160;&#160;-1</td></tr>
+<tr class="memdesc:a3067a89a3d5481bda3cc26e96716723d"><td class="mdescLeft">&#160;</td><td class="mdescRight">No Service actions will not execute. <br /></td></tr>
+<tr class="separator:a3067a89a3d5481bda3cc26e96716723d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43d4901e3c856c4875e051c63bd97118"><td class="memItemLeft" align="right" valign="top"><a id="a43d4901e3c856c4875e051c63bd97118"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tr064_8h.html#a43d4901e3c856c4875e051c63bd97118">TR064_SERVICES_LOADED</a>&#160;&#160;&#160;0</td></tr>
+<tr class="memdesc:a43d4901e3c856c4875e051c63bd97118"><td class="mdescLeft">&#160;</td><td class="mdescRight">Service loaded. <br /></td></tr>
+<tr class="separator:a43d4901e3c856c4875e051c63bd97118"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3067a89a3d5481bda3cc26e96716723d"><td class="memItemLeft" align="right" valign="top"><a id="a3067a89a3d5481bda3cc26e96716723d"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tr064_8h.html#a3067a89a3d5481bda3cc26e96716723d">TR064_NO_SERVICES</a>&#160;&#160;&#160;-1</td></tr>
+<tr class="memdesc:a3067a89a3d5481bda3cc26e96716723d"><td class="mdescLeft">&#160;</td><td class="mdescRight">No Service actions will not execute. <br /></td></tr>
+<tr class="separator:a3067a89a3d5481bda3cc26e96716723d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43d4901e3c856c4875e051c63bd97118"><td class="memItemLeft" align="right" valign="top"><a id="a43d4901e3c856c4875e051c63bd97118"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tr064_8h.html#a43d4901e3c856c4875e051c63bd97118">TR064_SERVICES_LOADED</a>&#160;&#160;&#160;0</td></tr>
+<tr class="memdesc:a43d4901e3c856c4875e051c63bd97118"><td class="mdescLeft">&#160;</td><td class="mdescRight">Service loaded. <br /></td></tr>
+<tr class="separator:a43d4901e3c856c4875e051c63bd97118"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a719b4f6ed400e5ecdfbe698364c79596"><td class="memItemLeft" align="right" valign="top"><a id="a719b4f6ed400e5ecdfbe698364c79596"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tr064_8h.html#a719b4f6ed400e5ecdfbe698364c79596">t_tr064_codes</a> { <br />
+&#160;&#160;<b>TR064_CODE_UNKNOWNACTION</b> = 401, 
+<b>TR064_CODE_FALSEARGUMENTS</b> = 402, 
+<b>TR064_CODE_ACTIONNOTAUTHORIZED</b> = 606, 
+<b>TR064_CODE_SECONDFACTORAUTHREQUIRED</b> = 866, 
+<br />
+&#160;&#160;<b>TR064_CODE_SECONDFACTORAUTHBLOCKED</b> = 867, 
+<b>TR064_CODE_SECONDFACTORAUTHBUSY</b> = 868
+<br />
+ }<tr class="memdesc:a719b4f6ed400e5ecdfbe698364c79596"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP codes see RFC7231. <br /></td></tr>
+</td></tr>
+<tr class="separator:a719b4f6ed400e5ecdfbe698364c79596"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Library for communicating via TR-064 protocol (e.g. Fritz!Box) This library allows for easy communication of TR-064 (and possibly TR-069) enabled devices, such as Routers, smartplugs, DECT telephones etc. Details, examples and the latest Version of this library can be found <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library">on my Github page</a>. A descriptor of the protocol can be found <a href="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf">here</a>.</p>
