@@ -1,3 +1,4 @@
+#include "arduino_secrets.h"
 /**
  * caller.ino
  *  Oliver-André Urban
@@ -5,8 +6,8 @@
  *    home-indicator.ino
  *      by René Vollmer
  *   improved by
- *    Karsten Sauer (gsg2820)
- * 
+<*    Karsten Sauer (saak2820)
+=* 
  *  Example code for placing internal DECT phone calls.
  * 
  *  Please adjust your data below.
@@ -36,23 +37,16 @@
 // Router settings
 //-------------------------------------------------------------------------------------
 
-// Wifi network name (SSID)
-const char* wifi_ssid = "WLANSID"; 
+///////please enter your sensitive data in the Secret tab/arduino_secrets.h 
 
-// Wifi network password
-const char* wifi_password = "XXXXXXXXXXXXXXXXXXXXX";
+char wifi_ssid[] = SECRET_WIFI_SSID;
+char wifi_password[] = SECRET_WIFI_PASSWORD;
 
-// The username if you created an account, "admin" otherwise
-const char* fuser = "homechecker";
+char fuser[] = SECRET_FUSER;
+char fpass[] = SECRET_FPASS;
 
-// The password for the aforementioned account.
-const char* fpass = "this_shouldBEaDecentPassword!";
-
-// IP address of your router. This should be "192.168.179.1" for most FRITZ!Boxes
-const char* IP = "192.168.179.1";
-
-// Port of the API of your router. This should be 49000 for all TR-064 devices.
-const int PORT = 49000;
+char IP[] = SECRET_IP;
+int PORT = 49000;
 
 //-------------------------------------------------------------------------------------
 // Hardware settings
@@ -92,7 +86,7 @@ void setup() {
 	
 	// Wait a few secs for warm-up (dunno why, was in the default code for http connections).
 	delay(5000);
-
+  
 	// Connect to wifi
 	ensureWIFIConnection();
   
@@ -140,6 +134,9 @@ void callWahlhilfe() {
 	String req[][2] = {{}};
 	connection.action("X_VoIP:1", "X_AVM-DE_DialNumber", params, 1, req, 0);
 	//connection.action("urn:dslforum-org:service:X_VoIP:1", "X_AVM-DE_DialNumber", params, 1, req, 0);
+  
+  	// without loading available services through init() you have to set the url
+  	//connection.action("X_VoIP:1", "X_AVM-DE_DialNumber", params, 1, req, 0, "/upnp/control/x_voip");
 }
 
 void callDect() {
@@ -148,18 +145,23 @@ void callDect() {
 	String params[][2] = {{"NewAIN", "12345 0123456"}, {"NewSwitchState", "TOGGLE"}};
 	connection.action("X_AVM-DE_Homeauto:1", "SetSwitch", params, 2);
 	// connection.action("urn:dslforum-org:service:X_AVM-DE_Homeauto:1", "SetSwitch", params, 2);
+  
+  	// without loading available services through init() you have to set the url
+  	//connection.action("X_AVM-DE_Homeauto:1", "SetSwitch", params, 2, "/upnp/control/x_homeauto");
 }
 
 String getStatus() {
 	ensureWIFIConnection();
-	
+  
 	String paramsb[][2] = {{"NewAIN", "12345 0123456"}};
 	String reqb[][2] = {{"NewDeviceId", ""}, {"NewSwitchState", ""}};
-	connection.action("X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", paramsb, 1, reqb, 2);
+  	connection.action("X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", paramsb, 1, reqb, 2);
 	//connection.action("urn:dslforum-org:service:X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", paramsb, 1, reqb, 2);
+ 
+  	// without loading available services through init() you have to set the url
+  	//connection.action("X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", paramsb, 1, reqb, 2, "/upnp/control/x_homeauto");
 	return reqb[1][1];
 }
-
 
 /**
  * Makes sure there is a WIFI connection and waits until it is (re-)established.

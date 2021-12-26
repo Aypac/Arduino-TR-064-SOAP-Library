@@ -1,3 +1,4 @@
+#include "arduino_secrets.h"
 /**
  * home-indicator.ino
  *  by René Vollmer
@@ -6,23 +7,23 @@
  *  Please adjust your data below.
  *  
  *  Created on: 09.12.2015,
- *  latest update: 18.06.2021
+ *  latest update: 24.06.2021
  *
  */
 
  
 #if defined(ESP8266)
-	//Imports for ESP8266
-	#include <ESP8266WiFi.h>
-	#include <ESP8266WiFiMulti.h>
-	#include <ESP8266HTTPClient.h>
-	ESP8266WiFiMulti WiFiMulti;
+  	//Imports for ESP8266
+  	#include <ESP8266WiFi.h>
+  	#include <ESP8266WiFiMulti.h>
+ 	 #include <ESP8266HTTPClient.h>
+ 	 ESP8266WiFiMulti WiFiMulti;
 #elif defined(ESP32)
-	//Imports for ESP32
-	#include <WiFi.h>
-	#include <WiFiMulti.h>
-	#include <HTTPClient.h>
-	WiFiMulti WiFiMulti;
+  	//Imports for ESP32
+ 	 #include <WiFi.h>
+  	#include <WiFiMulti.h>
+  	#include <HTTPClient.h>
+  	WiFiMulti WiFiMulti;
 #endif
 
 #include <tr064.h>
@@ -31,23 +32,16 @@
 // Put your router settings here
 //-------------------------------------------------------------------------------------
 
-// Wifi network name (SSID)
-const char* wifi_ssid = "WLANSID"; 
+///////please enter your sensitive data in the Secret tab/arduino_secrets.h 
 
-// Wifi network password
-const char* wifi_password = "XXXXXXXXXXXXXXXXXXXXX";
+char wifi_ssid[] = SECRET_WIFI_SSID;
+char wifi_password[] = SECRET_WIFI_PASSWORD;
 
-// The username if you created an account, "admin" otherwise
-const char* fuser = "homechecker";
+char fuser[] = SECRET_FUSER;
+char fpass[] = SECRET_FPASS;
 
-// The password for the aforementioned account.
-const char* fpass = "this_shouldBEaDecentPassword!";
-
-// IP address of your router. This should be "192.168.179.1" for most FRITZ!Boxes
-const char* IP = "192.168.179.1";
-
-// Port of the API of your router. This should be 49000 for all TR-064 devices.
-const int PORT = 49000;
+char IP[] = SECRET_IP;
+int PORT = 49000;
 
 //-------------------------------------------------------------------------------------
 // Put the settings for the devices to detect here
@@ -186,22 +180,22 @@ void loop() {
 		boolean b = true; //No online device found yet
 		// Check all devices
 		for (int j=0;j<maxDevices && b;++j) {
-			// Get the mac of the device to check
-			String curMac = macsPerUser[i][j];
-			b = (curMac!=""); //If it is empty, we don't need to check it (or the next one)
-			if (b) {
-				// okay, ask the router for the status of this MAC
-				String stat2[4][2];
-				getStatusOfMAC(curMac, stat2);
+		// Get the mac of the device to check
+		String curMac = macsPerUser[i][j];
+		b = (curMac!=""); //If it is empty, we don't need to check it (or the next one)
+		if (b) {
+			// okay, ask the router for the status of this MAC
+			String stat2[4][2];
+			getStatusOfMAC(curMac, stat2);
 
-				// aaaaaaaaaaaannd??? Is it online?
-				if (stat2[STATUS_ACTIVE_INDEX][1] != "" && stat2[STATUS_ACTIVE_INDEX][1] != "0") {
-					onlineUsers[i] = true;
-					b=true;
-				}
-				// Okay, print the status to the console!
-				verboseStatus(stat2);
+			// aaaaaaaaaaaannd??? Is it online?
+			if (stat2[STATUS_ACTIVE_INDEX][1] != "" && stat2[STATUS_ACTIVE_INDEX][1] != "0") {
+			onlineUsers[i] = true;
+			b=true;
 			}
+			// Okay, print the status to the console!
+			verboseStatus(stat2);
+		}
 		}
 	}
 	if(Serial) Serial.println("-------------------------------------------");
@@ -213,9 +207,9 @@ void loop() {
 		digitalWrite(userPins[i], LOW);
 		delay(7);
 		if (onlineUsers[i]) {
-			digitalWrite(userPins[i], HIGH);
+		digitalWrite(userPins[i], HIGH);
 		} else {
-			digitalWrite(userPins[i], LOW);
+		digitalWrite(userPins[i], LOW);
 		}
 	}
 	delay(1000);
@@ -244,7 +238,7 @@ int getWifiNumber() {
 *  return nothing as of yet
  */
 void getStatusOfAllWifi() {
-	getStatusOfAllWifi(getWifiNumber());
+  	getStatusOfAllWifi(getWifiNumber());
 }
 
 
@@ -258,11 +252,17 @@ void getStatusOfAllWifi(int numDev) {
 	for (int i=0;i<numDev;++i) {
 		String params[][2] = {{"NewAssociatedDeviceIndex", String(i)}};
 		String req[][2] = {{"NewAssociatedDeviceAuthState", ""}, {"NewAssociatedDeviceMACAddress", ""}, {"NewAssociatedDeviceIPAddress", ""}};
-		connection.action("WLANConfiguration:1", "GetGenericAssociatedDeviceInfo", params, 1, req, 2);
+		if(connection.action("WLANConfiguration:1", "GetGenericAssociatedDeviceInfo", params, 1, req, 2)){
 		if(Serial) {
 			Serial.printf("%d:\t", i);
 			Serial.println((req[1][1])+" is online "+(req[0][1]));
 			Serial.flush();
+		}
+		}else{
+			if(Serial) {
+        Serial.printf("Fehler");        
+				Serial.flush();
+			}
 		}
 	}
 }
@@ -276,19 +276,25 @@ void getStatusOfMACwifi(String mac, String (&r)[4][2]) {
 	mac.toUpperCase();
 	String params[][2] = {{"NewAssociatedDeviceMACAddress", mac}};
 	String req[][2] = {{"NewAssociatedDeviceIPAddress", ""}, {"NewAssociatedDeviceAuthState", ""}};
-	connection.action("WLANConfiguration:1", "GetSpecificAssociatedDeviceInfo", params, 1, req, 2);
-	if(Serial) {
-		Serial.println(mac + " is online " + (req[2][1]));
+	if(connection.action("WLANConfiguration:1", "GetSpecificAssociatedDeviceInfo", params, 1, req, 2)){
+		if(Serial) {
+			Serial.println(mac + " is online " + (req[2][1]));
+			Serial.flush();
+		}
+		r[STATUS_MAC_INDEX][0] = STATUS_MAC;
+		r[STATUS_MAC_INDEX][1] = mac;
+		r[STATUS_IP_INDEX][0] = STATUS_IP;
+		r[STATUS_IP_INDEX][1] = req[0][1];
+		r[STATUS_HOSTNAME_INDEX][0] = STATUS_HOSTNAME;
+		r[STATUS_HOSTNAME_INDEX][1] = "";
+		r[STATUS_ACTIVE_INDEX][0] = STATUS_ACTIVE;
+		r[STATUS_ACTIVE_INDEX][1] = req[1][1];
+	}else{
+		if(Serial) {
+		Serial.println(mac + " Fehler");
 		Serial.flush();
+		}
 	}
-	r[STATUS_MAC_INDEX][0] = STATUS_MAC;
-	r[STATUS_MAC_INDEX][1] = mac;
-	r[STATUS_IP_INDEX][0] = STATUS_IP;
-	r[STATUS_IP_INDEX][1] = req[0][1];
-	r[STATUS_HOSTNAME_INDEX][0] = STATUS_HOSTNAME;
-	r[STATUS_HOSTNAME_INDEX][1] = "";
-	r[STATUS_ACTIVE_INDEX][0] = STATUS_ACTIVE;
-	r[STATUS_ACTIVE_INDEX][1] = req[1][1];
 }
 
 /** 
@@ -312,19 +318,25 @@ void getStatusOfMAC(String mac, String (&r)[4][2]) {
 	//Ask for one specific device
 	String params[][2] = {{"NewMACAddress", mac}};
 	String req[][2] = {{"NewIPAddress", ""}, {"NewActive", ""}, {"NewHostName", ""}};
-	connection.action("Hosts:1", "GetSpecificHostEntry", params, 1, req, 2);
-	if(Serial) {
-		Serial.println(mac + " is online " + (req[1][1]));
+	if(connection.action("Hosts:1", "GetSpecificHostEntry", params, 1, req, 2)){
+		if(Serial) {
+			Serial.println(mac + " is online " + (req[1][1]));
+			Serial.flush();
+		}
+		r[STATUS_MAC_INDEX][0] = STATUS_MAC;
+		r[STATUS_MAC_INDEX][1] = mac;
+		r[STATUS_IP_INDEX][0] = STATUS_IP;
+		r[STATUS_IP_INDEX][1] = req[0][1];
+		r[STATUS_HOSTNAME_INDEX][0] = STATUS_HOSTNAME;
+		r[STATUS_HOSTNAME_INDEX][1] = req[2][1];
+		r[STATUS_ACTIVE_INDEX][0] = STATUS_ACTIVE;
+		r[STATUS_ACTIVE_INDEX][1] = req[1][1];
+	}else{
+		if(Serial) {
+		Serial.println(mac + " Fehler");
 		Serial.flush();
+		}
 	}
-	r[STATUS_MAC_INDEX][0] = STATUS_MAC;
-	r[STATUS_MAC_INDEX][1] = mac;
-	r[STATUS_IP_INDEX][0] = STATUS_IP;
-	r[STATUS_IP_INDEX][1] = req[0][1];
-	r[STATUS_HOSTNAME_INDEX][0] = STATUS_HOSTNAME;
-	r[STATUS_HOSTNAME_INDEX][1] = req[2][1];
-	r[STATUS_ACTIVE_INDEX][0] = STATUS_ACTIVE;
-	r[STATUS_ACTIVE_INDEX][1] = req[1][1];
 }
 
 
@@ -347,13 +359,13 @@ void ensureWIFIConnection() {
 		WiFiMulti.addAP(wifi_ssid, wifi_password);
 		WiFiMulti.run();
 		while ((WiFiMulti.run() != WL_CONNECTED)) {
-			//Flash all LED's to indicate, that the connection was lost.
-			for (int i = 0; i < numUser; ++i) {
-				digitalWrite(userPins[i], HIGH);
-				delay(7);
-				digitalWrite(userPins[i], LOW);
-				delay(7);
-			}
+		//Flash all LED's to indicate, that the connection was lost.
+		for (int i = 0; i < numUser; ++i) {
+			digitalWrite(userPins[i], HIGH);
+			delay(7);
+			digitalWrite(userPins[i], LOW);
+			delay(7);
+		}
 			delay(500);
 		}
 	}
