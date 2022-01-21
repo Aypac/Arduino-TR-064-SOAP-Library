@@ -1,4 +1,7 @@
-# Arduino-TR-064-SOAP-Library [![Build Status](https://travis-ci.com/Aypac/Arduino-TR-064-SOAP-Library.svg?branch=master)](https://travis-ci.com/Aypac/Arduino-TR-064-SOAP-Library)
+<b>IMPORTANT NOTE</b><br />
+*My ISP forces me to use a proprietary router without TR064. Additionally, I started mostly using [Micropython](https://micropython.org/), so I have a hard time maintaining this code. Therefore I rely on contributions and testing from the community - so YOU. Also, if you feel like maintaining this repo, let me know and we should be able to make you maintainer or even transfer ownership.*
+
+# Arduino-TR-064-SOAP-Library [![Build Status](https://app.travis-ci.com/Aypac/SetupVariableTracker.svg?branch=master)](https://app.travis-ci.com/Aypac/SetupVariableTracker)
 Arduino library to facilitate the use of the TR-064 protocol ([my "simple" explanation](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-does-the-TR-064-protocol-work%3F), the [definition](https://www.broadband-forum.org/technical/download/TR-064.pdf) and an official [description](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf)), most commonly used by Fritz!Box.
 
 This library has been developed on an ESP8266 and tested on an ESP32.
@@ -61,16 +64,14 @@ Some of the old issues are:
 ### Library
 
 * Add yield()'s (where sensible)
-* Do some (better) error-handeling
-  * Return proper errors
+* Error-handeling can always be improved
 * Reduce occasional crashes (should be fixed, but please report if still encountered)
 * Should some of the calls of the examples be included into the library?
 
 ### Examples
 
 * Add yield()'s (where sensible)
-* Try to find a way to externalize the settings (WIFI etc)
-* Add a few more nice examples
+* Add a few more nice examples (work in progress, see branch 'new_examples')
   * turning on/off (guest) wifi
   * read out connection speed
   * alternate WPS button
@@ -79,7 +80,6 @@ Some of the old issues are:
   * Start devices through e.g. telegram messages (e.g. coffee machine, washing machine, ...)
 * WhoIsHomeIndicator
   * Add nice GUI/Website to configure/manage the users/LEDs/MACs/known devices
-  * Known Bug: After a few hours the known devices "freeze", needs restart (might be fixed, but please report if still encountered)
 * Extend doorbell example to also send telegram messages :)
 
 <hr />
