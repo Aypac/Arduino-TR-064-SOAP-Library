@@ -151,7 +151,7 @@ void TR064::initServiceURLs() {
         {
             deb_println("[TR064][initServiceURLs] get the Stream ", DEBUG_INFO);
             int i = 0;
-            while(1) {  
+            while(1) {
                 if(!http.connected()) {
                     deb_println("[TR064][initServiceURLs] xmlTakeParam : http connection lost", DEBUG_INFO);
                     break;                      
@@ -308,7 +308,7 @@ bool TR064::action(const String& service, const String& act, String params[][2],
                 http.end();
             }
             if (tries >= 3) {
-                deb_println("[TR064][action]<error> Giving up the request ", DEBUG_ERROR);       
+                deb_println("[TR064][action]<error> Giving up the request ", DEBUG_ERROR);    
                 http.end();
                 return false;
             }
@@ -480,7 +480,7 @@ String TR064::findServiceURL(const String& service) {
     @param    retry
                 Should the request be repeated with a new nonce, if it fails?
     @param    protocol
-                Transmission protocol to be used (http/https).     
+                Transmission protocol to be used (http/https). 
     @return success state.
 */
 /**************************************************************************/
@@ -498,9 +498,9 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
 
     if (protocol == Protocol::useHttps) {
         http.begin(tr064SslClient, _ip.c_str(), _port, url.c_str(), useTls);
-        http.setConnectTimeout(2000);  
+        http.setConnectTimeout(2000);
     }else{
-        http.begin(tr064SimpleClient, _ip.c_str(), _port, url.c_str(), useTls);   
+        http.begin(tr064SimpleClient, _ip.c_str(), _port, url.c_str(), useTls);
     }
     
     if (soapaction != "") {
@@ -516,10 +516,10 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
         deb_println("[TR064][httpRequest] ---------------------------------", DEBUG_VERBOSE);
         deb_println(xml, DEBUG_VERBOSE);
         deb_println("[TR064][httpRequest] ---------------------------------\n", DEBUG_VERBOSE);
- 
+
         httpCode = http.POST(xml);
         deb_println("[TR064][httpRequest] POST... SOAPACTION: '" + soapaction + "'", DEBUG_VERBOSE);
-    } else { 
+    } else {
         httpCode = http.GET();
         deb_println("[TR064][httpRequest] GET...", DEBUG_VERBOSE);
     }
@@ -683,7 +683,7 @@ bool TR064::xmlTakeParam(String (*params)[2], int nParam) {
 /**************************************************************************/
 bool TR064::xmlTakeParam(String& value, const String& needParam) {
     WiFiClient * stream = tr064ClientPtr;
-    while(stream->connected()) {       
+    while(stream->connected()) {
         if(!http.connected()) {
             deb_println("[TR064][xmlTakeParam] http connection lost", DEBUG_INFO);
             return false;                      
