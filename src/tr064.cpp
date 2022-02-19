@@ -64,7 +64,7 @@ TR064::TR064(uint16_t port, const String& ip, const String& user, const String& 
     if (protocol == Protocol::useHttps)
     {
         tr064SslClient.setCACert(certificate);
-        tr064ClientPtr = &tr064SslClient;   
+        tr064ClientPtr = &tr064SslClient;
     }
     else
     {
@@ -170,7 +170,7 @@ void TR064::initServiceURLs() {
                     break;
                 }
             }            
-            deb_println("[TR064][initServiceURLs] message: reading done", DEBUG_INFO);       
+            deb_println("[TR064][initServiceURLs] message: reading done", DEBUG_INFO);
     } else {  
         deb_println("[TR064][initServiceURLs]<Error> initServiceUrls failed", DEBUG_ERROR);  
         return;      
@@ -308,13 +308,13 @@ bool TR064::action(const String& service, const String& act, String params[][2],
                 http.end();
             }
             if (tries >= 3) {
-                deb_println("[TR064][action]<error> Giving up the request ", DEBUG_ERROR);           
+                deb_println("[TR064][action]<error> Giving up the request ", DEBUG_ERROR);       
                 http.end();
                 return false;
             }
             return action(service, act, params, nParam, req, nReq, url);
         }
-        deb_println("[TR064][action] Done.", DEBUG_INFO);       
+        deb_println("[TR064][action] Done.", DEBUG_INFO);
         http.end();
         return true;
         
@@ -480,7 +480,7 @@ String TR064::findServiceURL(const String& service) {
     @param    retry
                 Should the request be repeated with a new nonce, if it fails?
     @param    protocol
-                Transmission protocol to be used (http/https).             
+                Transmission protocol to be used (http/https).     
     @return success state.
 */
 /**************************************************************************/
@@ -496,20 +496,20 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
     deb_println("[HTTP] prepare request to URL: " + protocolPrefix + _ip + ":" + _port + url, DEBUG_INFO);
     http.setReuse(true);
 
-    if (protocol == Protocol::useHttps) {   
+    if (protocol == Protocol::useHttps) {
         http.begin(tr064SslClient, _ip.c_str(), _port, url.c_str(), useTls);
-        http.setConnectTimeout(2000);        
+        http.setConnectTimeout(2000);  
     }else{
-        http.begin(tr064SimpleClient, _ip.c_str(), _port, url.c_str(), useTls);        
+        http.begin(tr064SimpleClient, _ip.c_str(), _port, url.c_str(), useTls);   
     }
     
     if (soapaction != "") {
         http.addHeader("CONTENT-TYPE", "text/xml"); //; charset=\"utf-8\"
         http.addHeader("SOAPACTION", soapaction);
     }
-    
+
     http.addHeader("ACCEPT-ENCODING", "chunked");
-   
+
     int httpCode=0;
     if (xml != "") {
         deb_println("[TR064][httpRequest] Posting XML:", DEBUG_INFO);
@@ -519,12 +519,13 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
  
         httpCode = http.POST(xml);
         deb_println("[TR064][httpRequest] POST... SOAPACTION: '" + soapaction + "'", DEBUG_VERBOSE);
-    } else {         
+    } else { 
         httpCode = http.GET();
         deb_println("[TR064][httpRequest] GET...", DEBUG_VERBOSE);
     }
 
-    // httpCode will be negative on error 
+    // httpCode will be negative on error
+    deb_println("[TR064][httpRequest] Response code: " + String(httpCode), DEBUG_INFO); 
     if (httpCode > 0) {
         // HTTP header has been sent and Server response header has been handled
 
@@ -616,7 +617,7 @@ String TR064::byte2hex(byte number){
 */
 /**************************************************************************/
 bool TR064::xmlTakeParam(String (*params)[2], int nParam) {
-    WiFiClient * stream = tr064ClientPtr;  
+    WiFiClient * stream = tr064ClientPtr;
     while(stream->connected()) {
         if(!http.connected()) {
             deb_println("[TR064][xmlTakeParam] http connection lost", DEBUG_INFO);
@@ -680,11 +681,10 @@ bool TR064::xmlTakeParam(String (*params)[2], int nParam) {
     @return success state.
 */
 /**************************************************************************/
-bool TR064::xmlTakeParam(String& value, const String& needParam) {   
+bool TR064::xmlTakeParam(String& value, const String& needParam) {
     WiFiClient * stream = tr064ClientPtr;
-    
     while(stream->connected()) {       
-        if(!http.connected()) {  
+        if(!http.connected()) {
             deb_println("[TR064][xmlTakeParam] http connection lost", DEBUG_INFO);
             return false;                      
         }

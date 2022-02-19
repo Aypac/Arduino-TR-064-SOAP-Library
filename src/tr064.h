@@ -25,9 +25,11 @@
 
 #if defined(ESP8266)
     //if(Serial) Serial.println(F("Version compiled for ESP8266."));
+    #include <ESP8266WiFi.h>
     #include <ESP8266HTTPClient.h>
 #elif defined(ESP32)
     //if(Serial) Serial.println(F("Version compiled for ESP32."));
+    #include <WiFi.h>
     #include <HTTPClient.h>
 #else
     //INCOMPATIBLE!
@@ -57,6 +59,14 @@ typedef const char* X509Certificate;
 // Possible values for client.state()
 #define TR064_NO_SERVICES           -1 ///< No Service actions will not execute
 #define TR064_SERVICES_LOADED       0 ///< Service loaded
+
+// Possible values for client.state()
+#define TR064_NO_SERVICES           -1
+#define TR064_SERVICES_LOADED       0
+
+// Possible values for client.state()
+#define TR064_NO_SERVICES          -1
+#define TR064_SERVICES_LOADED       0
 
 /**************************************************************************/
 /*! 
