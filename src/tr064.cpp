@@ -147,7 +147,7 @@ void TR064::initServiceURLs() {
      */
 
     _state = TR064_NO_SERVICES;
-    if(httpRequest(_detectPage, "", "", true, _protocol))
+    if(httpRequest(_detectPage, "", "", true))
         {
             deb_println("[TR064][initServiceURLs] get the Stream ", DEBUG_INFO);
             int i = 0;
@@ -485,19 +485,19 @@ String TR064::findServiceURL(const String& service) {
     @return success state.
 */
 /**************************************************************************/
-bool TR064::httpRequest(const String& url, const String& xml, const String& soapaction, bool retry, Protocol protocol) {
+bool TR064::httpRequest(const String& url, const String& xml, const String& soapaction, bool retry) {
     if (url=="") {
         deb_println("[TR064][httpRequest] URL is empty, abort http request.", DEBUG_INFO);
         return false;
     }
 
-    String protocolPrefix = protocol == Protocol::useHttps ? "https://" : "http://";
-    bool useTls = protocol == Protocol::useHttps ? true : false;
+    String protocolPrefix = _protocol == Protocol::useHttps ? "https://" : "http://";
+    bool useTls = _protocol == Protocol::useHttps ? true : false;
 
     deb_println("[HTTP] prepare request to URL: " + protocolPrefix + _ip + ":" + _port + url, DEBUG_INFO);
     http.setReuse(true);
 
-    if (protocol == Protocol::useHttps) {
+    if (_protocol == Protocol::useHttps) {
         http.begin(tr064SslClient, _ip.c_str(), _port, url.c_str(), useTls);
         http.setConnectTimeout(2000);
     }else{

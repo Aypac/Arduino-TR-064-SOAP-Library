@@ -130,7 +130,7 @@ class TR064 {
         void deb_print(const String& message, int level);
         void deb_println(const String& message, int level);
         bool action_raw(const String& service,const String& act, String params[][2], int nParam, const String& url = "");               
-        bool httpRequest(const String& url, const String& xml, const String& action, bool retry, Protocol protocol = Protocol::useHttp);
+        bool httpRequest(const String& url, const String& xml, const String& action, bool retry);
         String generateAuthToken();
         String generateAuthXML();
         String findServiceURL(const String& service);
