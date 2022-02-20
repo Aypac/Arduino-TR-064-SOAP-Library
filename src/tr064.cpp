@@ -171,6 +171,7 @@ void TR064::initServiceURLs() {
                 }
             }            
             deb_println("[TR064][initServiceURLs] message: reading done", DEBUG_INFO);
+
     } else {  
         deb_println("[TR064][initServiceURLs]<Error> initServiceUrls failed", DEBUG_ERROR);  
         return;      
@@ -308,7 +309,7 @@ bool TR064::action(const String& service, const String& act, String params[][2],
                 http.end();
             }
             if (tries >= 3) {
-                deb_println("[TR064][action]<error> Giving up the request ", DEBUG_ERROR);    
+                deb_println("[TR064][action]<error> Giving up the request ", DEBUG_ERROR);
                 http.end();
                 return false;
             }
@@ -525,9 +526,9 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
     }
 
     // httpCode will be negative on error
-    deb_println("[TR064][httpRequest] Response code: " + String(httpCode), DEBUG_INFO); 
+    deb_println("[TR064][httpRequest] Response code: " + String(httpCode), DEBUG_INFO);
     if (httpCode > 0) {
-        // HTTP header has been sent and Server response header has been handled
+        // HTTP header has been send and Server response header has been handled
 
         if (httpCode == HTTP_CODE_OK) {
             return true;
