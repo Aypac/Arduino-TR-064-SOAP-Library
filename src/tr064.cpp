@@ -131,7 +131,7 @@ TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, con
     else
     {
         tr064ClientPtr = &tr064SimpleClient;
-    }
+    
     return *this;
 }
 
@@ -147,8 +147,7 @@ void TR064::initServiceURLs() {
      */
 
     _state = TR064_NO_SERVICES;
-    if(httpRequest(_detectPage, "", "", true))
-        {
+    if(httpRequest(_detectPage, "", "", true)) {
             deb_println("[TR064][initServiceURLs] get the Stream ", DEBUG_INFO);
             int i = 0;
             while(1) {
