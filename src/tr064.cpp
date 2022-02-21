@@ -116,7 +116,7 @@ void TR064::init() {
                 X509Certificate of Fritzbox to be used for https transmission.
 */
 /**************************************************************************/
-TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, const String& pass, Protocol protocol, X509Certificate certificate){
+TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, const String& pass, Protocol protocol, X509Certificate certificate) {
     this->_ip = ip;
     this->_port = port;
     this->_user = user;
@@ -131,7 +131,7 @@ TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, con
     else
     {
         tr064ClientPtr = &tr064SimpleClient;
-    
+    }
     return *this;
 }
 
@@ -304,7 +304,6 @@ bool TR064::action(const String& service, const String& act, String params[][2],
                     deb_println("[TR064][action]<Error> Retrying in 5s", DEBUG_ERROR);
                     delay(5000);
                 }
-
                 http.end();
             }
             if (tries >= 3) {
@@ -480,7 +479,7 @@ String TR064::findServiceURL(const String& service) {
     @param    retry
                 Should the request be repeated with a new nonce, if it fails?
     @param    protocol
-                Transmission protocol to be used (http/https). 
+                Transmission protocol to be used (http/https).
     @return success state.
 */
 /**************************************************************************/
@@ -618,6 +617,7 @@ String TR064::byte2hex(byte number){
 /**************************************************************************/
 bool TR064::xmlTakeParam(String (*params)[2], int nParam) {
     WiFiClient * stream = tr064ClientPtr;
+
     while(stream->connected()) {
         if(!http.connected()) {
             deb_println("[TR064][xmlTakeParam] http connection lost", DEBUG_INFO);

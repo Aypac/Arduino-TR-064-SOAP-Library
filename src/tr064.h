@@ -113,11 +113,11 @@ class TR064 {
 
         bool action(const String& service, const String& act, String params[][2] = {}, int nParam = 0,const String& url = "");
         bool action(const String& service, const String& act, String params[][2], int nParam, String (*req)[2], int nReq, const String& url = "");
-        
+
         String md5String(const String& s);
         String byte2hex(byte number);
         int debug_level; ///< Available levels are `DEBUG_NONE`, `DEBUG_ERROR`, `DEBUG_WARNING`, `DEBUG_INFO`, and `DEBUG_VERBOSE`.
-       
+
     private:
         WiFiClient tr064SimpleClient;
         WiFiClientSecure tr064SslClient;
@@ -129,14 +129,14 @@ class TR064 {
         void initServiceURLs();
         void deb_print(const String& message, int level);
         void deb_println(const String& message, int level);
-        bool action_raw(const String& service,const String& act, String params[][2], int nParam, const String& url = "");               
+        bool action_raw(const String& service,const String& act, String params[][2], int nParam, const String& url = "");            
         bool httpRequest(const String& url, const String& xml, const String& action, bool retry);
         String generateAuthToken();
         String generateAuthXML();
         String findServiceURL(const String& service);
         String cleanOldServiceName(const String& service);
         bool xmlTakeParam(String (*params)[2], int nParam);
-        bool xmlTakeParam(String& value, const String& needParam);       
+        bool xmlTakeParam(String& value, const String& needParam);
         static String errorToString(int error);
 
         int _state;
