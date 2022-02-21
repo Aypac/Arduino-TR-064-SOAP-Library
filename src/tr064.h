@@ -157,7 +157,7 @@ class TR064 {
         unsigned long lastOutActivity;
         unsigned long lastInActivity;
         /*
-                * TODO: We should give access to this data for users to inspect the
+        * TODO: We should give access to this data for users to inspect the
         * possibilities of their device(s) - see #9 on Github.
         * TODO: Remove 100 services limits here
         */
