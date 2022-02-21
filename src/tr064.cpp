@@ -365,9 +365,9 @@ bool TR064::action_raw(const String& service, const String& act, String params[]
     
     // Send the http-Request
     if(url !=""){
-        return httpRequest(url, xml, soapaction, true, _protocol);
+        return httpRequest(url, xml, soapaction, true);
     }else{
-        return httpRequest(findServiceURL(_servicePrefix + serviceName), xml, soapaction, true, _protocol);
+        return httpRequest(findServiceURL(_servicePrefix + serviceName), xml, soapaction, true);
     }
 }
 
