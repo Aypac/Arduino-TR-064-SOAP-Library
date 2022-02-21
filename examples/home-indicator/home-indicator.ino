@@ -318,7 +318,7 @@ void getStatusOfMAC(String mac, String (&r)[4][2]) {
 	//Ask for one specific device
 	String params[][2] = {{"NewMACAddress", mac}};
 	String req[][2] = {{"NewIPAddress", ""}, {"NewActive", ""}, {"NewHostName", ""}};
-	if(connection.action("Hosts:1", "GetSpecificHostEntry", params, 1, req, 2)){
+	if(connection.action("Hosts:1", "GetSpecificHostEntry", params, 1, req, 3)){
 		if(Serial) {
 			Serial.println(mac + " is online " + (req[1][1]));
 			Serial.flush();

@@ -63,7 +63,7 @@ TR064::TR064(uint16_t port, const String& ip, const String& user, const String& 
     _protocol = protocol;
     if (protocol == Protocol::useHttps)
     {
-        tr064SslClient.setCACert(certificate);
+        tr064SslClient.setCACert(certificate); 
         tr064ClientPtr = &tr064SslClient;
     }
     else

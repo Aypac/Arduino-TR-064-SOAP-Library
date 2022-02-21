@@ -13,7 +13,7 @@
  *  Please adjust your data below.
  *  
  *  created on: 07.06.2017
- *  latest update: 18.06.2021
+ *  latest update: 22.02.2022
  */
 
 #include <Arduino.h>
@@ -46,7 +46,10 @@ char fuser[] = SECRET_FUSER;
 char fpass[] = SECRET_FPASS;
 
 char IP[] = SECRET_IP;
-int PORT = 49000;
+
+// Set transport protocol here
+//#define TRANSPORT_PROTOCOL 1    // 0 = http, 1 = https
+#define TRANSPORT_PROTOCOL 0    // 0 = http, 1 = https
 
 //-------------------------------------------------------------------------------------
 // Hardware settings
@@ -59,14 +62,30 @@ int PORT = 49000;
 // Initializations. No need to change these.
 //-------------------------------------------------------------------------------------
 
+#if TRANSPORT_PROTOCOL == 1
+    const int PORT = 49443;
+#else
+    const int PORT = 49000;
+#endif
+
 // TR-064 connection
-TR064 connection(PORT, IP, fuser, fpass);
+#if TRANSPORT_PROTOCOL == 1
+    TR064 connection(PORT, IP, fuser, fpass, protocol, myX509Certificate);
+#else
+    TR064 connection(PORT, IP, fuser, fpass);
+#endif
 
 // -------------------------------------------------------------------------------------
 
 //###########################################################################################
 //############################ OKAY, LET'S DO THIS! #########################################
 //###########################################################################################
+
+// forward declarations needed for PlatformIO IDE
+void callWahlhilfe();
+void callDect();
+String getStatus();
+void ensureWIFIConnection();
 
 void setup() {
 	// Start the serial connection
