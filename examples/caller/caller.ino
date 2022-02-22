@@ -47,7 +47,7 @@ char fpass[] = SECRET_FPASS;
 
 char IP[] = SECRET_IP;
 
-// Set transport protocol here
+// Set transport protocol here: (httpsInsec and https only working on Esp32)
 // http (0) means: normal http via port 49000
 // httpsInsec (1) means: https via port 49443 without rootCa validation
 // https (2) means: https via port 49443 with rootCa validation
