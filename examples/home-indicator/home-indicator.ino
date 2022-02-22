@@ -113,6 +113,16 @@ const int STATUS_HOSTNAME_INDEX = 2;
 //############################ OKAY, LET'S DO THIS! #########################################
 //###########################################################################################
 
+// forward declarations, needed for PlatformIO IDE
+int getWifiNumber();
+void getStatusOfAllWifi();
+void getStatusOfAllWifi(int numDev);
+void getStatusOfMACwifi(String mac, String (&r)[4][2]);
+int getDeviceNumber();
+void getStatusOfMAC(String mac, String (&r)[4][2]);
+void verboseStatus(String r[4][2]);
+void ensureWIFIConnection();
+
 void setup() {
 	// Start the serial connection
 	// Not required for production, but helpful for development.
