@@ -61,14 +61,21 @@ TR064::TR064(uint16_t port, const String& ip, const String& user, const String& 
     this->_state = TR064_NO_SERVICES;
     _certificate = certificate;
     _protocol = protocol;
-    if (protocol == Protocol::useHttps)
+    if (protocol == Protocol::useHtt)
     {
-        tr064SslClient.setCACert(certificate); 
-        tr064ClientPtr = &tr064SslClient;
+        tr064ClientPtr = &tr064SimpleClient;      
     }
     else
     {
-        tr064ClientPtr = &tr064SimpleClient;
+        if (protocol == Protocol::useHttpsInsec)
+        {       
+            tr064SslClient.setInsecure();           
+        }
+        else
+        {
+            tr064SslClient.setCACert(certificate);
+        }
+        tr064ClientPtr = &tr064SslClient;
     }
 }
 
@@ -495,11 +502,11 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
     deb_println("[HTTP] prepare request to URL: " + protocolPrefix + _ip + ":" + _port + url, DEBUG_INFO);
     http.setReuse(true);
 
-    if (_protocol == Protocol::useHttps) {
+    if (_protocol == Protocol::useHtt) {
+        http.begin(tr064SimpleClient, _ip.c_str(), _port, url.c_str(), useTls);
+    }else{
         http.begin(tr064SslClient, _ip.c_str(), _port, url.c_str(), useTls);
         http.setConnectTimeout(2000);
-    }else{
-        http.begin(tr064SimpleClient, _ip.c_str(), _port, url.c_str(), useTls);
     }
     
     if (soapaction != "") {

@@ -49,6 +49,7 @@ typedef enum {
 
 typedef enum {
       useHttp,
+      useHttpsInsec,
       useHttps
   } Protocol;
 

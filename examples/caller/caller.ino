@@ -62,14 +62,17 @@ char IP[] = SECRET_IP;
 // Initializations. No need to change these.
 //-------------------------------------------------------------------------------------
 
-X509Certificate myX509Certificate = myfritzbox_root_ca;
-
-#if TRANSPORT_PROTOCOL == 1
-    const int PORT = 49443;
-	Protocol protocol = Protocol::useHttps;
-#else
-    const int PORT = 49000;
+#if TRANSPORT_PROTOCOL == 0
+	const int PORT = 49000;
 	Protocol protocol = Protocol::useHttp;
+#elseif TRANSPORT_PROTOCOL == 1
+    const int PORT = 49443;
+	Protocol protocol = Protocol::useHttpsInsec;
+	X509Certificate myX509Certificate = NULL;
+#else
+	const int PORT = 49443;
+	Protocol protocol = Protocol::useHttps;
+	X509Certificate myX509Certificate = myfritzbox_root_ca;
 #endif
 
 // TR-064 connection
