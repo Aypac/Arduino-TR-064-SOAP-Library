@@ -42,9 +42,17 @@ char fpass[] = SECRET_FPASS;
 
 char IP[] = SECRET_IP;
 
+/*
 // Set transport protocol here
-//#define TRANSPORT_PROTOCOL 1    // 0 = http, 1 = https
+//#define TRANSPORT_PROTOCOL 1    // 0 = http, 1 = https without rootCa validation
 #define TRANSPORT_PROTOCOL 0    // 0 = http, 1 = https
+*/
+
+// Select transport protocol here:
+
+Protocol protocol = Protocol::useHttp;			// http
+// Protocol protocol = Protocol::useHttpsInsec; // https without rootCa validation
+// Protocol protocol = Protocol::useHttps;      // https
 
 //-------------------------------------------------------------------------------------
 // Put the settings for the devices to detect here
@@ -80,6 +88,22 @@ int userPins[numUser] = {5, 4, 0}; //Three LED's because there are three users
 // Initializations. No need to change these.
 //-------------------------------------------------------------------------------------
 
+int PORT = 49443;
+X509Certificate myX509Certificate = NULL;
+if protocol == Protocol::useHttp
+{
+	Port = 49000;
+}
+else
+{
+	Port = 49443;
+	if (protocol == Protocol::useHttp)
+	{
+		myX509Certificate = myfritzbox_root_ca;
+	}
+}
+
+/*
 #if TRANSPORT_PROTOCOL == 0
 	const int PORT = 49000;
 	Protocol protocol = Protocol::useHttp;
@@ -92,13 +116,26 @@ int userPins[numUser] = {5, 4, 0}; //Three LED's because there are three users
 	Protocol protocol = Protocol::useHttps;
 	X509Certificate myX509Certificate = myfritzbox_root_ca;
 #endif
+*/
 
 // TR-064 connection
+TR064 connection();
+if (protocol == Protocol::useHttp)
+{
+	connection = connection((PORT, IP, fuser, fpass);
+}
+else
+{
+	connection = connection(PORT, IP, fuser, fpass, protocol, myX509Certificate);
+}
+
+/*
 #if TRANSPORT_PROTOCOL == 1
     TR064 connection(PORT, IP, fuser, fpass, protocol, myX509Certificate);
 #else
     TR064 connection(PORT, IP, fuser, fpass);
 #endif
+*/
 
 // Status array. 
 bool onlineUsers[numUser];

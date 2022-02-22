@@ -130,14 +130,21 @@ TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, con
     this->_pass = pass;
     _certificate = certificate;
     _protocol = protocol;
-    if (protocol == Protocol::useHttps)
+    if (protocol == Protocol::useHtt)
     {
-        tr064SslClient.setCACert(certificate);
-        tr064ClientPtr = &tr064SslClient;
+        tr064ClientPtr = &tr064SimpleClient;      
     }
     else
     {
-        tr064ClientPtr = &tr064SimpleClient;
+        if (protocol == Protocol::useHttpsInsec)
+        {       
+            tr064SslClient.setInsecure();           
+        }
+        else
+        {
+            tr064SslClient.setCACert(certificate);
+        }
+        tr064ClientPtr = &tr064SslClient;
     }
     return *this;
 }
