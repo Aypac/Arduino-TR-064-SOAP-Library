@@ -136,6 +136,7 @@ void setup() {
 	//     and development to keep it activated.
 	if(Serial) Serial.printf("Initialize TR-064 connection\n\n");
 	connection.init();
+	if(Serial) Serial.printf("Waiting on button press...\n\n");
 }
 
 void loop() {
