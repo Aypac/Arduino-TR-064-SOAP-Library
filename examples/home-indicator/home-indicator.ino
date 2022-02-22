@@ -17,13 +17,13 @@
   	#include <ESP8266WiFi.h>
   	#include <ESP8266WiFiMulti.h>
  	 #include <ESP8266HTTPClient.h>
- 	 ESP8266WiFiMulti WiFiMulti;
+ 	 ESP8266WiFiMulti wiFiMulti;
 #elif defined(ESP32)
   	//Imports for ESP32
  	 #include <WiFi.h>
   	#include <WiFiMulti.h>
   	#include <HTTPClient.h>
-  	WiFiMulti WiFiMulti;
+  	WiFiMulti wiFiMulti;
 #endif
 
 #include <tr064.h>
@@ -41,7 +41,10 @@ char fuser[] = SECRET_FUSER;
 char fpass[] = SECRET_FPASS;
 
 char IP[] = SECRET_IP;
-int PORT = 49000;
+
+// Set transport protocol here
+//#define TRANSPORT_PROTOCOL 1    // 0 = http, 1 = https
+#define TRANSPORT_PROTOCOL 0    // 0 = http, 1 = https
 
 //-------------------------------------------------------------------------------------
 // Put the settings for the devices to detect here
@@ -77,9 +80,20 @@ int userPins[numUser] = {5, 4, 0}; //Three LED's because there are three users
 // Initializations. No need to change these.
 //-------------------------------------------------------------------------------------
 
-// TR-064 connection
-TR064 connection(PORT, IP, fuser, fpass);
+#if TRANSPORT_PROTOCOL == 1
+    const int PORT = 49443;
+	Protocol protocol = Protocol::useHttps;
+#else
+    const int PORT = 49000;
+	Protocol protocol = Protocol::useHttp;
+#endif
 
+// TR-064 connection
+#if TRANSPORT_PROTOCOL == 1
+    TR064 connection(PORT, IP, fuser, fpass, protocol, myX509Certificate);
+#else
+    TR064 connection(PORT, IP, fuser, fpass);
+#endif
 
 // Status array. 
 bool onlineUsers[numUser];
@@ -355,10 +369,10 @@ void verboseStatus(String r[4][2]) {
  * Makes sure there is a WIFI connection and waits until it is (re-)established.
  */
 void ensureWIFIConnection() {
-	if ((WiFiMulti.run() != WL_CONNECTED)) {
-		WiFiMulti.addAP(wifi_ssid, wifi_password);
-		WiFiMulti.run();
-		while ((WiFiMulti.run() != WL_CONNECTED)) {
+	if ((wiFiMulti.run() != WL_CONNECTED)) {
+		wiFiMulti.addAP(wifi_ssid, wifi_password);
+		wiFiMulti.run();
+		while ((wiFiMulti.run() != WL_CONNECTED)) {
 		//Flash all LED's to indicate, that the connection was lost.
 		for (int i = 0; i < numUser; ++i) {
 			digitalWrite(userPins[i], HIGH);

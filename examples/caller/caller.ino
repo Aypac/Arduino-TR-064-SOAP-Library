@@ -22,13 +22,13 @@
 	#include <ESP8266WiFi.h>
 	#include <ESP8266WiFiMulti.h>
 	#include <ESP8266HTTPClient.h>
-	ESP8266WiFiMulti WiFiMulti;
+	ESP8266WiFiMulti wiFiMulti;
 #elif defined(ESP32)
 	//Imports for ESP32
 	#include <WiFi.h>
 	#include <WiFiMulti.h>
 	#include <HTTPClient.h>
-	WiFiMulti WiFiMulti;
+	WiFiMulti wiFiMulti;
 #endif
 
 #include <tr064.h>
@@ -62,10 +62,14 @@ char IP[] = SECRET_IP;
 // Initializations. No need to change these.
 //-------------------------------------------------------------------------------------
 
+X509Certificate myX509Certificate = myfritzbox_root_ca;
+
 #if TRANSPORT_PROTOCOL == 1
     const int PORT = 49443;
+	Protocol protocol = Protocol::useHttps;
 #else
     const int PORT = 49000;
+	Protocol protocol = Protocol::useHttp;
 #endif
 
 // TR-064 connection
@@ -186,9 +190,9 @@ String getStatus() {
  * Makes sure there is a WIFI connection and waits until it is (re-)established.
  */
 void ensureWIFIConnection() {
-	if ((WiFiMulti.run() != WL_CONNECTED)) {
-		WiFiMulti.addAP(wifi_ssid, wifi_password);
-		while ((WiFiMulti.run() != WL_CONNECTED)) {
+	if ((wiFiMulti.run() != WL_CONNECTED)) {
+		wiFiMulti.addAP(wifi_ssid, wifi_password);
+		while ((wiFiMulti.run() != WL_CONNECTED)) {
 			delay(100);
 		}
 	}

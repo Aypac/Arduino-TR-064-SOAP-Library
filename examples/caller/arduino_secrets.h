@@ -12,6 +12,15 @@
 //#define  SECRET_IP  "192.168.178.1"
 #define  SECRET_IP  "fritz.box"
 
+// Zertifikat von FritzBox herunterladen
+
+// Klicken Sie in der Benutzeroberfläche der FRITZ!Box auf "Internet".
+// Klicken Sie im Menü "Internet" auf "Freigaben".
+// Klicken Sie auf die Registerkarte "FRITZ!Box-Dienste".
+// Klicken Sie auf "Zertifikat herunterladen" und speichern Sie die Datei mit dem Zertifikat auf Ihrem Computer.
+// Open the certificate with 'Editor' and add double quotes as can be seen here
+// Each FritzBox can have its specific certificate
+
 const char *myfritzbox_root_ca =
 "-----BEGIN CERTIFICATE-----\n"
 "MIID2DCCAsCgAwIBAgIJAOReByhZW+7gMA0GCSqGSIb3DQEBCwUAMCcxJTAjBgNV\n"
