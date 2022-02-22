@@ -48,8 +48,13 @@ char fpass[] = SECRET_FPASS;
 char IP[] = SECRET_IP;
 
 // Set transport protocol here
-//#define TRANSPORT_PROTOCOL 1    // 0 = http, 1 = https
-#define TRANSPORT_PROTOCOL 0    // 0 = http, 1 = https
+// http (0) means: normal http via port 49000
+// httpsInsec (1) means: https via port 49443 without rootCa validation
+// https (2) means: https via port 49443 with rootCa validation
+
+#define TRANSPORT_PROTOCOL 0    // 0 = http, 1 = httpsInsec, 2 = https
+//#define TRANSPORT_PROTOCOL 1      // 0 = http, 1 = httpsInsec, 2 = https
+//#define TRANSPORT_PROTOCOL 2      // 0 = http, 1 = httpsInsec, 2 = https
 
 //-------------------------------------------------------------------------------------
 // Hardware settings
@@ -65,21 +70,21 @@ char IP[] = SECRET_IP;
 #if TRANSPORT_PROTOCOL == 0
 	const int PORT = 49000;
 	Protocol protocol = Protocol::useHttp;
-#elseif TRANSPORT_PROTOCOL == 1
-    const int PORT = 49443;
-	Protocol protocol = Protocol::useHttpsInsec;
-	X509Certificate myX509Certificate = NULL;
 #else
-	const int PORT = 49443;
-	Protocol protocol = Protocol::useHttps;
+    const int PORT = 49443;
 	X509Certificate myX509Certificate = myfritzbox_root_ca;
+	#if TRANSPORT_PROTOCOL == 1   	
+		Protocol protocol = Protocol::useHttpsInsec;		
+	#else	
+		Protocol protocol = Protocol::useHttps;		
+	#endif
 #endif
 
 // TR-064 connection
-#if TRANSPORT_PROTOCOL == 1
-    TR064 connection(PORT, IP, fuser, fpass, protocol, myX509Certificate);
-#else
+#if TRANSPORT_PROTOCOL == 0
     TR064 connection(PORT, IP, fuser, fpass);
+#else
+	TR064 connection(PORT, IP, fuser, fpass, protocol, myX509Certificate);
 #endif
 
 // -------------------------------------------------------------------------------------

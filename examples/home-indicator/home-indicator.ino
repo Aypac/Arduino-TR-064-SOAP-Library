@@ -47,8 +47,8 @@ char IP[] = SECRET_IP;
 // httpsInsec (1) means: https via port 49443 without rootCa validation
 // https (2) means: https via port 49443 with rootCa validation
 
-//#define TRANSPORT_PROTOCOL 0    // 0 = http, 1 = httpsInsec, 2 = https
-#define TRANSPORT_PROTOCOL 1      // 0 = http, 1 = httpsInsec, 2 = https
+#define TRANSPORT_PROTOCOL 0    // 0 = http, 1 = httpsInsec, 2 = https
+//#define TRANSPORT_PROTOCOL 1      // 0 = http, 1 = httpsInsec, 2 = https
 //#define TRANSPORT_PROTOCOL 2      // 0 = http, 1 = httpsInsec, 2 = https
 
 //-------------------------------------------------------------------------------------
