@@ -62,10 +62,10 @@ TR064::TR064(uint16_t port, const String& ip, const String& user, const String& 
     _certificate = certificate;
     _protocol = protocol;
     if (protocol == Protocol::useHttp) {
-        tr064ClientPtr = &tr064SimpleClient;      
+        tr064ClientPtr = &tr064SimpleClient;   
     } else {
-        if (protocol == Protocol::useHttpsInsec) {       
-            tr064SslClient.setInsecure();           
+        if (protocol == Protocol::useHttpsInsec) {    
+            tr064SslClient.setInsecure();   
         } else {
             tr064SslClient.setCACert(certificate);
         }
@@ -125,10 +125,10 @@ TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, con
     _certificate = certificate;
     _protocol = protocol;
     if (protocol == Protocol::useHttp) {
-        tr064ClientPtr = &tr064SimpleClient;      
+        tr064ClientPtr = &tr064SimpleClient;     
     } else {
         if (protocol == Protocol::useHttpsInsec) {       
-            tr064SslClient.setInsecure();           
+            tr064SslClient.setInsecure();         
         } else {
             tr064SslClient.setCACert(certificate);
         }

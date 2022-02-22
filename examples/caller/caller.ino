@@ -73,10 +73,10 @@ char IP[] = SECRET_IP;
 #else
     const int PORT = 49443;
 	X509Certificate myX509Certificate = myfritzbox_root_ca;
-	#if TRANSPORT_PROTOCOL == 1   	
-		Protocol protocol = Protocol::useHttpsInsec;		
-	#else	
-		Protocol protocol = Protocol::useHttps;		
+	#if TRANSPORT_PROTOCOL == 1 	
+		Protocol protocol = Protocol::useHttpsInsec;
+	#else
+		Protocol protocol = Protocol::useHttps;
 	#endif
 #endif
 

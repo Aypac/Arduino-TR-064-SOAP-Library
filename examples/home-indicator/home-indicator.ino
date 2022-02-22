@@ -7,7 +7,7 @@
  *  Please adjust your data below.
  *  
  *  Created on: 09.12.2015,
- *  latest update: 24.06.2021
+ *  latest update: 22.02.2022
  *
  */
 
@@ -91,10 +91,10 @@ int userPins[numUser] = {5, 4, 0}; //Three LED's because there are three users
 #else
     const int PORT = 49443;
 	X509Certificate myX509Certificate = myfritzbox_root_ca;
-	#if TRANSPORT_PROTOCOL == 1   	
-		Protocol protocol = Protocol::useHttpsInsec;		
-	#else	
-		Protocol protocol = Protocol::useHttps;		
+	#if TRANSPORT_PROTOCOL == 1
+		Protocol protocol = Protocol::useHttpsInsec;
+	#else
+		Protocol protocol = Protocol::useHttps;
 	#endif
 #endif
 
