@@ -61,18 +61,12 @@ TR064::TR064(uint16_t port, const String& ip, const String& user, const String& 
     this->_state = TR064_NO_SERVICES;
     _certificate = certificate;
     _protocol = protocol;
-    if (protocol == Protocol::useHtt)
-    {
+    if (protocol == Protocol::useHtt) {
         tr064ClientPtr = &tr064SimpleClient;      
-    }
-    else
-    {
-        if (protocol == Protocol::useHttpsInsec)
-        {       
+    } else {
+        if (protocol == Protocol::useHttpsInsec) {       
             tr064SslClient.setInsecure();           
-        }
-        else
-        {
+        } else {
             tr064SslClient.setCACert(certificate);
         }
         tr064ClientPtr = &tr064SslClient;
@@ -130,18 +124,12 @@ TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, con
     this->_pass = pass;
     _certificate = certificate;
     _protocol = protocol;
-    if (protocol == Protocol::useHtt)
-    {
+    if (protocol == Protocol::useHtt) {
         tr064ClientPtr = &tr064SimpleClient;      
-    }
-    else
-    {
-        if (protocol == Protocol::useHttpsInsec)
-        {       
+    } else {
+        if (protocol == Protocol::useHttpsInsec) {       
             tr064SslClient.setInsecure();           
-        }
-        else
-        {
+        } else {
             tr064SslClient.setCACert(certificate);
         }
         tr064ClientPtr = &tr064SslClient;
@@ -503,8 +491,8 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
         return false;
     }
 
-    String protocolPrefix = _protocol == Protocol::useHttps ? "https://" : "http://";
-    bool useTls = _protocol == Protocol::useHttps ? true : false;
+    String protocolPrefix = _protocol == Protocol::useHttp ? "http://" : "https://";
+    bool useTls = _protocol == Protocol::useHttp ? false : true;
 
     deb_println("[HTTP] prepare request to URL: " + protocolPrefix + _ip + ":" + _port + url, DEBUG_INFO);
     http.setReuse(true);
