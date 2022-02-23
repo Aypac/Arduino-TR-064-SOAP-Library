@@ -47,12 +47,14 @@ typedef enum {
      TR064_CODE_SECONDFACTORAUTHBUSY = 868, // (“second factorauthentication busy”) will be returned and the 2FA procedure    
 } t_tr064_codes;
 
+/** Types of http protocol */
 typedef enum {
       useHttp,
       useHttpsInsec,
       useHttps
   } Protocol;
 
+/** X509Certificate */
 typedef const char* X509Certificate;
 
 #define arr_len( x )  ( sizeof( x ) / sizeof( *x ) ) ///< Gives the length of an array
