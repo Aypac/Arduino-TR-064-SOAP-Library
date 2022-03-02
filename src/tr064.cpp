@@ -67,7 +67,7 @@ TR064::TR064(uint16_t port, const String& ip, const String& user, const String& 
         if (protocol == Protocol::useHttpsInsec) {
             tr064SslClient.setInsecure();
         } else {
-            #if defined(Esp32)
+            #if defined(ESP32)
             tr064SslClient.setCACert(certificate);
             #endif
         }
@@ -132,7 +132,7 @@ TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, con
         if (protocol == Protocol::useHttpsInsec) {    
             tr064SslClient.setInsecure();    
         } else {
-            #if defined(Esp32)
+            #if defined(ESP32)
             tr064SslClient.setCACert(certificate);
             #endif
         }
@@ -505,7 +505,7 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
         http.begin(tr064SimpleClient, _ip.c_str(), _port, url.c_str(), useTls);
     }else{
         http.begin(tr064SslClient, _ip.c_str(), _port, url.c_str(), useTls);
-        #if defined(Esp32)
+        #if defined(ESP32)
         http.setConnectTimeout(2000);
         #endif
     }
