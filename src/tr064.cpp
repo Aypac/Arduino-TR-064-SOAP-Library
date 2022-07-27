@@ -573,6 +573,7 @@ String TR064::byte2hex(byte number){
 /**************************************************************************/
 bool TR064::xmlTakeParam(String (*params)[2], int nParam) {
     WiFiClient * stream = &tr064client;    
+    stream->Stream::setTimeout(40);
     while(stream->connected()) {
         if(!http.connected()) {
             deb_println("[TR064][xmlTakeParam] http connection lost", DEBUG_INFO);
@@ -580,8 +581,9 @@ bool TR064::xmlTakeParam(String (*params)[2], int nParam) {
         }
         if(stream->find("<")){
             const String htmltag = stream->readStringUntil('>');
-            const String value = stream->readStringUntil('<');
             deb_println("[TR064][xmlTakeParam] htmltag: "+htmltag, DEBUG_VERBOSE);
+            const String value = stream->readStringUntil('<');
+            
 
             if (nParam > 0) {
                 for (uint16_t i=0; i<nParam; ++i) {
@@ -638,7 +640,7 @@ bool TR064::xmlTakeParam(String (*params)[2], int nParam) {
 /**************************************************************************/
 bool TR064::xmlTakeParam(String& value, const String& needParam) {
     WiFiClient * stream = &tr064client;
-     
+    stream->Stream::setTimeout(40);
     while(stream->connected()) {
         if(!http.connected()) {
             deb_println("[TR064][xmlTakeParam] http connection lost", DEBUG_INFO);
