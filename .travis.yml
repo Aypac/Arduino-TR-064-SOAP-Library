@@ -1,5 +1,9 @@
 language: c
 os: linux
+cache:
+  directories:
+    - ~/arduino_ide
+    - ~/.arduino15/packages/
 
 # Blacklist
 branches:
@@ -27,8 +31,8 @@ env:
 before_install:
    - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
    
-install:
-   - arduino --install-library "ConfigManager"
+#install:
+#   - arduino --install-library "ConfigManager"
  
 script:
    - build_platform esp8266
