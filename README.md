@@ -1,7 +1,4 @@
-<b>IMPORTANT NOTE</b><br />
-*My ISP forces me to use a proprietary router without TR064. Additionally, I started mostly using [Micropython](https://micropython.org/), so I have a hard time maintaining this code. Therefore I rely on contributions and testing from the community - so YOU. Also, if you feel like maintaining this repo, let me know and we should be able to make you maintainer or even transfer ownership.*
-
-# Arduino-TR-064-SOAP-Library [![Build Status](https://app.travis-ci.com/Aypac/SetupVariableTracker.svg?branch=master)](https://app.travis-ci.com/Aypac/SetupVariableTracker)
+# Arduino-TR-064-SOAP-Library [![Build Status Master](https://app.travis-ci.com/Aypac/SetupVariableTracker.svg?branch=master)](https://app.travis-ci.com/Aypac/SetupVariableTracker) [![Build Status Develop](https://app.travis-ci.com/Aypac/SetupVariableTracker.svg?branch=develop)](https://app.travis-ci.com/Aypac/SetupVariableTracker)
 Arduino library to facilitate the use of the TR-064 protocol ([my "simple" explanation](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-does-the-TR-064-protocol-work%3F), the [definition](https://www.broadband-forum.org/technical/download/TR-064.pdf) and an official [description](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf)), most commonly used by Fritz!Box.
 
 This library has been developed on an ESP8266 and tested on an ESP32.
@@ -30,6 +27,7 @@ If you know more/have tested a device not on the list, please let me know!
 	<li> Almost all Fritz!Box routers.
 		<details><summary>Tested devices (click to expand)</summary>
 			<ul>
+				<li> Fritz!Box 5590</li>
 				<li> Fritz!Box FON WLAN 7360</li>
 				<li> Fritz!Box 7490 (tested by Dirk Kaben)</li>
 				<li> Fritz!Box 7580</li>
@@ -51,12 +49,13 @@ If you know more/have tested a device not on the list, please let me know!
  - A similar article was also featured in Reichelt magazine (an electronics vendor) in [English](https://www.reichelt.com/magazin/en/build-smart-doorbell-arduino), [German](https://www.reichelt.de/magazin/how-to/smarte-tuerklingel) and [Dutch](https://www.reichelt.com/magazin/nl/zelf-een-slimme-deurbel-maken).
  
 
-# TODO
+# Contribute
 
 Help is very welcome! For example:
+ - Check the [issue section on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues) or the list below and see if you can help
  - Please let me know if you came up with a cool use-case (I'd love to add more examples, see also list at the end of this file)
  - Let me know if you tested it on hardware not listed here (i.e. other microcontroller and other routers)
- - If you have any suggestions on how to improve the library code itself (I'm not particularily good with C++). I moved the TODO's mostly into the [issue section on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues), or check out the list below.
+ - If you have any suggestions on how to improve the library code itself (I'm not particularily good with C++).
  - Contributions to the [Wiki](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki) are also very welcome!
 
 Some of the old issues are:
