@@ -61,7 +61,7 @@ int userPins[numUser] = {5, 4, 0}; //Three LED's because there are three users
 //-------------------------------------------------------------------------------------
 // Initializations. No need to change these.
 //-------------------------------------------------------------------------------------
-// Array-settings.
+// Array-settings
 #define STATUS_MAC "MAC"
 #define STATUS_IP "IP";
 #define STATUS_ACTIVE "ACTIVE";
@@ -71,7 +71,7 @@ int userPins[numUser] = {5, 4, 0}; //Three LED's because there are three users
 #define STATUS_ACTIVE_INDEX 3
 #define STATUS_HOSTNAME_INDEX 2
 
-// Status array. 
+// Status array
 bool onlineUsers[numUser];
 
 // TR-064 connection
@@ -129,7 +129,7 @@ void setup() {
   //  DEBUG_WARNING      ///< Only print error and warning messages
   //  DEBUG_INFO         ///< Print error, warning and info messages
   //  DEBUG_VERBOSE      ///< Print all messages
-    connection.debug_level = connection.DEBUG_WARNING;
+  connection.debug_level = connection.DEBUG_WARNING;
   if(Serial) Serial.setDebugOutput(true);
   
   // The following line retrieves a list of all available services on the router.
@@ -165,22 +165,22 @@ void loop() {
     boolean b = true; //No online device found yet
     // Check all devices
     for (int j=0;j<maxDevices && b;++j) {
-    // Get the mac of the device to check
-    String curMac = macsPerUser[i][j];
-    b = (curMac!=""); //If it is empty, we don't need to check it (or the next one)
-    if (b) {
-      // okay, ask the router for the status of this MAC
-      String stat2[4][2];
-      getStatusOfMAC(curMac, stat2);
+      // Get the mac of the device to check
+      String curMac = macsPerUser[i][j];
+      b = (curMac!=""); //If it is empty, we don't need to check it (or the next one)
+      if (b) {
+        // okay, ask the router for the status of this MAC
+        String stat2[4][2];
+        getStatusOfMAC(curMac, stat2);
 
-      // aaaaaaaaaaaannd??? Is it online?
-      if (stat2[STATUS_ACTIVE_INDEX][1] != "" && stat2[STATUS_ACTIVE_INDEX][1] != "0") {
-      	onlineUsers[i] = true;
-      	b=true;
+        // aaaaaaaaaaaannd??? Is it online?
+        if (stat2[STATUS_ACTIVE_INDEX][1] != "" && stat2[STATUS_ACTIVE_INDEX][1] != "0") {
+      	  onlineUsers[i] = true;
+      	  b=true;
+        }
+        // Okay, print the status to the console!
+        verboseStatus(stat2);
       }
-      // Okay, print the status to the console!
-      verboseStatus(stat2);
-    }
     }
   }
   if(Serial) Serial.println("-------------------------------------------");
@@ -192,9 +192,9 @@ void loop() {
     digitalWrite(userPins[i], LOW);
     delay(7);
     if (onlineUsers[i]) {
-    digitalWrite(userPins[i], HIGH);
+      digitalWrite(userPins[i], HIGH);
     } else {
-    digitalWrite(userPins[i], LOW);
+      digitalWrite(userPins[i], LOW);
     }
   }
   delay(1000);
@@ -202,7 +202,7 @@ void loop() {
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////// helper methods//////////////////////////////////////////////
+//////////////////////////////////// helper function ////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 /** 
