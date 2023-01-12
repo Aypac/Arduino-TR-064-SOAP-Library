@@ -77,6 +77,7 @@ Some of the old issues are:
 * Add yield()'s (where sensible)
 * Error-handeling can always be improved
 * Should some of the calls of the examples be included into the library?
+* Get the DOXY to work again
 
 ### Examples
 
