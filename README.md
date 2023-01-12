@@ -1,5 +1,7 @@
-# Arduino-TR-064-SOAP-Library ![Linting](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/actions/workflows/lint.yml/badge.svg) ![Test compile](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/actions/workflows/arduino-test-compile.yml/badge.svg)
-Arduino library to facilitate the use of the TR-064 protocol. With this you can get a lot of information from and control common routers and their peripherals, like the FRITZ!Box or some ZyXEL. A few examples include:
+# Arduino TR-064 SOAP Library [![Linting](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/actions/workflows/lint.yml/badge.svg)](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/actions/workflows/lint.yml) ![Test compile](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/actions/workflows/arduino-test-compile.yml/badge.svg)
+Arduino library to facilitate the use of the TR-064 SOAP protocol. With this you can get a lot of information from and control common routers and their peripherals, like the FRITZ!Box or some ZyXEL.
+
+A few examples of what you can do with it include:
  - Retrieve devices currently connected to the WIFI or LAN
  - Retrieve statistics on internet data usage
  - Turn WiFi on or off (e.g. Guest WiFi)
@@ -7,7 +9,7 @@ Arduino library to facilitate the use of the TR-064 protocol. With this you can 
  - Turn on and off connected Telephone answering machines
  - Get amount of power passing through connected smart plugs and take decisions on it
  - Turn smart plugs on or off
- - (Maybe read out and control smart thermostats)
+ - See more under examples and at the end of this README
 
 This library has been developed on an ESP8266 and tested on an ESP32 and with various hardware of [AVM FRITZ!OS](https://en.avm.de/).
 
@@ -15,10 +17,10 @@ To get started, I recommend to check out the [examples folder](https://github.co
 
 If you still have question please don't hesistate to [open an issue here on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new). If you made something cool with this library please provide it as an example. Please create a pull request (or, if you don't know how, [an issue](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new)) to do that.
 
-For details on the TR-064 protocol: my "simple" explanation](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-does-the-TR-064-protocol-work%3F), the [definition](https://www.broadband-forum.org/technical/download/TR-064.pdf) and an official [description](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf)).
+For details on the TR-064 SOAP protocol: [my "simple" explanation](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-does-the-TR-064-protocol-work%3F), the [definition](https://www.broadband-forum.org/technical/download/TR-064.pdf) and an official [description](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf)).
 
 ## Installation and usage
-Simply go to `Tools → Manage Libraries...` in the Arduino IDE and search for `TR-064`. Press install. The examples can then also be found in the IDE under `Examples → TR-064 SOAP Library`.
+Simply go to `Tools → Manage Libraries...` in the Arduino IDE and search for `TR064`. Press install. The examples can then also be found in the IDE under `Examples → TR064`.
 
 Don't forget that you also need to [add the board you are using to the IDE](https://learn.adafruit.com/add-boards-arduino-v164/setup); 
 <details><summary>Example board URLs</summary>
@@ -59,7 +61,7 @@ If you know more/have tested a device not on the list, please let me know!
  - A similar article was also featured in Reichelt magazine (an electronics vendor) in [English](https://www.reichelt.com/magazin/en/build-smart-doorbell-arduino), [German](https://www.reichelt.de/magazin/how-to/smarte-tuerklingel) and [Dutch](https://www.reichelt.com/magazin/nl/zelf-een-slimme-deurbel-maken).
  
 
-# Contribute
+## Contribute
 
 Help is very welcome! For example:
  - Check the [issue section on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues) or the list below and see if you can help
@@ -74,22 +76,19 @@ Some of the old issues are:
 
 * Add yield()'s (where sensible)
 * Error-handeling can always be improved
-* Reduce occasional crashes (should be fixed, but please report if still encountered)
 * Should some of the calls of the examples be included into the library?
 
 ### Examples
 
 * Add yield()'s (where sensible)
-* Add a few more nice examples (work in progress, see branch 'new_examples')
-  * turning on/off (guest) wifi
-  * read out connection speed
+* Add a few more nice examples
   * alternate WPS button
   * emergency dial-up to relatives or emergency services
-  * recognize when devices (like washing machines) are done (along the lines of [this](https://github.com/dl9sec/ArduinoSIP/tree/master/examples/LaundryNotifier)
   * Start devices through e.g. telegram messages (e.g. coffee machine, washing machine, ...)
 * WhoIsHomeIndicator
   * Add nice GUI/Website to configure/manage the users/LEDs/MACs/known devices
 * Extend doorbell example to also send telegram messages :)
+* Do something with the FRITZ!DECT Thermostats
 
 <hr />
 
