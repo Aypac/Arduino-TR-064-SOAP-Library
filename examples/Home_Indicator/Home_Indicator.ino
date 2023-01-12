@@ -1,10 +1,11 @@
 /**
- * HomeIndicator.ino
+ * Home_Indicator.ino
  *  by René Vollmer
  * 
  * Example code for the home-indicator-project [ https://www.instructables.com/id/Who-Is-Home-Indicator-aka-Weasley-Clock-Based-on-T ].
  *  
  * Please adjust your sensitive data in the file/tab `arduino_secrets.h`
+ *  and the settings below.
  *  
  * Created on: 09.12.2015
  *  Latest update: 11.01.2023
@@ -66,7 +67,7 @@ int userPins[numUser] = {5, 4, 0}; //Three LED's because there are three users
 #define STATUS_IP "IP";
 #define STATUS_ACTIVE "ACTIVE";
 #define STATUS_HOSTNAME "HOSTNAME"
-#define MAC_INDEX 0
+#define STATUS_MAC_INDEX 0
 #define STATUS_IP_INDEX 1
 #define STATUS_ACTIVE_INDEX 3
 #define STATUS_HOSTNAME_INDEX 2
@@ -75,7 +76,7 @@ int userPins[numUser] = {5, 4, 0}; //Three LED's because there are three users
 bool onlineUsers[numUser];
 
 // TR-064 connection
-TR064 connection(PORT, IP, fuser, fpass);
+TR064 connection(TR_PORT, TR_IP, TR_USER, TR_PASS);
 
 
 //-------------------------------------------------------------------------------------
@@ -323,7 +324,7 @@ void verboseStatus(String r[4][2]) {
  */
 void ensureWIFIConnection() {
   if ((WiFiMulti.run() != WL_CONNECTED)) {
-    WiFiMulti.addAP(wifi_ssid, wifi_password);
+    WiFiMulti.addAP(WIFI_SSID, WIFI_PASS);
     WiFiMulti.run();
     while ((WiFiMulti.run() != WL_CONNECTED)) {
     //Flash all LED's to indicate, that the connection was lost.

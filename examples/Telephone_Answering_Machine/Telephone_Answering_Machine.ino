@@ -1,5 +1,5 @@
 /**
- * TelephoneAnsweringMachine.ino
+ * Telephone_Answering_Machine.ino
  * 
  * Simple ON/OFF switch for the Telephone Answering Machine (TAM).
  * Only works on M5StickC.

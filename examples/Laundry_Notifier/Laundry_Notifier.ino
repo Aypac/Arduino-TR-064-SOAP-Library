@@ -1,5 +1,5 @@
 /**
- * LaundryNotifier.ino
+ * Laundry_Notifier.ino
  *  by Thorsten Godau
  *
  * ====================================================================
@@ -42,6 +42,9 @@
  */
 #include "arduino_secrets.h"
 
+// You need to install this additional depenency
+//   https://github.com/dl9sec/ArduinoSIP
+// Copy the src folder into you library folder and rename to ArduinoSIP
 #include <ArduinoSIP.h>
 
 #if defined(ESP8266)
@@ -63,6 +66,7 @@
 //-------------------------------------------------------------------------------------
 // Telephone and power meter settings
 //-------------------------------------------------------------------------------------
+
 // Sip parameters
 const char *SipIP   = "192.168.2.1";  // IP of the FRITZ!Box
 const int   SipPORT   = 5060;         // SIP port of the FRITZ!Box
@@ -104,7 +108,10 @@ uint32_t u32Interval = 30000;   // Every 30s
 uint32_t u32MillisTmp;
 
 
-TR064 tr064conn(TR_PORT, TR_IP, TR_USER, TR_PASS);
+// TR-064 connection
+TR064 connection(TR_PORT, TR_IP, TR_USER, TR_PASS);
+
+// SIP connection
 Sip   aSip(acSipOut, sizeof(acSipOut));
 
 //------------------------------------------------
@@ -154,14 +161,14 @@ void setup() {
   digitalWrite(LED, 1);  // LED off
 
 
-  aSip.Init(SipIP, SipPORT, WiFiIP, SipPORT, SipUSER, SipPW, 38);
+  aSip.Init(SipIP, SipPORT, WiFi.localIP().toString().c_str(), SipPORT, SipUSER, SipPW, 38);
   
   // The following line retrieves a list of all available services on the router.
   // It is not required for operation, so it can be safely commented and save
   //   ressources on the microcontroller. However, it can be helpful for debugging
   //   and development to keep it activated.
   if(Serial) Serial.printf("Initialize TR-064 connection\n\n");
-  tr064conn.init();
+  connection.init();
 
   u32MillisTmp = millis();
 }
@@ -233,7 +240,7 @@ float getPwrAIN(const char *FbApiAIN) {
   String params[][2] = {{"NewAIN", FbApiAIN}};
   String req[][2] = {{"NewMultimeterPower", ""}};
 
-  tr064conn.action("X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", params, 1, req, 1);
+  connection.action("X_AVM-DE_Homeauto:1", "GetSpecificDeviceInfos", params, 1, req, 1);
 
   float power = (float)((req[0][1]).toInt()) / 100.0;
 
@@ -245,7 +252,7 @@ float getPwrAIN(const char *FbApiAIN) {
  */
 void ensureWIFIConnection() {
   if ((WiFiMulti.run() != WL_CONNECTED)) {
-    WiFiMulti.addAP(wifi_ssid, WIFI_PASS);
+    WiFiMulti.addAP(WIFI_SSID, WIFI_PASS);
     //WiFiMulti.run();
     while ((WiFiMulti.run() != WL_CONNECTED)) {
       delay(100);

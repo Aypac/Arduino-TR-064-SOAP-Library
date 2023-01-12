@@ -1,5 +1,5 @@
 /**
- * WifiSwitch.ino
+ * Wifi_Switch.ino
  *  by René Vollmer, inspired by [this issue](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/3)
  *  and adapted from [gickowtf](https://github.com/gickowtf)'s solution.
  * 

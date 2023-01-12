@@ -1,5 +1,5 @@
 /**
- * InternetStats.ino
+ * Internet_Stats.ino
  *  by René Vollmer
  *  
  * Example code for polling internet stats, like the currently used and available speeds.

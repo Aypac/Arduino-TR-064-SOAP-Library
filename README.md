@@ -1,13 +1,21 @@
 # Arduino-TR-064-SOAP-Library [![Build Status](https://app.travis-ci.com/Aypac/SetupVariableTracker.svg?branch=master)](https://app.travis-ci.com/Aypac/SetupVariableTracker)
-Arduino library to facilitate the use of the TR-064 protocol. With this you can get a lot of information from common routers, like the FRITZ!Box or some ZyXEL.
+Arduino library to facilitate the use of the TR-064 protocol. With this you can get a lot of information from and control common routers and their peripherals, like the FRITZ!Box or some ZyXEL. A few examples include:
+ - Retrieve devices currently connected to the WIFI or LAN
+ - Retrieve statistics on internet data usage
+ - Turn WiFi on or off (e.g. Guest WiFi)
+ - Make connected DECT phones ring (e.g. as a doorbell replacement)
+ - Turn on and off connected Telephone answering machines
+ - Get amount of power passing through connected smart plugs and take decisions on it
+ - Turn smart plugs on or off
+ - (Maybe read out and control smart thermostats)
 
-([my "simple" explanation](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-does-the-TR-064-protocol-work%3F), the [definition](https://www.broadband-forum.org/technical/download/TR-064.pdf) and an official [description](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf)), most commonly used by Fritz!Box.
-
-This library has been developed on an ESP8266 and tested on an ESP32.
+This library has been developed on an ESP8266 and tested on an ESP32 and with various hardware of [AVM FRITZ!OS](https://en.avm.de/).
 
 To get started, I recommend to check out the [examples folder](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/tree/master/examples), the [Wiki](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki) and the [instructable](http://www.instructables.com/id/Who-Is-Home-Indicator-aka-Weasley-Clock-Based-on-T/).
 
 If you still have question please don't hesistate to [open an issue here on Github](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new). If you made something cool with this library please provide it as an example. Please create a pull request (or, if you don't know how, [an issue](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/issues/new)) to do that.
+
+For details on the TR-064 protocol: my "simple" explanation](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/wiki/How-does-the-TR-064-protocol-work%3F), the [definition](https://www.broadband-forum.org/technical/download/TR-064.pdf) and an official [description](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf)).
 
 ## Installation and usage
 Simply go to `Tools → Manage Libraries...` in the Arduino IDE and search for `TR-064`. Press install. The examples can then also be found in the IDE under `Examples → TR-064 SOAP Library`.

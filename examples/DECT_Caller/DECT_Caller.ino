@@ -1,5 +1,5 @@
 /**
- * Caller.ino
+ * DECT_Caller.ino
  *  Example code for placing internal DECT phone calls.
  *
  *  Oliver-André Urban
@@ -162,7 +162,7 @@ String getStatus() {
  */
 void ensureWIFIConnection() {
   if ((WiFiMulti.run() != WL_CONNECTED)) {
-    WiFiMulti.addAP(WIFI_SSID, WIFI_PASSWORD);
+    WiFiMulti.addAP(WIFI_SSID, WIFI_PASS);
     while ((WiFiMulti.run() != WL_CONNECTED)) {
       delay(100);
     }
