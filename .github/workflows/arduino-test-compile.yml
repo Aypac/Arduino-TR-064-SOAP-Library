@@ -21,10 +21,10 @@ jobs:
         include:
            - sketches-exclude: Laundry_Notifier
              platform-url: https://arduino.esp8266.com/stable/package_esp8266com_index.json,https://dl.espressif.com/dl/package_esp32_index.json
-# Cannot currently be test-compiled, as it needs additional library (not in Arduino manager)
+# Laundry_Notifier cannot currently be test-compiled, as it needs additional library (not in Arduino manager)
 #          - arduino-boards-fqbn: esp32:esp32:m5stick-c
 #            platform-url: https://dl.espressif.com/dl/package_esp32_index.json
-#            sketches-include: Laundry_Notifier
+#            sketches-include: Telephone_Answering_Machine
 
       fail-fast: false
 
