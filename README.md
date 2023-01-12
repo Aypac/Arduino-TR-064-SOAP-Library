@@ -1,4 +1,4 @@
-# Arduino-TR-064-SOAP-Library [![Build Status](https://app.travis-ci.com/Aypac/SetupVariableTracker.svg?branch=master)](https://app.travis-ci.com/Aypac/SetupVariableTracker)
+# Arduino-TR-064-SOAP-Library ![Linting](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/actions/workflows/lint.yml/badge.svg) ![Test compile](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/actions/workflows/arduino-test-compile.yml/badge.svg)
 Arduino library to facilitate the use of the TR-064 protocol. With this you can get a lot of information from and control common routers and their peripherals, like the FRITZ!Box or some ZyXEL. A few examples include:
  - Retrieve devices currently connected to the WIFI or LAN
  - Retrieve statistics on internet data usage

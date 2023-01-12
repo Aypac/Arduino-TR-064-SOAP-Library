@@ -1,0 +1,15 @@
+name: Linting
+on: [push, pull_request]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: arduino/arduino-lint-action@v1
+        with:
+          # Configuration of the checks for libraries in the Arduino Library Manager index.
+          library-manager: update
+          # How strict the checks are.
+          compliance: strict
+          # The type of project to check.
+          project-type: library
