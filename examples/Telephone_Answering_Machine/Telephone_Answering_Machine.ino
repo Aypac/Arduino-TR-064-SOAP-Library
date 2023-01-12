@@ -2,7 +2,7 @@
  * Telephone_Answering_Machine.ino
  * 
  * Simple ON/OFF switch for the Telephone Answering Machine (TAM).
- * Only works on M5StickC.
+ * Developed on M5StickC. Screen only works on the M5StickC.
  *
  * https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf
  * https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf
@@ -171,9 +171,9 @@ int refreshScreen(int value) {
       M5.Lcd.setCursor(15, 15);
       M5.Lcd.print("OFF");
     }
-    return value;
   #endif
   if(Serial) Serial.print("Value: " + value);
+  return value;
 }
 
 
