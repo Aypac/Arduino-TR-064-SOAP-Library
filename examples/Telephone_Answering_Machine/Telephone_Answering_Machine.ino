@@ -33,13 +33,15 @@
 //-------------------------------------------------------------------------------------
 // Settings
 //-------------------------------------------------------------------------------------
-const unsigned long UPDATE_INTERVAL = 10000UL; //Check TAM switch every 10 seconds
+//Check TAM switch every 10 seconds
+#define UPDATE_INTERVAL 10000UL
 
 //-------------------------------------------------------------------------------------
 // Initializations. No need to change these.
 //-------------------------------------------------------------------------------------
 // Time when the last check was performed
-unsigned long lastConnection = 0;
+uint32_t lastConnection = 0;
+uint32_t lastClick = 0;
 
 // TR-064 connection
 TR064 connection(TR_PORT, TR_IP, TR_USER, TR_PASS);
@@ -50,8 +52,12 @@ TR064 connection(TR_PORT, TR_IP, TR_USER, TR_PASS);
 //###########################################################################################
 
 void setup() {
-  M5.begin();
-  pinMode(M5_BUTTON_HOME, INPUT);
+  
+  #if defined(M5Stick_C)
+    M5.begin();
+  #else
+    attachInterrupt(5, ButtonACallback, FALLING);
+  #endif
 
   // Start the serial connection
   // Not required for production, but helpful for development.
@@ -65,23 +71,27 @@ void setup() {
     Serial.println();
   }
   
-  if (Serial) Serial.print("ESP Board MAC Address: ");
-  if (Serial) Serial.println(WiFi.macAddress());
-  M5.Lcd.fillScreen(WHITE);
-
-  M5.Lcd.setRotation(3);
-  M5.Lcd.setCursor(2, 10);
-  M5.Lcd.setTextColor(BLACK);
-  M5.Lcd.setTextSize(2);
-  M5.Lcd.print(WiFi.macAddress());
-  M5.Lcd.setTextSize(12);
+  if (Serial) Serial.print("ESP Board MAC Address: " + WiFi.macAddress());
+  
+  #if defined(M5Stick_C)
+    M5.Lcd.fillScreen(WHITE);
+    M5.Lcd.setRotation(3);
+    M5.Lcd.setCursor(2, 10);
+    M5.Lcd.setTextColor(BLACK);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.print(WiFi.macAddress());
+    M5.Lcd.setTextSize(12);
+  #endif
 
   // Connect to wifi
   ensureWIFIConnection();
   if (Serial) Serial.println("WiFi connection established");
-  M5.Lcd.fillScreen(ORANGE);
-  M5.Lcd.setCursor(15, 15);
-  M5.Lcd.print("---");
+  #if defined(M5Stick_C)
+    M5.Lcd.fillScreen(ORANGE);
+    M5.Lcd.setCursor(15, 15);
+    M5.Lcd.print("---");
+  #endif
+  
   delay(100);
   
   
@@ -97,7 +107,9 @@ void setup() {
 }
 
 void loop() {
-  M5.update();
+  #if defined(M5Stick_C)
+    M5.update();
+  #endif
   yield();
   ensureWIFIConnection();
   unsigned long int now = millis();
@@ -106,9 +118,11 @@ void loop() {
     if (Serial) Serial.println(refreshScreen(getABStatus() == 1) ? "ON" : "OFF");
     lastConnection = millis();
   }
-  if (M5.BtnA.wasPressed()) {
-    ButtonACallback();
-  }
+  #if defined(M5Stick_C)
+    if (M5.BtnA.wasPressed()) {
+      ButtonACallback();
+    }
+  #endif
 }
 
 int getABStatus() {
@@ -130,6 +144,13 @@ bool switchABStatus() {
 }
 
 void ButtonACallback() {
+  // Some primitive debounce
+  if (millis() - lastClick < 500) {
+    lastClick = millis();
+    return;
+  }
+  lastClick = millis();
+
   if (Serial) Serial.print("Switch TAM Status: ");
   if (Serial) Serial.println((switchABStatus()) ? "success" : "fail");
   refreshScreen(getABStatus());
@@ -137,19 +158,22 @@ void ButtonACallback() {
 }
 
 int refreshScreen(int value) {
-  if (value == 1) {
-    M5.Lcd.setTextColor(BLACK);
-    M5.Lcd.fillScreen(TFT_DARKGREEN);
-    M5.Lcd.setCursor(15, 15);
-    M5.Lcd.print("ON");
-  }
-  else {
-    M5.Lcd.setTextColor(WHITE);
-    M5.Lcd.fillScreen(TFT_RED);
-    M5.Lcd.setCursor(15, 15);
-    M5.Lcd.print("OFF");
-  }
-  return value;
+  #if defined(M5Stick_C)
+    if (value == 1) {
+      M5.Lcd.setTextColor(BLACK);
+      M5.Lcd.fillScreen(TFT_DARKGREEN);
+      M5.Lcd.setCursor(15, 15);
+      M5.Lcd.print("ON");
+    }
+    else {
+      M5.Lcd.setTextColor(WHITE);
+      M5.Lcd.fillScreen(TFT_RED);
+      M5.Lcd.setCursor(15, 15);
+      M5.Lcd.print("OFF");
+    }
+    return value;
+  #endif
+  if(Serial) Serial.print("Value: " + value);
 }
 
 
@@ -158,19 +182,23 @@ int refreshScreen(int value) {
  */
 void ensureWIFIConnection() {
 	if ((WiFiMulti.run() != WL_CONNECTED)) {
-		WiFiMulti.setAutoConnect(true);
-		WiFiMulti.setAutoReconnect(true);
-		WiFiMulti.softAPdisconnect(true);
+    #if defined(M5Stick_C)
+      WiFiMulti.setAutoConnect(true);
+      WiFiMulti.setAutoReconnect(true);
+      WiFiMulti.softAPdisconnect(true);
+		  WiFiMulti.persistent(true);
+    #endif
 
-		WiFiMulti.addAP(wifi_ssid, wifi_password);
+		WiFiMulti.addAP(WIFI_SSID, WIFI_PASS);
 		
-		WiFiMulti.persistent(true);
 		while ((WiFiMulti.run() != WL_CONNECTED)) {
-			M5.Lcd.fillScreen(ORANGE);
-			M5.Lcd.setTextColor(WHITE);
-			M5.Lcd.setCursor(15, 15);
-			M5.Lcd.print("ERR");
-			delay(100);
+      #if defined(M5Stick_C)
+        M5.Lcd.fillScreen(ORANGE);
+        M5.Lcd.setTextColor(WHITE);
+        M5.Lcd.setCursor(15, 15);
+        M5.Lcd.print("ERR");
+      #endif
+      delay(100);
 		}
 	}
 }
