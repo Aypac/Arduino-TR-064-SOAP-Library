@@ -1,0 +1,48 @@
+name: Test compile
+on: [push, pull_request]
+jobs:
+  build:
+    name: ${{ matrix.arduino-boards-fqbn }} - test compiling examples
+    runs-on: ubuntu-latest
+#    env:
+#      PLATFORM_DEFAULT_URL: https://arduino.esp8266.com/stable/package_esp8266com_index.json,https://dl.espressif.com/dl/package_esp32_index.json
+#      REQUIRED_LIBRARIES: ConfigManager
+    strategy:
+      matrix:
+        arduino-boards-fqbn:
+          - esp8266:esp8266:generic
+          - esp8266:esp8266:nodemcu
+          - esp8266:esp8266:nodemcuv2
+          - esp8266:esp8266:huzzah
+          - esp32:esp32:nodemcu-32s
+          - esp32:esp32:esp32wrover
+          - esp32:esp32:m5stick-c
+        
+        include:
+           - sketches-exclude: Laundry_Notifier
+             platform-url: https://arduino.esp8266.com/stable/package_esp8266com_index.json,https://dl.espressif.com/dl/package_esp32_index.json
+# Laundry_Notifier cannot currently be test-compiled, as it needs additional library (not in Arduino manager)
+#          - arduino-boards-fqbn: esp32:esp32:m5stick-c
+#            platform-url: https://dl.espressif.com/dl/package_esp32_index.json
+#            sketches-include: Telephone_Answering_Machine
+
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Compile all examples using the bash script arduino-test-compile.sh
+        env:
+          # Passing parameters to the script by setting the appropriate ENV_* variables.
+          ENV_ARDUINO_BOARD_FQBN: ${{ matrix.arduino-boards-fqbn }}
+          ENV_PLATFORM_DEFAULT_URL: ${{ env.PLATFORM_DEFAULT_URL }}
+          ENV_PLATFORM_URL: ${{ matrix.platform-url }}
+          ENV_REQUIRED_LIBRARIES: ${{ env.REQUIRED_LIBRARIES }}
+          ENV_SKETCHES_EXCLUDE: ${{ matrix.sketches-exclude }}
+          ENV_BUILD_PROPERTIES: ${{ toJson(matrix.build-properties) }}
+          ENV_SKETCH_NAMES: ${{ matrix.sketch-names }}
+#          ENV_SKETCH_NAMES_FIND_START: examples/ # Not really required here, but serves as an usage example.
+        run: |
+          wget --quiet https://raw.githubusercontent.com/ArminJo/arduino-test-compile/master/arduino-test-compile.sh
+          chmod +x arduino-test-compile.sh
+          ./arduino-test-compile.sh
