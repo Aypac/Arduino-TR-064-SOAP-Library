@@ -32,7 +32,6 @@
 
 
 #include "tr064.h"
-#include <map>
 
 
 /**************************************************************************/
@@ -53,7 +52,8 @@
                 X509Certificate of TR-064 host to be used for https transmission.
 */
 /**************************************************************************/
-TR064::TR064(uint16_t port, const String& ip, const String& user, const String& pass, Protocol protocol, X509Certificate certificate) {
+TR064::TR064(uint16_t port, const String& ip, const String& user, const String& pass,
+             Protocol protocol, X509Certificate certificate) {
     _port = port;
     _ip = ip;
     _user = user;
@@ -121,7 +121,8 @@ void TR064::init() {
                 X509Certificate of TR-064 host to be used for https transmission.
 */
 /**************************************************************************/
-TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, const String& pass, Protocol protocol, X509Certificate certificate){
+TR064& TR064::setServer(uint16_t port, const String& ip, const String& user,
+                        const String& pass, Protocol protocol, X509Certificate certificate){
     this->_ip = ip;
     this->_port = port;
     this->_user = user;
@@ -135,7 +136,7 @@ TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, con
             tr064SslClient.setInsecure();    
         } else {
             #if defined(ESP32)
-            tr064SslClient.setCACert(certificate);
+				tr064SslClient.setCACert(certificate);
             #endif
         }
         tr064ClientPtr = &tr064SslClient;
@@ -153,19 +154,19 @@ void TR064::initServiceURLs() {
     /* TODO: We should give access to this data for users to inspect the
      * possibilities of their device(s) - see #9 on Github.
 		  for (auto const& service : _services) {
-			Serial.println(_service.first + ": " + _service.second);
+			Serial.println(service.first + ": " + service.second);
 		  }
      */
 
     _state = TR064_NO_SERVICES;
-    if(httpRequest(_detectPage, "", "", true)) {
-		deb_println("[TR064][initServiceURLs] getting the service detect page: " + _detectPage, DEBUG_INFO);
+    if (httpRequest(_detectPage, "", "", true)) {
+		deb_println("[TR064][initServiceURLs] getting the service detect page", DEBUG_INFO);
 		int i = 0;
 		
 		// Scan the XML stream for <serviceType> followed by <controlURL> XML tags.
 		// Fill their content into the _service Map (dict).
 		// Continue until you can't find any new <serviceType> XML tags.
-		while(1) {
+		while (1) {
 			if (!http.connected()) {
 				deb_println("[TR064][initServiceURLs] http connection lost during parsing!", DEBUG_INFO);
 				break;                      
@@ -175,7 +176,7 @@ void TR064::initServiceURLs() {
 				String value = "";
 				if (xmlTakeParam(value, "controlURL")) {
 					deb_print("[TR064][initServiceURLs] "+ String(i) + "\t" + key + ":" + value, DEBUG_VERBOSE);
-					_service[key] = value;
+					_services[key] = value;
 					++i;
 				} else {
 					deb_print("[TR064][initServiceURLs] "+ String(i) + "\t" + key + ": FAILED!", DEBUG_WARNING);
@@ -251,12 +252,14 @@ String TR064::generateAuthToken() {
     @return success state.
 */
 /**************************************************************************/
-bool TR064::action(const String& service, const String& act, String params[][2], int nParam,  const String& url) {
+bool TR064::action(const String& service, const String& act, String params[][2],
+                   int nParam,  const String& url) {
+	// This is basically just a wrapper for the other action function,
+	//   that's why it is so short :)
     deb_println("[TR064]", DEBUG_VERBOSE);
     deb_println("[TR064][action] with parameters", DEBUG_VERBOSE);
     String req[][2] = {{}};
     if(action(service, act, params, nParam, req, 0, url)){
-        
         http.end();
         return true;
     }
@@ -292,7 +295,8 @@ bool TR064::action(const String& service, const String& act, String params[][2],
     @return success state.
 */
 /**************************************************************************/
-bool TR064::action(const String& service, const String& act, String params[][2], int nParam, String (*req)[2], int nReq, const String& url) {
+bool TR064::action(const String& service, const String& act, String params[][2],
+                   int nParam, String (*req)[2], int nReq, const String& url) {
     deb_println("[TR064][action] with extraction", DEBUG_VERBOSE);
     
     int tries = 0; // Keep track on the number of times we tried to request.
@@ -302,7 +306,7 @@ bool TR064::action(const String& service, const String& act, String params[][2],
         } else {
             return false;
         }
-        deb_println("[TR064][action] Response status: "+ _status +", Tries: "+String(tries), DEBUG_INFO);
+        deb_println("[TR064][action] Response status: "+ _status +"; Tries: "+String(tries), DEBUG_INFO);
         if(_status == "unauthenticated"){
             
             while (_status == "unauthenticated"  && (_nonce == "" || _realm == "") && tries <= 3) {
@@ -364,7 +368,8 @@ bool TR064::action(const String& service, const String& act, String params[][2],
     @return success state.
 */
 /**************************************************************************/
-bool TR064::action_raw(const String& service, const String& act, String params[][2], int nParam, const String& url) {
+bool TR064::action_raw(const String& service, const String& act, String params[][2],
+                       int nParam, const String& url) {
     // Generate the XML-envelop
     String serviceName = cleanOldServiceName(service);
     String xml = _requestStart + generateAuthXML() + "<s:Body><u:"+act+" xmlns:u=\"" + _servicePrefix + serviceName + "\">";
@@ -388,7 +393,7 @@ bool TR064::action_raw(const String& service, const String& act, String params[]
     if (url !="") {
         return httpRequest(url, xml, soapaction, true);
     } else {
-        return httpRequest(_service[_servicePrefix + serviceName], xml, soapaction, true);
+        return httpRequest(_services[_servicePrefix + serviceName], xml, soapaction, true);
     }
 }
 
@@ -526,9 +531,9 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
         
         if (httpCode == HTTP_CODE_OK) {
             return true;
-        }else{
+        } else {
             if (httpCode == HTTP_CODE_INTERNAL_SERVER_ERROR) { 
-                String req[][2] = {{"errorCode",""},{"errorDescription",""}};
+                String req[][2] = {{"errorCode", ""}, {"errorDescription", ""}};
                 if (xmlTakeParam(req, 2)) {                                
                     if(req[0][1]!=""){
                         deb_println("[TR064][httpRequest] <TR064> Failed, errorCode: '" + req[0][1]  + "'", DEBUG_VERBOSE);                    
@@ -571,7 +576,7 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
     @return The calculated MD5 hash (as `String`).
 */
 /**************************************************************************/
-String TR064::md5String(const String& text){
+String TR064::md5String(const String& text) {
     byte bbuff[16];
     String hash = "";
     MD5Builder nonce_md5; 

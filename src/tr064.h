@@ -4,7 +4,7 @@
  * Library for communicating via TR-064 protocol (e.g. FRITZ!Box).
  * This allows for easy communication with TR-064 (and possibly TR-069) enabled devices,
  * such as Routers, smartplugs, DECT telephones etc.
- * Details, examples and the latest Version of this library can be found <a href='https://github.com/Aypac/Arduino-TR-064-SOAP-Library'>on my Github page</a>.
+ * Details, examples and the latest version of this library can be found <a href='https://github.com/Aypac/Arduino-TR-064-SOAP-Library'>on my Github page</a>.
  * A descriptor of the protocol can be found <a href='https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf'>here</a>.
  * 
  * This library depends on:
@@ -24,6 +24,7 @@
 
 #include "Arduino.h"
 #include <MD5Builder.h>
+#include <map>
 #if defined(ESP8266)
     //if(Serial) Serial.println(F("Version compiled for ESP8266."));
     #include <ESP8266WiFi.h>
