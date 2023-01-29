@@ -8,10 +8,10 @@
  * A descriptor of the protocol can be found <a href='https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf'>here</a>.
  * 
  * This library depends on:
- *    MD5Builder
- *  ESP8266HTTPClient or HTTPClient, depending on the intended platform (ESP8266 or ESP32).
+ *   MD5Builder
+ *   ESP8266HTTPClient or HTTPClient, depending on the intended platform (ESP8266 or ESP32).
  *
- * Written by René Vollmer "Aypac" in November 2016.
+ * Written by René Vollmer "Aypac" in November 2016, with contributions from others. See <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library">Github for details</a>..
  *
  * MIT License, all text here must be included in any redistribution.
  *
@@ -48,6 +48,16 @@ typedef enum {
      TR064_CODE_SECONDFACTORAUTHBLOCKED = 867, // (“second factor authentication blocked”) or 
      TR064_CODE_SECONDFACTORAUTHBUSY = 868, // (“second factorauthentication busy”) will be returned and the 2FA procedure    
 } t_tr064_codes;
+
+/// Types of http protocol
+typedef enum {
+      useHttp,
+      useHttpsInsec,
+      useHttps
+  } Protocol;
+
+/// X509Certificate
+typedef const char* X509Certificate;
 
 
 
@@ -102,11 +112,11 @@ class TR064 {
         } ;
 
         TR064();
-        TR064(uint16_t port, const String& ip, const String& user, const String& pass);
+        TR064(uint16_t port, const String& ip, const String& user, const String& pass, Protocol protocol = Protocol::useHttp, X509Certificate pCertificate = nullptr);
         ~TR064() {}
-        TR064& setServer(uint16_t port, const String& ip, const String& user, const String& pass);
+        TR064& setServer(uint16_t port, const String& ip, const String& user, const String& pass, Protocol protocol, X509Certificate certificate);
         void init();
-        int state();       
+        int state();
         
         bool action(const String& service, const String& act, String params[][2] = {}, int nParam = 0,const String& url = "");
         //bool action(const String& service, const String& act, String params[][2], int nParam, const String& url = "");
@@ -118,6 +128,9 @@ class TR064 {
          
     private:
         WiFiClient tr064client;
+        WiFiClient tr064SimpleClient;
+        WiFiClientSecure tr064SslClient;
+        WiFiClient * tr064ClientPtr;
         HTTPClient http;
         
         //TODO: More consistent naming
@@ -126,7 +139,7 @@ class TR064 {
         void deb_print(const String& message, int level);
         void deb_println(const String& message, int level);
         bool action_raw(const String& service,const String& act, String params[][2], int nParam, const String& url = "");
-        bool httpRequest(const String& url,  const String& xml, const  String& action, bool retry);
+        bool httpRequest(const String& url, const String& xml, const String& action, bool retry);
         String generateAuthToken();
         String generateAuthXML();
         String findServiceURL(const String& service);
@@ -144,6 +157,8 @@ class TR064 {
         String _secretH; // To be generated
         String _nonce = "";
         String _status;
+        X509Certificate _certificate;
+        Protocol _protocol;
 
         const char* const _requestStart = "<?xml version=\"1.0\"?><s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">";
         const char* const _detectPage = "/tr64desc.xml";
@@ -151,10 +166,10 @@ class TR064 {
         unsigned long lastOutActivity;
         unsigned long lastInActivity;
         /* 
-    		* TODO: We should give access to this data for users to inspect the
-        * possibilities of their device(s) - see #9 on Github.
-        * TODO: Remove 100 services limits here
-        */
+    	 * TODO: We should give access to this data for users to inspect the
+         * possibilities of their device(s) - see #9 on Github.
+         * TODO: Remove 100 services limits here
+         */
         String _services[100][2];
 };
 

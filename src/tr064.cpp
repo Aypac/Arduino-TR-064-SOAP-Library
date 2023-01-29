@@ -11,7 +11,8 @@
  * A descriptor of the protocol can be found <a href="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf" target="_blank">here</a>.
  * 
  * Initial version: November 2016<br />
- * Last updated: June 2021
+ * Modifications to work with https by RoSchmi Feb 2022<br />
+ * Last updated: Jan 2023<br />
  *
  * @section dependencies Dependencies
  *
@@ -45,15 +46,33 @@
                 User name to be used to establish the TR-064 connection.
     @param    pass
                 Password to be used to establish the TR-064 connection.
+    @param    protocol
+                Transmission protocol to be used (http/https).
+    @param    certificate
+                X509Certificate of TR-064 host to be used for https transmission.
 */
 /**************************************************************************/
-TR064::TR064(uint16_t port, const String& ip, const String& user, const String& pass) {
+TR064::TR064(uint16_t port, const String& ip, const String& user, const String& pass, Protocol protocol, X509Certificate certificate) {
     _port = port;
     _ip = ip;
     _user = user;
     _pass = pass;
     debug_level = DEBUG_NONE;
     this->_state = TR064_NO_SERVICES;
+    _certificate = certificate;
+    _protocol = protocol;
+    if (protocol == Protocol::useHttp) {
+        tr064ClientPtr = &tr064SimpleClient;
+    } else {
+        if (protocol == Protocol::useHttpsInsec) {
+            tr064SslClient.setInsecure();
+        } else {
+            #if defined(ESP32)
+            tr064SslClient.setCACert(certificate);
+            #endif
+        }
+        tr064ClientPtr = &tr064SslClient;
+    }
 }
 
 /**************************************************************************/
@@ -77,7 +96,7 @@ TR064::TR064() {
 /**************************************************************************/
 void TR064::init() {
     delay(100); // TODO: REMOVE (after testing, that it still works!)
-    // Get a list of all services and the associated urls        
+    // Get a list of all services and the associated urls
     initServiceURLs();
 }
 
@@ -95,13 +114,31 @@ void TR064::init() {
                 User name to be used to establish the TR-064 connection.
     @param    pass
                 Password to be used to establish the TR-064 connection.
+    @param    protocol
+                Transmission protocol to be used (http/https).
+    @param    certificate
+                X509Certificate of TR-064 host to be used for https transmission.
 */
 /**************************************************************************/
-TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, const String& pass){
+TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, const String& pass, Protocol protocol, X509Certificate certificate){
     this->_ip = ip;
     this->_port = port;
     this->_user = user;
     this->_pass = pass;
+    _certificate = certificate;
+    _protocol = protocol;
+    if (protocol == Protocol::useHttp) {
+        tr064ClientPtr = &tr064SimpleClient;
+    } else {
+        if (protocol == Protocol::useHttpsInsec) {    
+            tr064SslClient.setInsecure();    
+        } else {
+            #if defined(ESP32)
+            tr064SslClient.setCACert(certificate);
+            #endif
+        }
+        tr064ClientPtr = &tr064SslClient;
+    }
     return *this;
 }
 
@@ -117,25 +154,25 @@ void TR064::initServiceURLs() {
      */
 
     _state = TR064_NO_SERVICES;
-    if(httpRequest(_detectPage, "", "", true)){
+    if(httpRequest(_detectPage, "", "", true)) {
             deb_println("[TR064][initServiceURLs] get the Stream ", DEBUG_INFO);
             int i = 0;
             while(1) {
-                if(!http.connected()) {
+                if (!http.connected()) {
                     deb_println("[TR064][initServiceURLs] xmlTakeParam : http connection lost", DEBUG_INFO);
                     break;                      
                 }
-                if(xmlTakeParam(_services[i][0], "sErviceType")){
+                if (xmlTakeParam(_services[i][0], "serviceType")) {
                     deb_print("[TR064][initServiceURLs] "+ String(i) + "\treadServiceName: "+ _services[i][0] , DEBUG_VERBOSE);
-                    if(xmlTakeParam(_services[i][1], "controlURL")){
+                    if (xmlTakeParam(_services[i][1], "controlURL")) {
                         deb_println(" @ readServiceUrl: "+ _services[i][1], DEBUG_VERBOSE);
                         i++;
-                    }else{
+                    } else {
                         deb_println(" @ readServiceUrl: NOTFOUND", DEBUG_VERBOSE);
                         break;
                     }
-                }else{
-                    deb_println(" @ sErviceType: NOTFOUND", DEBUG_VERBOSE);
+                } else {
+                    deb_println(" @ serviceType: NOTFOUND", DEBUG_VERBOSE);
                     break;
                 }
             }            
@@ -274,7 +311,7 @@ bool TR064::action(const String& service, const String& act, String params[][2],
                     deb_println("[TR064][action]<Error> Retrying in 5s", DEBUG_ERROR);
                     delay(5000);
                 }
-                http.end();                
+                http.end();
             }
             if (tries >= 3) {
                 deb_println("[TR064][action]<error> Giving up the request ", DEBUG_ERROR);
@@ -309,6 +346,8 @@ bool TR064::action(const String& service, const String& act, String params[][2],
                 The number of input parameters you passed (in `params`).
     @param    url
                 The url you want to call.
+    @param    protocol
+                Transmission protocol to be used (http/https).
     @return success state.
 */
 /**************************************************************************/
@@ -334,9 +373,9 @@ bool TR064::action_raw(const String& service, const String& act, String params[]
     String soapaction = _servicePrefix + serviceName+"#"+act;
     
     // Send the http-Request
-    if(url !=""){
+    if (url !="") {
         return httpRequest(url, xml, soapaction, true);
-    }else{
+    } else {
         return httpRequest(findServiceURL(_servicePrefix + serviceName), xml, soapaction, true);
     }
 }
@@ -456,9 +495,21 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
         deb_println("[TR064][httpRequest] URL is empty, abort http request.", DEBUG_INFO);
         return false;
     }
+	
+    String protocolPrefix = _protocol == Protocol::useHttp ? "http://" : "https://";
+    bool useTls = _protocol == Protocol::useHttp ? false : true;
+	
     deb_println("[TR064][httpRequest] prepare request to URL: http://" + _ip + ":" + _port + url, DEBUG_INFO);
     http.setReuse(true);
-    http.begin(tr064client, _ip, _port, url);
+    
+	if (_protocol == Protocol::useHttp) {
+        http.begin(tr064SimpleClient, _ip.c_str(), _port, url.c_str(), useTls);
+    } else {
+        http.begin(tr064SslClient, _ip.c_str(), _port, url.c_str(), useTls);
+        #if defined(ESP32)
+			http.setConnectTimeout(2000);
+        #endif
+    }
     
     if (soapaction != "") {
         http.addHeader("CONTENT-TYPE", "text/xml"); //; charset=\"utf-8\"
@@ -466,7 +517,7 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
     }
 
     int httpCode=0;
-    if (xml!= "") {
+    if (xml != "") {
         deb_println("[TR064][httpRequest] Posting XML:", DEBUG_INFO);
         deb_println("[TR064][httpRequest] ---------------------------------", DEBUG_VERBOSE);
         deb_println(xml, DEBUG_VERBOSE);
@@ -574,12 +625,12 @@ String TR064::byte2hex(byte number){
 bool TR064::xmlTakeParam(String (*params)[2], int nParam) {
     WiFiClient * stream = &tr064client;    
     stream->Stream::setTimeout(40);
-    while(stream->connected()) {
-        if(!http.connected()) {
+    while (stream->connected()) {
+        if (!http.connected()) {
             deb_println("[TR064][xmlTakeParam] http connection lost", DEBUG_INFO);
             return false;                      
         }
-        if(stream->find("<")){
+        if (stream->find("<")) {
             const String htmltag = stream->readStringUntil('>');
             deb_println("[TR064][xmlTakeParam] htmltag: "+htmltag, DEBUG_VERBOSE);
             const String value = stream->readStringUntil('<');
@@ -590,10 +641,10 @@ bool TR064::xmlTakeParam(String (*params)[2], int nParam) {
                     if(htmltag.equalsIgnoreCase(params[i][0])){
                         params[i][1] = value; 
                         deb_println("[TR064][action] found requestparameter: "+params[i][0]+" = "+params[i][1], DEBUG_VERBOSE);
-                    }   
+                    }
                 }
             }            
-            if(htmltag.equalsIgnoreCase("Nonce")){
+            if (htmltag.equalsIgnoreCase("Nonce") ){
                 _nonce = value;
                 deb_println("[TR064][xmlTakeParam] Extracted the nonce '" + _nonce + "' from the last respuest.", DEBUG_INFO);
             }  
@@ -605,16 +656,16 @@ bool TR064::xmlTakeParam(String (*params)[2], int nParam) {
                 _secretH = md5String(secr);
                 deb_println("[TR064][xmlTakeParam] Your hashed secret is '" + _secretH + "'", DEBUG_INFO);
             }
-            if(htmltag.equalsIgnoreCase("Status")){             
+            if (htmltag.equalsIgnoreCase("Status")) {             
                 _status = value;
                 _status.toLowerCase();
                 deb_println("[TR064][xmlTakeParam] Response status: "+ _status , DEBUG_INFO);
             }
-            if(htmltag.equalsIgnoreCase("errorCode")){
+            if (htmltag.equalsIgnoreCase("errorCode")) {
                 deb_println("[TR064][xmlTakeParam] <TR064> Failed, errorCode: '" + value  + "'", DEBUG_VERBOSE);
                 deb_println("[TR064][xmlTakeParam] <TR064> Failed, message: '" + errorToString(value.toInt())  + "'", DEBUG_VERBOSE);
             }
-            if(htmltag.equalsIgnoreCase("errorDescription")){
+            if (htmltag.equalsIgnoreCase("errorDescription")) {
                 deb_println("[TR064][xmlTakeParam] <TR064> Failed, errorDescription: " + value, DEBUG_VERBOSE);
             }
             
@@ -641,20 +692,20 @@ bool TR064::xmlTakeParam(String (*params)[2], int nParam) {
 bool TR064::xmlTakeParam(String& value, const String& needParam) {
     WiFiClient * stream = &tr064client;
     stream->Stream::setTimeout(40);
-    while(stream->connected()) {
-        if(!http.connected()) {
+    while (stream->connected()) {
+        if (!http.connected()) {
             deb_println("[TR064][xmlTakeParam] http connection lost", DEBUG_INFO);
             return false;                      
         }
        
-        if(stream->find("<")){
+        if (stream->find("<")) {
             const String htmltag = stream->readStringUntil('>');
            // deb_println("[TR064][xmlTakeParam] htmltag: "+htmltag, DEBUG_VERBOSE);
-            if(htmltag.equalsIgnoreCase(needParam)){
+            if (htmltag.equalsIgnoreCase(needParam)) {
                 value = stream->readStringUntil('<');                
                 break;
             }       
-        }else{
+        } else {
             return false;    
         }
     }

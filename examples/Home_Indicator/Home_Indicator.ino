@@ -76,7 +76,17 @@ int userPins[numUser] = {5, 4, 0}; //Three LED's because there are three users
 bool onlineUsers[numUser];
 
 // TR-064 connection
-TR064 connection(TR_PORT, TR_IP, TR_USER, TR_PASS);
+#if TR_PROTOCOL == 0
+	TR064 connection(TR_PORT, TR_IP, TR_USER, TR_PASS);
+#else
+	#if TRANSPORT_PROTOCOL == 1
+		Protocol protocol = Protocol::useHttpsInsec;
+	#else
+		Protocol protocol = Protocol::useHttps;
+	#endif
+	X509Certificate myX509Certificate = TR_ROOT_CERT;
+	TR064 connection(TR_PORT, TR_IP, TR_USER, TR_PASS, protocol, myX509Certificate);
+#endif
 
 
 //-------------------------------------------------------------------------------------

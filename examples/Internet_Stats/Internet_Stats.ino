@@ -31,7 +31,17 @@
 //-------------------------------------------------------------------------------------
 
 // TR-064 connection
-TR064 connection(TR_PORT, TR_IP, TR_USER, TR_PASS);
+#if TR_PROTOCOL == 0
+	TR064 connection(TR_PORT, TR_IP, TR_USER, TR_PASS);
+#else
+	#if TRANSPORT_PROTOCOL == 1
+		Protocol protocol = Protocol::useHttpsInsec;
+	#else
+		Protocol protocol = Protocol::useHttps;
+	#endif
+	X509Certificate myX509Certificate = TR_ROOT_CERT;
+	TR064 connection(TR_PORT, TR_IP, TR_USER, TR_PASS, protocol, myX509Certificate);
+#endif
 
 // -------------------------------------------------------------------------------------
 
@@ -89,6 +99,74 @@ void loop() {
 //############################          TODO        #########################################
 //###########################################################################################
 }
+
+String getExtIP() {
+  String params[][2] = {{}};
+  String req[][2] = {{"NewExternalIPAddress", ""}};
+  connection.action("urn:dslforum-org:service:WANIPConnection:1", "GetExternalIPAddress", params, 0, req, 1);
+  return req[0][1];
+}
+
+String getUptime() {
+  String params[][2] = {{}};
+  String req[][2] = {{"NewUptime", ""}};
+  connection.action("urn:dslforum-org:service:WANIPConnection:1", "GetStatusInfo", params, 0, req, 1);
+  return req[0][1];
+}
+
+String getConnectionStatus() {
+  String params[][2] = {{}};
+  String req[][2] = {{"NewConnectionStatus", ""}};
+  connection.action("urn:dslforum-org:service:WANIPConnection:1", "GetStatusInfo", params, 0, req, 1);
+  return req[0][1];
+}
+
+int getDeviceNumber() {
+  String params[][2] = {{}};
+  String req[][2] = {{"NewHostNumberOfEntries", ""}};
+  connection.action("urn:dslforum-org:service:Hosts:1", "GetHostNumberOfEntries", params, 0, req, 1);
+  int numDev = (req[0][1]).toInt();
+  return numDev;
+}
+
+float factor1 = 1024;
+float factor2 = 1048576;
+float getUpstreamMaxBitRate() {
+  String params[][2] = {{}};
+  String req[][2] = {{"NewLayer1UpstreamMaxBitRate", ""}};
+  connection.action("urn:dslforum-org:service:WANCommonInterfaceConfig:1", "GetCommonLinkProperties", params, 0, req, 1);
+  long numDev = req[0][1].toInt();
+  Serial.println("MaxUpload: " + String(numDev / factor2));
+  return (numDev / factor2);
+}
+
+float getDSLDownstreamMaxBitRate() {
+  String params[][2] = {{}};
+  String req[][2] = {{"NewLayer1DownstreamMaxBitRate", ""}};
+  connection.action("urn:dslforum-org:service:WANCommonInterfaceConfig:1", "GetCommonLinkProperties", params, 0, req, 1);
+  long numDev = (req[0][1]).toInt();
+  Serial.println ("MaxDownload: " + String(numDev / factor2));
+  return (numDev / factor2);
+}
+
+float getNewByteUploadRate() {
+  String params[][2] = {{"NewSyncGroupIndex", "0"}};
+  String req[][2] = {{"Newus_current_bps", ""}};
+  connection.action("urn:dslforum-org:service:WANCommonInterfaceConfig:1", "X_AVM-DE_GetOnlineMonitor",params, 1, req, 1);
+  long numDev = req[0][1].toInt();
+  // Serial.println("Upload: " + String((numDev*8) / factor1));
+  return ((numDev*8) / factor1);
+}
+
+float getNewByteDownloadRate() {
+  String params[][2] = {{"NewSyncGroupIndex", "0"}};
+  String req[][2] = {{"Newds_current_bps", ""}};
+  connection.action("urn:dslforum-org:service:WANCommonInterfaceConfig:1", "X_AVM-DE_GetOnlineMonitor",params, 1, req, 1);
+  long numDev = req[0][1].toInt();
+  // Serial.println("Download: " + String((numDev*8) / factor1));
+  return ((numDev*8) / factor1);
+}
+
 
 /**
  * Makes sure there is a WIFI connection and waits until it is (re-)established.
