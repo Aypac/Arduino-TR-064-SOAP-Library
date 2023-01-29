@@ -1,8 +1,8 @@
 /*!
  * @file tr064.h
  * 
- * Library for communicating via TR-064 protocol (e.g. Fritz!Box)
- * This library allows for easy communication of TR-064 (and possibly TR-069) enabled devices,
+ * Library for communicating via TR-064 protocol (e.g. FRITZ!Box).
+ * This allows for easy communication with TR-064 (and possibly TR-069) enabled devices,
  * such as Routers, smartplugs, DECT telephones etc.
  * Details, examples and the latest Version of this library can be found <a href='https://github.com/Aypac/Arduino-TR-064-SOAP-Library'>on my Github page</a>.
  * A descriptor of the protocol can be found <a href='https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf'>here</a>.
@@ -13,7 +13,7 @@
  *
  * Written by René Vollmer "Aypac" in November 2016, with contributions from others. See <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library">Github for details</a>..
  *
- * MIT License, all text here must be included in any redistribution.
+ * MIT License, all text above must be included in any redistribution.
  *
  */
 
@@ -142,7 +142,6 @@ class TR064 {
         bool httpRequest(const String& url, const String& xml, const String& action, bool retry);
         String generateAuthToken();
         String generateAuthXML();
-        String findServiceURL(const String& service);
         String cleanOldServiceName(const String& service);
         bool xmlTakeParam(String (*params)[2], int nParam);
         bool xmlTakeParam(String& value, const String& needParam);
@@ -165,12 +164,7 @@ class TR064 {
         const char* const _servicePrefix = "urn:dslforum-org:service:";
         unsigned long lastOutActivity;
         unsigned long lastInActivity;
-        /* 
-    	 * TODO: We should give access to this data for users to inspect the
-         * possibilities of their device(s) - see #9 on Github.
-         * TODO: Remove 100 services limits here
-         */
-        String _services[100][2];
+        std::map<String, String> _services;
 };
 
 #endif

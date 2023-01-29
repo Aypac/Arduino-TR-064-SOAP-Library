@@ -1,17 +1,17 @@
 /*!
  * @file tr064.cpp
  *
- * @mainpage Library for communicating via TR-064 protocol (e.g. Fritz!Box)
+ * @mainpage Arduino library for communicating via TR-064 protocol (e.g. FRITZ!Box)
  *
  * @section intro_sec Introduction
  * 
- * This library allows for easy communication of TR-064 (and possibly TR-069) enabled devices,
+ * This library allows for easy communication with TR-064 (and possibly TR-069) enabled devices,
  * such as Routers, smartplugs, DECT telephones etc.
  * Details, examples and the latest version of this library can be found on <a href="https://github.com/Aypac/Arduino-TR-064-SOAP-Library">the Github page</a>.
  * A descriptor of the protocol can be found <a href="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf" target="_blank">here</a>.
  * 
  * Initial version: November 2016<br />
- * Modifications to work with https by RoSchmi Feb 2022<br />
+ * Modifications to work with https by RoSchmi<br />
  * Last updated: Jan 2023<br />
  *
  * @section dependencies Dependencies
@@ -32,6 +32,7 @@
 
 
 #include "tr064.h"
+#include <map>
 
 
 /**************************************************************************/
@@ -57,8 +58,6 @@ TR064::TR064(uint16_t port, const String& ip, const String& user, const String& 
     _ip = ip;
     _user = user;
     _pass = pass;
-    debug_level = DEBUG_NONE;
-    this->_state = TR064_NO_SERVICES;
     _certificate = certificate;
     _protocol = protocol;
     if (protocol == Protocol::useHttp) {
@@ -73,10 +72,12 @@ TR064::TR064(uint16_t port, const String& ip, const String& user, const String& 
         }
         tr064ClientPtr = &tr064SslClient;
     }
+	
+    debug_level = DEBUG_NONE;
+    this->_state = TR064_NO_SERVICES;
 }
 
 /**************************************************************************/
-
 /*! 
     @brief  Library/Class to easily make TR-064 calls. Do not construct this
             unless you have a working connection to the device!   
@@ -142,49 +143,58 @@ TR064& TR064::setServer(uint16_t port, const String& ip, const String& user, con
     return *this;
 }
 
+
 /**************************************************************************/
 /*!
     @brief  Fetches a list of all services and the associated URLs for internal use.
 */
 /**************************************************************************/
-/**************************************************************************/
 void TR064::initServiceURLs() {
     /* TODO: We should give access to this data for users to inspect the
      * possibilities of their device(s) - see #9 on Github.
+		  for (auto const& service : _services) {
+			Serial.println(_service.first + ": " + _service.second);
+		  }
      */
 
     _state = TR064_NO_SERVICES;
     if(httpRequest(_detectPage, "", "", true)) {
-            deb_println("[TR064][initServiceURLs] get the Stream ", DEBUG_INFO);
-            int i = 0;
-            while(1) {
-                if (!http.connected()) {
-                    deb_println("[TR064][initServiceURLs] xmlTakeParam : http connection lost", DEBUG_INFO);
-                    break;                      
-                }
-                if (xmlTakeParam(_services[i][0], "serviceType")) {
-                    deb_print("[TR064][initServiceURLs] "+ String(i) + "\treadServiceName: "+ _services[i][0] , DEBUG_VERBOSE);
-                    if (xmlTakeParam(_services[i][1], "controlURL")) {
-                        deb_println(" @ readServiceUrl: "+ _services[i][1], DEBUG_VERBOSE);
-                        i++;
-                    } else {
-                        deb_println(" @ readServiceUrl: NOTFOUND", DEBUG_VERBOSE);
-                        break;
-                    }
-                } else {
-                    deb_println(" @ serviceType: NOTFOUND", DEBUG_VERBOSE);
-                    break;
-                }
-            }            
-            deb_println("[TR064][initServiceURLs] message: reading done", DEBUG_INFO);                 
-            
+		deb_println("[TR064][initServiceURLs] getting the service detect page: " + _detectPage, DEBUG_INFO);
+		int i = 0;
+		
+		// Scan the XML stream for <serviceType> followed by <controlURL> XML tags.
+		// Fill their content into the _service Map (dict).
+		// Continue until you can't find any new <serviceType> XML tags.
+		while(1) {
+			if (!http.connected()) {
+				deb_println("[TR064][initServiceURLs] http connection lost during parsing!", DEBUG_INFO);
+				break;                      
+			}
+			String key = "";
+			if (xmlTakeParam(key, "serviceType")) {
+				String value = "";
+				if (xmlTakeParam(value, "controlURL")) {
+					deb_print("[TR064][initServiceURLs] "+ String(i) + "\t" + key + ":" + value, DEBUG_VERBOSE);
+					_service[key] = value;
+					++i;
+				} else {
+					deb_print("[TR064][initServiceURLs] "+ String(i) + "\t" + key + ": FAILED!", DEBUG_WARNING);
+				}
+			} else {
+				deb_print("[TR064][initServiceURLs] No more serviceTypes", DEBUG_WARNING);
+				break;
+			}
+		}
+		deb_print("[TR064][initServiceURLs] Found "+ String(i+1) + " services in total.", DEBUG_INFO);
+		
+		_state = TR064_SERVICES_LOADED;
     } else {  
         deb_println("[TR064][initServiceURLs]<Error> initServiceUrls failed", DEBUG_ERROR);  
         return;      
     }
-    _state = TR064_SERVICES_LOADED;
     http.end();
 }
+
 
 /**************************************************************************/
 /*!
@@ -205,6 +215,7 @@ String TR064::generateAuthXML() {
     return token;
 }
 
+
 /**************************************************************************/
 /*!
     @brief  Returns the authentification token based on the hashed secret and the last nonce.
@@ -216,6 +227,7 @@ String TR064::generateAuthToken() {
     deb_println("[TR064][generateAuthToken] The auth token is '" + token + "'", DEBUG_INFO);
     return token;
 }
+
 
 /**************************************************************************/
 /*!
@@ -285,9 +297,9 @@ bool TR064::action(const String& service, const String& act, String params[][2],
     
     int tries = 0; // Keep track on the number of times we tried to request.
     if (action_raw(service, act, params, nParam, url)) {
-        if(xmlTakeParam(req, nReq)){
+        if (xmlTakeParam(req, nReq)) {
             deb_println("[TR064][action] extraction complete.", DEBUG_VERBOSE);
-        }else{
+        } else {
             return false;
         }
         deb_println("[TR064][action] Response status: "+ _status +", Tries: "+String(tries), DEBUG_INFO);
@@ -301,7 +313,7 @@ bool TR064::action(const String& service, const String& act, String params[][2],
                 String wlanService = "WLANConfiguration:1", deviceInfo="GetGenericAssociatedDeviceInfo";
                 action_raw(wlanService, deviceInfo, a, 1, "/upnp/control/wlanconfig1");
                 
-                if(xmlTakeParam(req, nReq)){
+                if (xmlTakeParam(req, nReq)) {
                     deb_println("[TR064][action] extraction complete.", DEBUG_VERBOSE);
                 }
 
@@ -330,6 +342,7 @@ bool TR064::action(const String& service, const String& act, String params[][2],
     return false;
 }
 
+
 /**************************************************************************/
 /*!
     @brief  This function will call an action on the service of the device
@@ -351,7 +364,6 @@ bool TR064::action(const String& service, const String& act, String params[][2],
     @return success state.
 */
 /**************************************************************************/
-
 bool TR064::action_raw(const String& service, const String& act, String params[][2], int nParam, const String& url) {
     // Generate the XML-envelop
     String serviceName = cleanOldServiceName(service);
@@ -376,9 +388,10 @@ bool TR064::action_raw(const String& service, const String& act, String params[]
     if (url !="") {
         return httpRequest(url, xml, soapaction, true);
     } else {
-        return httpRequest(findServiceURL(_servicePrefix + serviceName), xml, soapaction, true);
+        return httpRequest(_service[_servicePrefix + serviceName], xml, soapaction, true);
     }
 }
+
 
 /**************************************************************************/
 /*!
@@ -389,6 +402,7 @@ bool TR064::action_raw(const String& service, const String& act, String params[]
 int TR064::state() {    
     return this->_state;
 }
+
 
 // ----------------------------
 // ----- Helper-functions -----
@@ -431,6 +445,7 @@ String TR064::errorToString(int error)
     }
 }
 
+
 /**************************************************************************/
 /*!
     @brief  Helper function, which deletes the prefix before the servicename.
@@ -445,32 +460,6 @@ String TR064::cleanOldServiceName(const String& service) {
         return service.substring(strlen(_servicePrefix));        
     }
     return service;
-}
-
-/**************************************************************************/
-/*!
-    @brief  Helper function, which returns the (relative) URL for a service.
-    @param    service
-                The name of the service you want to adress.
-    @return String containing the (relative) URL for a service
-*/
-/**************************************************************************/
-String TR064::findServiceURL(const String& service) {
-    if(state()<TR064_SERVICES_LOADED){
-        deb_println("[TR064][findServiceURL]<error> Services NOT Loaded. ", DEBUG_ERROR);
-        return "";
-    }else{
-    
-        deb_println("[TR064][findServiceURL] searching for service: "+service, DEBUG_VERBOSE);
-
-        for (uint16_t i=0;i<arr_len(_services);++i) {            
-            if (service.equalsIgnoreCase(_services[i][0])) {
-                deb_println("[TR064][findServiceURL] found services: "+service+" = "+ _services[i][0]+" , "+ _services[i][1], DEBUG_VERBOSE);
-                return _services[i][1];
-            }
-        }
-    }
-    return "";
 }
 
 
@@ -594,6 +583,7 @@ String TR064::md5String(const String& text){
     return hash;   
 }
 
+
 /**************************************************************************/
 /*!
     @brief  Translates a byte number into a hex number.
@@ -612,9 +602,8 @@ String TR064::byte2hex(byte number){
 /**************************************************************************/
 /*!
     @brief  Extract the content of an XML element with a certain tag. It
-            tries with case-sensitive
-            matching first, but resorts to case-insensitive matching, when
-            failing.
+            tries with case-sensitive matching first, but resorts to
+			case-insensitive matching, when failing.
     @param    inStr
                 The XML from which to extract.
     @param    needParam
@@ -632,12 +621,12 @@ bool TR064::xmlTakeParam(String (*params)[2], int nParam) {
         }
         if (stream->find("<")) {
             const String htmltag = stream->readStringUntil('>');
-            deb_println("[TR064][xmlTakeParam] htmltag: "+htmltag, DEBUG_VERBOSE);
+            deb_println("[TR064][xmlTakeParam] htmltag: " + htmltag, DEBUG_VERBOSE);
             const String value = stream->readStringUntil('<');
             
 
             if (nParam > 0) {
-                for (uint16_t i=0; i<nParam; ++i) {
+                for (uint16_t i=0; i < nParam; ++i) {
                     if(htmltag.equalsIgnoreCase(params[i][0])){
                         params[i][1] = value; 
                         deb_println("[TR064][action] found requestparameter: "+params[i][0]+" = "+params[i][1], DEBUG_VERBOSE);
@@ -676,12 +665,12 @@ bool TR064::xmlTakeParam(String (*params)[2], int nParam) {
     return true;
 }
 
+
 /**************************************************************************/
 /*!
     @brief  Extract the content of an XML element with a certain tag. It
-            tries with case-sensitive
-            matching first, but resorts to case-insensitive matching, when
-            failing.
+            tries with case-sensitive matching first, but resorts to
+			case-insensitive matching, when failing.
     @param    inStr
                 The XML from which to extract.
     @param    needParam
@@ -712,6 +701,7 @@ bool TR064::xmlTakeParam(String& value, const String& needParam) {
     return true;
 }
 
+
 /**************************************************************************/
 /*!
     @brief  Debug-print. Only prints the message if the debug level is high enough.
@@ -730,6 +720,7 @@ void TR064::deb_print(const String& message, int level) {
         }
     }
 }
+
 
 /**************************************************************************/
 /*!
