@@ -259,7 +259,7 @@ bool TR064::action(const String& service, const String& act, String params[][2],
     deb_println("[TR064]", DEBUG_VERBOSE);
     deb_println("[TR064][action] with parameters", DEBUG_VERBOSE);
     String req[][2] = {{}};
-    if(action(service, act, params, nParam, req, 0, url)){
+    if (action(service, act, params, nParam, req, 0, url)) {
         http.end();
         return true;
     }
@@ -306,8 +306,8 @@ bool TR064::action(const String& service, const String& act, String params[][2],
         } else {
             return false;
         }
-        deb_println("[TR064][action] Response status: "+ _status +"; Tries: "+String(tries), DEBUG_INFO);
-        if(_status == "unauthenticated"){
+        deb_println("[TR064][action] Response status: "+ _status +", Tries: "+String(tries), DEBUG_INFO);
+        if (_status == "unauthenticated") {
             
             while (_status == "unauthenticated"  && (_nonce == "" || _realm == "") && tries <= 3) {
                 ++tries;
@@ -390,7 +390,7 @@ bool TR064::action_raw(const String& service, const String& act, String params[]
     String soapaction = _servicePrefix + serviceName+"#"+act;
     
     // Send the http-Request
-    if (url !="") {
+    if (url != "") {
         return httpRequest(url, xml, soapaction, true);
     } else {
         return httpRequest(_services[_servicePrefix + serviceName], xml, soapaction, true);
@@ -438,7 +438,7 @@ String TR064::errorToString(int error)
     case TR064_CODE_NOSUCHENTRY:
         return F("No Entry Found");
     case TR064_CODE_INTERNALERROR:
-        return F("Internal Error, please read Fritz Error Log");
+        return F("Internal Error, please check Fritz Error Log");
     case TR064_CODE_SECONDFACTORAUTHREQUIRED:
         return F("Action needs 2FA, the status code 866 (second factor authentication required)");
     case TR064_CODE_SECONDFACTORAUTHBLOCKED:
@@ -461,11 +461,12 @@ String TR064::errorToString(int error)
 /**************************************************************************/
 String TR064::cleanOldServiceName(const String& service) {
     deb_println("[TR064][cleanOldServiceName] searching for prefix in servicename: "+service, DEBUG_VERBOSE);
-    if(service.startsWith(_servicePrefix)){
+    if (service.startsWith(_servicePrefix)) {
         return service.substring(strlen(_servicePrefix));        
     }
     return service;
 }
+
 
 
 /**************************************************************************/
@@ -535,7 +536,7 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
             if (httpCode == HTTP_CODE_INTERNAL_SERVER_ERROR) { 
                 String req[][2] = {{"errorCode", ""}, {"errorDescription", ""}};
                 if (xmlTakeParam(req, 2)) {                                
-                    if(req[0][1]!=""){
+                    if (req[0][1] != "") {
                         deb_println("[TR064][httpRequest] <TR064> Failed, errorCode: '" + req[0][1]  + "'", DEBUG_VERBOSE);                    
                         deb_println("[TR064][httpRequest] <TR064> Failed, message: '" + errorToString(req[0][1].toInt())  + "'", DEBUG_ERROR);
                         deb_println("[TR064][httpRequest] <Error> Failed, description: '" + req[1][1] + "'", DEBUG_VERBOSE);
@@ -597,7 +598,7 @@ String TR064::md5String(const String& text) {
     @return Translated hex number (as `String`).
 */
 /**************************************************************************/
-String TR064::byte2hex(byte number){
+String TR064::byte2hex(byte number) {
     String Hstring = String(number, HEX);
     if (number < 16) {Hstring = "0" + Hstring;}
     return Hstring;
@@ -638,7 +639,7 @@ bool TR064::xmlTakeParam(String (*params)[2], int nParam) {
                     }
                 }
             }            
-            if (htmltag.equalsIgnoreCase("Nonce") ){
+            if (htmltag.equalsIgnoreCase("Nonce")) {
                 _nonce = value;
                 deb_println("[TR064][xmlTakeParam] Extracted the nonce '" + _nonce + "' from the last respuest.", DEBUG_INFO);
             }  
@@ -663,7 +664,7 @@ bool TR064::xmlTakeParam(String (*params)[2], int nParam) {
                 deb_println("[TR064][xmlTakeParam] <TR064> Failed, errorDescription: " + value, DEBUG_VERBOSE);
             }
             
-        }else{
+        } else {
             break;    
         }
     }
