@@ -54,24 +54,7 @@
 /**************************************************************************/
 TR064::TR064(uint16_t port, const String& ip, const String& user, const String& pass,
              Protocol protocol, X509Certificate certificate) {
-    _port = port;
-    _ip = ip;
-    _user = user;
-    _pass = pass;
-    _certificate = certificate;
-    _protocol = protocol;
-    if (protocol == Protocol::useHttp) {
-        tr064ClientPtr = &tr064SimpleClient;
-    } else {
-        if (protocol == Protocol::useHttpsInsec) {
-            tr064SslClient.setInsecure();
-        } else {
-            #if defined(ESP32)
-            tr064SslClient.setCACert(certificate);
-            #endif
-        }
-        tr064ClientPtr = &tr064SslClient;
-    }
+    this->setServer(port, ip, user, pass, protocol, certificate);
 	
     debug_level = DEBUG_NONE;
     this->_state = TR064_NO_SERVICES;
@@ -122,7 +105,7 @@ void TR064::init() {
 */
 /**************************************************************************/
 TR064& TR064::setServer(uint16_t port, const String& ip, const String& user,
-                        const String& pass, Protocol protocol, X509Certificate certificate){
+                        const String& pass, Protocol protocol, X509Certificate certificate) {
     this->_ip = ip;
     this->_port = port;
     this->_user = user;
@@ -130,7 +113,7 @@ TR064& TR064::setServer(uint16_t port, const String& ip, const String& user,
     _certificate = certificate;
     _protocol = protocol;
     if (protocol == Protocol::useHttp) {
-        tr064ClientPtr = &tr064SimpleClient;
+        tr064Client = &tr064SimpleClient;
     } else {
         if (protocol == Protocol::useHttpsInsec) {    
             tr064SslClient.setInsecure();    
@@ -139,7 +122,7 @@ TR064& TR064::setServer(uint16_t port, const String& ip, const String& user,
 				tr064SslClient.setCACert(certificate);
             #endif
         }
-        tr064ClientPtr = &tr064SslClient;
+        tr064Client = &tr064SslClient;
     }
     return *this;
 }
@@ -167,26 +150,32 @@ void TR064::initServiceURLs() {
 		// Fill their content into the _service Map (dict).
 		// Continue until you can't find any new <serviceType> XML tags.
 		while (1) {
-			if (!http.connected()) {
-				deb_println("[TR064][initServiceURLs] http connection lost during parsing!", DEBUG_INFO);
-				break;                      
-			}
-			String key = "";
+			deb_println("[TR064][initServiceURLs] Searching the XML for serviceType", DEBUG_INFO);
+			String key;
 			if (xmlTakeParam(key, "serviceType")) {
-				String value = "";
-				if (xmlTakeParam(value, "controlURL")) {
-					deb_print("[TR064][initServiceURLs] "+ String(i) + "\t" + key + ":" + value, DEBUG_VERBOSE);
-					_services[key] = value;
-					++i;
+				if (key != "") {
+					String value;
+					if (xmlTakeParam(value, "controlURL") && value != "") {
+						deb_println("[TR064][initServiceURLs] "+ String(i) + "\t" + key + ":" + value, DEBUG_VERBOSE);
+						_services[key] = value;
+						++i;
+					} else {
+						deb_println("[TR064][initServiceURLs] "+ String(i) + "\t" + key + ": No control URL found", DEBUG_WARNING);
+					}
 				} else {
-					deb_print("[TR064][initServiceURLs] "+ String(i) + "\t" + key + ": FAILED!", DEBUG_WARNING);
+					deb_println("[TR064][initServiceURLs] "+ String(i) + "\t" + key + ": Empty key", DEBUG_WARNING);
 				}
 			} else {
-				deb_print("[TR064][initServiceURLs] No more serviceTypes", DEBUG_WARNING);
+				// If xmlTakeParam returns false, we reached the end of the XML
+				break;
+			}
+			// This should not trigger. But we have seen problems with this before, so it is better to have an emergency exit.
+			if (i > 1000) {
+				deb_println("[TR064][initServiceURLs] More than 1000 services found. Something probably went wrong trying to parse the services - so I'll stop here to prevent the MCU from crashing.", DEBUG_WARNING);
 				break;
 			}
 		}
-		deb_print("[TR064][initServiceURLs] Found "+ String(i+1) + " services in total.", DEBUG_INFO);
+		deb_println("[TR064][initServiceURLs] Found "+ String(i) + " services in total.", DEBUG_INFO);
 		
 		_state = TR064_SERVICES_LOADED;
     } else {  
@@ -301,7 +290,7 @@ bool TR064::action(const String& service, const String& act, String params[][2],
     
     int tries = 0; // Keep track on the number of times we tried to request.
     if (action_raw(service, act, params, nParam, url)) {
-        if (xmlTakeParam(req, nReq)) {
+        if (xmlTakeParams(req, nReq)) {
             deb_println("[TR064][action] extraction complete.", DEBUG_VERBOSE);
         } else {
             return false;
@@ -317,7 +306,7 @@ bool TR064::action(const String& service, const String& act, String params[][2],
                 String wlanService = "WLANConfiguration:1", deviceInfo="GetGenericAssociatedDeviceInfo";
                 action_raw(wlanService, deviceInfo, a, 1, "/upnp/control/wlanconfig1");
                 
-                if (xmlTakeParam(req, nReq)) {
+                if (xmlTakeParams(req, nReq)) {
                     deb_println("[TR064][action] extraction complete.", DEBUG_VERBOSE);
                 }
 
@@ -491,20 +480,13 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
         return false;
     }
 	
-    String protocolPrefix = _protocol == Protocol::useHttp ? "http://" : "https://";
-    bool useTls = _protocol == Protocol::useHttp ? false : true;
-	
-    deb_println("[TR064][httpRequest] prepare request to URL: http://" + _ip + ":" + _port + url, DEBUG_INFO);
+    deb_println("[TR064][httpRequest] prepare request to URL: " + _ip + ":" + _port + url, DEBUG_INFO);
     http.setReuse(true);
-    
-	if (_protocol == Protocol::useHttp) {
-        http.begin(tr064SimpleClient, _ip.c_str(), _port, url.c_str(), useTls);
-    } else {
-        http.begin(tr064SslClient, _ip.c_str(), _port, url.c_str(), useTls);
-        #if defined(ESP32)
-			http.setConnectTimeout(2000);
-        #endif
-    }
+
+    http.begin(*tr064Client, _ip.c_str(), _port, url.c_str(), bool(_protocol == Protocol::useHttp));
+	#if defined(ESP32)
+		http.setConnectTimeout(2000);
+	#endif
     
     if (soapaction != "") {
         http.addHeader("CONTENT-TYPE", "text/xml"); //; charset=\"utf-8\"
@@ -535,7 +517,7 @@ bool TR064::httpRequest(const String& url, const String& xml, const String& soap
         } else {
             if (httpCode == HTTP_CODE_INTERNAL_SERVER_ERROR) { 
                 String req[][2] = {{"errorCode", ""}, {"errorDescription", ""}};
-                if (xmlTakeParam(req, 2)) {                                
+                if (xmlTakeParams(req, 2)) {                                
                     if (req[0][1] != "") {
                         deb_println("[TR064][httpRequest] <TR064> Failed, errorCode: '" + req[0][1]  + "'", DEBUG_VERBOSE);                    
                         deb_println("[TR064][httpRequest] <TR064> Failed, message: '" + errorToString(req[0][1].toInt())  + "'", DEBUG_ERROR);
@@ -610,30 +592,31 @@ String TR064::byte2hex(byte number) {
     @brief  Extract the content of an XML element with a certain tag. It
             tries with case-sensitive matching first, but resorts to
 			case-insensitive matching, when failing.
-    @param    inStr
-                The XML from which to extract.
-    @param    needParam
-                The name of the XML tag, you want the content of.
+    @param    params
+                The array you want to fill.
+				`params[i][0]` should contain the search key, `params[i][1]`
+				  will be filled with the associated values.
+    @param    nParam
+                The number of XML tags you want to extract (length of params)
     @return success state.
 */
 /**************************************************************************/
-bool TR064::xmlTakeParam(String (*params)[2], int nParam) {
-    WiFiClient * stream = &tr064client;    
-    stream->Stream::setTimeout(40);
-    while (stream->connected()) {
+bool TR064::xmlTakeParams(String (*params)[2], int nParam) {
+    tr064Client->Stream::setTimeout(40);
+	
+    while (tr064Client->connected()) {
         if (!http.connected()) {
-            deb_println("[TR064][xmlTakeParam] http connection lost", DEBUG_INFO);
+            deb_println("[TR064][xmlTakeParams] http connection lost", DEBUG_INFO);
             return false;                      
         }
-        if (stream->find("<")) {
-            const String htmltag = stream->readStringUntil('>');
-            deb_println("[TR064][xmlTakeParam] htmltag: " + htmltag, DEBUG_VERBOSE);
-            const String value = stream->readStringUntil('<');
+        if (tr064Client->find("<")) {
+            const String htmltag = tr064Client->readStringUntil('>');
+            deb_println("[TR064][xmlTakeParams] htmltag: " + htmltag, DEBUG_VERBOSE);
+            const String value = tr064Client->readStringUntil('<');
             
-
             if (nParam > 0) {
                 for (uint16_t i=0; i < nParam; ++i) {
-                    if(htmltag.equalsIgnoreCase(params[i][0])){
+                    if (htmltag.equalsIgnoreCase(params[i][0])) {
                         params[i][1] = value; 
                         deb_println("[TR064][action] found requestparameter: "+params[i][0]+" = "+params[i][1], DEBUG_VERBOSE);
                     }
@@ -641,31 +624,30 @@ bool TR064::xmlTakeParam(String (*params)[2], int nParam) {
             }            
             if (htmltag.equalsIgnoreCase("Nonce")) {
                 _nonce = value;
-                deb_println("[TR064][xmlTakeParam] Extracted the nonce '" + _nonce + "' from the last respuest.", DEBUG_INFO);
+                deb_println("[TR064][xmlTakeParams] Extracted the nonce '" + _nonce + "' from the last request.", DEBUG_INFO);
             }  
             if (_realm == "" && htmltag.equalsIgnoreCase("Realm")) {
                 _realm = value;
                 // Now we have everything to generate our hashed secret.
                 String secr = _user + ":" + _realm + ":" + _pass;
-                deb_println("[TR064][xmlTakeParam] Your secret is is '" + secr + "'", DEBUG_INFO);
+                deb_println("[TR064][xmlTakeParams] Your secret is is '" + secr + "'", DEBUG_INFO);
                 _secretH = md5String(secr);
-                deb_println("[TR064][xmlTakeParam] Your hashed secret is '" + _secretH + "'", DEBUG_INFO);
+                deb_println("[TR064][xmlTakeParams] Your hashed secret is '" + _secretH + "'", DEBUG_INFO);
             }
-            if (htmltag.equalsIgnoreCase("Status")) {             
+            if (htmltag.equalsIgnoreCase("Status")) {
                 _status = value;
                 _status.toLowerCase();
-                deb_println("[TR064][xmlTakeParam] Response status: "+ _status , DEBUG_INFO);
+                deb_println("[TR064][xmlTakeParams] Response status: "+ _status , DEBUG_INFO);
             }
             if (htmltag.equalsIgnoreCase("errorCode")) {
-                deb_println("[TR064][xmlTakeParam] <TR064> Failed, errorCode: '" + value  + "'", DEBUG_VERBOSE);
-                deb_println("[TR064][xmlTakeParam] <TR064> Failed, message: '" + errorToString(value.toInt())  + "'", DEBUG_VERBOSE);
+                deb_println("[TR064][xmlTakeParams] <TR064> Failed, errorCode: '" + value  + "'", DEBUG_VERBOSE);
+                deb_println("[TR064][xmlTakeParams] <TR064> Failed, message: '" + errorToString(value.toInt())  + "'", DEBUG_VERBOSE);
             }
             if (htmltag.equalsIgnoreCase("errorDescription")) {
-                deb_println("[TR064][xmlTakeParam] <TR064> Failed, errorDescription: " + value, DEBUG_VERBOSE);
+                deb_println("[TR064][xmlTakeParams] <TR064> Failed, errorDescription: " + value, DEBUG_VERBOSE);
             }
-            
         } else {
-            break;    
+			return false;
         }
     }
     return true;
@@ -677,34 +659,43 @@ bool TR064::xmlTakeParam(String (*params)[2], int nParam) {
     @brief  Extract the content of an XML element with a certain tag. It
             tries with case-sensitive matching first, but resorts to
 			case-insensitive matching, when failing.
-    @param    inStr
-                The XML from which to extract.
+    @param    value
+                The content of the XML tag.
     @param    needParam
                 The name of the XML tag, you want the content of.
-    @return success state.
+    @return found value
 */
 /**************************************************************************/
 bool TR064::xmlTakeParam(String& value, const String& needParam) {
-    WiFiClient * stream = &tr064client;
-    stream->Stream::setTimeout(40);
-    while (stream->connected()) {
-        if (!http.connected()) {
-            deb_println("[TR064][xmlTakeParam] http connection lost", DEBUG_INFO);
-            return false;                      
-        }
-       
-        if (stream->find("<")) {
-            const String htmltag = stream->readStringUntil('>');
-           // deb_println("[TR064][xmlTakeParam] htmltag: "+htmltag, DEBUG_VERBOSE);
-            if (htmltag.equalsIgnoreCase(needParam)) {
-                value = stream->readStringUntil('<');                
-                break;
-            }       
-        } else {
-            return false;    
-        }
-    }
-    return true;
+    tr064Client->Stream::setTimeout(40);
+	
+	int c = ' ';
+	int ends = 0;
+	while (c = tr064Client->read()) {
+		// check if the next character is the start of a tag
+		if (c == '<') {
+			// read the name of the tag
+			String htmltag = tr064Client->readStringUntil('>');
+            //deb_println("[TR064][xmlTakeParam] Found tag: " + htmltag, DEBUG_VERBOSE);
+			
+			// check if the tag is one we're interested in
+			if (htmltag.equalsIgnoreCase(needParam)) {
+				// read the content of the tag
+				value = tr064Client->readStringUntil('<');
+				// Now forward the stream to the end of the (closing) tag
+				tr064Client->readStringUntil('>');
+				return true;
+			}
+		} else if (c == -1) {
+			// Somehow this does not work if I don't use the ends-variable trick here
+			//  ugly, but works for now. Let's figure this out later...
+			++ends;
+			if (ends > 10) {
+				deb_println("[TR064][xmlTakeParam] End of file reached without finding " + needParam, DEBUG_VERBOSE);
+				return false;
+			}
+		}
+	}
 }
 
 

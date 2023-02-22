@@ -68,13 +68,6 @@ typedef const char* X509Certificate;
 #define TR064_NO_SERVICES           -1 ///< No Service actions will not execute
 #define TR064_SERVICES_LOADED       0 ///< Service loaded
 
-// Possible values for client.state()
-#define TR064_NO_SERVICES           -1
-#define TR064_SERVICES_LOADED       0
-
-// Possible values for client.state()
-#define TR064_NO_SERVICES          -1
-#define TR064_SERVICES_LOADED       0
 
 /**************************************************************************/
 /*! 
@@ -128,10 +121,9 @@ class TR064 {
         int debug_level; ///< Available levels are `DEBUG_NONE`, `DEBUG_ERROR`, `DEBUG_WARNING`, `DEBUG_INFO`, and `DEBUG_VERBOSE`.
          
     private:
-        WiFiClient tr064client;
+        WiFiClient *tr064Client;
         WiFiClient tr064SimpleClient;
         WiFiClientSecure tr064SslClient;
-        WiFiClient * tr064ClientPtr;
         HTTPClient http;
         
         //TODO: More consistent naming
@@ -144,7 +136,7 @@ class TR064 {
         String generateAuthToken();
         String generateAuthXML();
         String cleanOldServiceName(const String& service);
-        bool xmlTakeParam(String (*params)[2], int nParam);
+        bool xmlTakeParams(String (*params)[2], int nParam);
         bool xmlTakeParam(String& value, const String& needParam);
         static String errorToString(int error);
 
