@@ -142,13 +142,23 @@ void TR064::initServiceURLs() {
      */
 
     _state = TR064_NO_SERVICES;
+	deb_println("[TR064][initServiceURLs] getting the service detect page", DEBUG_INFO);
     if (httpRequest(_detectPage, "", "", true)) {
-		deb_println("[TR064][initServiceURLs] getting the service detect page", DEBUG_INFO);
+		
 		int i = 0;
+		while (!tr064Client->connected()) {
+			delay(10);
+			++i;
+			if (i > 100) {
+				deb_println("[TR064][initServiceURLs]<Error> initServiceUrls failed: could not connect", DEBUG_ERROR);  
+				return;
+			}
+		}
 		
 		// Scan the XML stream for <serviceType> followed by <controlURL> XML tags.
 		// Fill their content into the _service Map (dict).
 		// Continue until you can't find any new <serviceType> XML tags.
+		i = 0;
 		while (1) {
 			deb_println("[TR064][initServiceURLs] Searching the XML for serviceType", DEBUG_INFO);
 			String key;
@@ -178,7 +188,7 @@ void TR064::initServiceURLs() {
 		deb_println("[TR064][initServiceURLs] Found "+ String(i) + " services in total.", DEBUG_INFO);
 		
 		_state = TR064_SERVICES_LOADED;
-    } else {  
+    } else {
         deb_println("[TR064][initServiceURLs]<Error> initServiceUrls failed", DEBUG_ERROR);  
         return;      
     }
@@ -669,9 +679,10 @@ bool TR064::xmlTakeParams(String (*params)[2], int nParam) {
 bool TR064::xmlTakeParam(String& value, const String& needParam) {
     tr064Client->Stream::setTimeout(40);
 	
-	int c = ' ';
+	int c;
 	int ends = 0;
-	while (c = tr064Client->read()) {
+	while (1) {
+		c = tr064Client->read();
 		// check if the next character is the start of a tag
 		if (c == '<') {
 			// read the name of the tag
@@ -687,8 +698,6 @@ bool TR064::xmlTakeParam(String& value, const String& needParam) {
 				return true;
 			}
 		} else if (c == -1) {
-			// Somehow this does not work if I don't use the ends-variable trick here
-			//  ugly, but works for now. Let's figure this out later...
 			++ends;
 			if (ends > 10) {
 				deb_println("[TR064][xmlTakeParam] End of file reached without finding " + needParam, DEBUG_VERBOSE);
@@ -696,6 +705,7 @@ bool TR064::xmlTakeParam(String& value, const String& needParam) {
 			}
 		}
 	}
+	return false;
 }
 
 
