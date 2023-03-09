@@ -38,18 +38,6 @@
     //INCOMPATIBLE!
 #endif
 
-/// HTTP codes see RFC7231
-typedef enum {
-    
-     //TR064_CODE_UNAUTHORIZED = 401, //If a user is not authenticated, 401 (“Unauthorized”) will be returned.
-     TR064_CODE_UNKNOWNACTION = 401, ////If an unknown action is used the returned code is 401. This return code is used for obsoleted actions, too. 
-     TR064_CODE_FALSEARGUMENTS = 402, //If a user is not authenticated, 401 (“Unauthorized”) will be returned.
-     TR064_CODE_ACTIONNOTAUTHORIZED = 606, //If a user is authenticated but has not the needed rights, 606 (“Action not authorized”) will be returned
-     TR064_CODE_SECONDFACTORAUTHREQUIRED = 866, //If an action needs 2FA, the status code 866 (“second factor authentication required”)
-     TR064_CODE_SECONDFACTORAUTHBLOCKED = 867, // (“second factor authentication blocked”) or 
-     TR064_CODE_SECONDFACTORAUTHBUSY = 868, // (“second factorauthentication busy”) will be returned and the 2FA procedure    
-} t_tr064_codes;
-
 /// Types of http protocol
 typedef enum {
       useHttp,
@@ -86,7 +74,7 @@ class TR064 {
          *   DEBUG_INFO         ///< Print error, warning and info messages
          *   DEBUG_VERBOSE      ///< Print all messages
          */
-        enum LoggingLevels {DEBUG_NONE, DEBUG_ERROR, DEBUG_WARNING, DEBUG_INFO, DEBUG_VERBOSE}; 
+        enum LoggingLevels {DEBUG_NONE, DEBUG_ERROR, DEBUG_WARNING, DEBUG_INFO, DEBUG_VERBOSE};
         
         /// HTTP codes see RFC7231
         enum tr064_codes{
@@ -117,7 +105,7 @@ class TR064 {
         bool action(const String& service, const String& act, String params[][2], int nParam, String (*req)[2], int nReq, const String& url = "");
 
         String md5String(const String& s);
-        String byte2hex(byte number);        
+        String byte2hex(byte number);
         int debug_level; ///< Available levels are `DEBUG_NONE`, `DEBUG_ERROR`, `DEBUG_WARNING`, `DEBUG_INFO`, and `DEBUG_VERBOSE`.
          
     private:
