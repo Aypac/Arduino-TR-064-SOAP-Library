@@ -63,7 +63,7 @@ void setup() {
   }
   
   // Wait a few secs for warm-up (dunno why, was in the default code for http connections).
-  delay(5000);
+  delay(3000);
 
   // Connect to wifi
   ensureWIFIConnection();
@@ -74,7 +74,7 @@ void setup() {
   //  DEBUG_WARNING      ///< Only print error and warning messages
   //  DEBUG_INFO         ///< Print error, warning and info messages
   //  DEBUG_VERBOSE      ///< Print all messages
-    connection.debug_level = connection.DEBUG_WARNING;
+  connection.debug_level = connection.DEBUG_VERBOSE;
   if(Serial) Serial.setDebugOutput(true);
   
   // The following line retrieves a list of all available services on the router.
@@ -87,13 +87,40 @@ void setup() {
 
 void loop() {
     ensureWIFIConnection();
-  
-    // Query up- and down-link speed and transfer rate
-    // Query external TR_IP address
-    // Print results
-    if(Serial) Serial.println("-------------------------------------------");
 
-    delay(1000);
+    if(Serial) Serial.println("#################################################################################################################");
+    int uptime = getUptime();
+    delay(100);
+    if(Serial) Serial.println("\n\rUptime: " + String(uptime) + "seconds");
+    if(Serial) Serial.println("Uptime: " + String(int(uptime/3600))+ ':' + String(int((uptime%3600)/60))+ ':' + String((uptime%60)) + "(H:m:s) \n\r");
+
+    String conStat = getConnectionStatus();
+    delay(100);
+    if(Serial) Serial.println("\n\rConnection status: " + conStat + "\n\r");
+    if (conStat != "Disconnected") {
+      String extIP = getExtIP();
+      delay(100);
+      if(Serial) Serial.println("\n\rExternal IP: " + extIP + "\n\r");
+    }
+    int nDev = getDeviceNumber();
+    delay(100);
+    if(Serial) Serial.println("\n\rNumber of connected devices: " + String(nDev) + "\n\r");
+
+    int umr = 0;
+    int dmr = 0;
+    getMaxRates(umr, dmr);
+    delay(100);
+    if(Serial) Serial.println("\n\rMaximum up/download speed: " + String(umr) + "/" + String(dmr) + "\n\r");
+    
+    float ucr = 0;
+    float dcr = 0;
+    getCurRates(ucr, dcr);
+    delay(100);
+    if(Serial) Serial.println("\n\rCurrent up/download speed: " + String(ucr) + "/" + String(dcr));
+    if(Serial) Serial.println("Load up/down: " + String(100*ucr/umr) + "%/" + String(100*dcr/dmr) + "%\n\r");
+    if(Serial) Serial.println("#################################################################################################################");
+
+    delay(10000);
 	
 //###########################################################################################
 //############################          TODO        #########################################
@@ -103,68 +130,75 @@ void loop() {
 String getExtIP() {
   String params[][2] = {{}};
   String req[][2] = {{"NewExternalIPAddress", ""}};
-  connection.action("urn:dslforum-org:service:WANIPConnection:1", "GetExternalIPAddress", params, 0, req, 1);
-  return req[0][1];
+  if (connection.action("urn:dslforum-org:service:WANIPConnection:1", "GetExternalIPAddress", params, 0, req, 1)) {
+    return req[0][1];
+  }
+  return "unknown";
 }
 
-String getUptime() {
+int getUptime() {
   String params[][2] = {{}};
   String req[][2] = {{"NewUptime", ""}};
-  connection.action("urn:dslforum-org:service:WANIPConnection:1", "GetStatusInfo", params, 0, req, 1);
-  return req[0][1];
+  if (connection.action("urn:dslforum-org:service:WANIPConnection:1", "GetStatusInfo", params, 0, req, 1)) {
+    return (req[0][1]).toInt();
+  }
+  return -1;
 }
 
 String getConnectionStatus() {
   String params[][2] = {{}};
   String req[][2] = {{"NewConnectionStatus", ""}};
-  connection.action("urn:dslforum-org:service:WANIPConnection:1", "GetStatusInfo", params, 0, req, 1);
-  return req[0][1];
+  if (connection.action("urn:dslforum-org:service:WANIPConnection:1", "GetStatusInfo", params, 0, req, 1)) {
+    return req[0][1];
+  }
+  return "unknown";
 }
 
 int getDeviceNumber() {
   String params[][2] = {{}};
   String req[][2] = {{"NewHostNumberOfEntries", ""}};
-  connection.action("urn:dslforum-org:service:Hosts:1", "GetHostNumberOfEntries", params, 0, req, 1);
-  int numDev = (req[0][1]).toInt();
-  return numDev;
+  if (connection.action("urn:dslforum-org:service:Hosts:1", "GetHostNumberOfEntries", params, 0, req, 1)) {
+    return (req[0][1]).toInt();
+  }
+  return -1;
 }
 
 float factor1 = 1024;
 float factor2 = 1048576;
-float getUpstreamMaxBitRate() {
+
+void getMaxRates(int& u, int& d) {
   String params[][2] = {{}};
-  String req[][2] = {{"NewLayer1UpstreamMaxBitRate", ""}};
-  connection.action("urn:dslforum-org:service:WANCommonInterfaceConfig:1", "GetCommonLinkProperties", params, 0, req, 1);
-  long numDev = req[0][1].toInt();
-  Serial.println("MaxUpload: " + String(numDev / factor2));
-  return (numDev / factor2);
+  String req[][2] = {{"NewLayer1UpstreamMaxBitRate", ""}, {"NewLayer1DownstreamMaxBitRate", ""}};
+  if (connection.action("urn:dslforum-org:service:WANCommonInterfaceConfig:1", "GetCommonLinkProperties", params, 0, req, 2)) {
+    long num = req[1][1].toInt();
+    d = int(num*8 / factor1);
+    num = req[0][1].toInt();
+    u = int(num*8 / factor1);
+  }
 }
 
-float getDSLDownstreamMaxBitRate() {
-  String params[][2] = {{}};
-  String req[][2] = {{"NewLayer1DownstreamMaxBitRate", ""}};
-  connection.action("urn:dslforum-org:service:WANCommonInterfaceConfig:1", "GetCommonLinkProperties", params, 0, req, 1);
-  long numDev = (req[0][1]).toInt();
-  Serial.println ("MaxDownload: " + String(numDev / factor2));
-  return (numDev / factor2);
+float numlistFormat(String l) {
+  int i = 1;
+  int n = 0;
+  while (l.indexOf(',') > 0) {
+    n += (l.substring(0, l.indexOf(','))).toInt();
+    l = l.substring(l.indexOf(',')+1);
+    ++i;
+  }
+  n += l.toInt();
+  return n/i;
 }
 
-float getNewByteUploadRate() {
+void getCurRates(float& u, float& d) {
   String params[][2] = {{"NewSyncGroupIndex", "0"}};
-  String req[][2] = {{"Newus_current_bps", ""}};
-  connection.action("urn:dslforum-org:service:WANCommonInterfaceConfig:1", "X_AVM-DE_GetOnlineMonitor",params, 1, req, 1);
-  long numDev = req[0][1].toInt();
-  // Serial.println("Upload: " + String((numDev*8) / factor1));
-  return ((numDev*8) / factor1);
-}
-
-float getNewByteDownloadRate() {
-  String params[][2] = {{"NewSyncGroupIndex", "0"}};
-  String req[][2] = {{"Newds_current_bps", ""}};
-  connection.action("urn:dslforum-org:service:WANCommonInterfaceConfig:1", "X_AVM-DE_GetOnlineMonitor",params, 1, req, 1);
-  long numDev = req[0][1].toInt();
-  // Serial.println("Download: " + String((numDev*8) / factor1));
-  return ((numDev*8) / factor1);
+  String req[][2] = {{"Newus_current_bps", ""}, {"Newds_current_bps", ""}};
+  if (connection.action("urn:dslforum-org:service:WANCommonInterfaceConfig:1", "X_AVM-DE_GetOnlineMonitor", params, 1, req, 2)) {
+    String list = req[0][1];
+    Serial.println(list + "=>" + String(numlistFormat(list)));
+    u = (numlistFormat(list) / factor1);
+    list = req[1][1];
+    d = (numlistFormat(list) / factor1);
+  }
 }
 
 
