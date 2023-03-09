@@ -595,7 +595,7 @@ String TR064::byte2hex(byte number) {
 */
 /**************************************************************************/
 bool TR064::xmlTakeParams(String (*params)[2], int nParam) {
-    tr064Client->Stream::setTimeout(2500);
+    tr064Client->Stream::setTimeout(100);
 	int foundParam = 0;
     while (tr064Client->connected()) {
         if (!http.connected()) {
@@ -659,7 +659,7 @@ bool TR064::xmlTakeParams(String (*params)[2], int nParam) {
 */
 /**************************************************************************/
 bool TR064::xmlTakeParam(String& value, const String& needParam) {
-    tr064Client->Stream::setTimeout(2500);
+    tr064Client->Stream::setTimeout(500);
 	
 	int c;
 	int ends = 0;
