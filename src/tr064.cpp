@@ -441,8 +441,10 @@ bool TR064::action_raw(const String& service, const String& act, String params[]
             return httpRequest(_services[_servicePrefix + serviceName], xml, soapaction, true);
         } else {
             deb_println("[TR064][action_raw]<error> You need to init the library or specify a serviceURL!", DEBUG_ERROR);
+	    return false;
         }
     }
+    return false;
 }
 
 
