@@ -2,8 +2,6 @@ TR064					KEYWORD1
 init					KEYWORD2
 action					KEYWORD2
 xmlTakeParam			KEYWORD2
-xmlTakeSensitiveParam	KEYWORD2
-xmlTakeInsensitiveParam	KEYWORD2
 md5String				KEYWORD2
 byte2hex				KEYWORD2
 arr_len					KEYWORD2
