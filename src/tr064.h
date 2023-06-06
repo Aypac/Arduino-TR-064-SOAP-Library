@@ -140,7 +140,7 @@ class TR064 {
         bool xmlTakeParamStream(String& value, const String& needParam);
 		String xmlTakeParamFull(String& xml, String needParam);
         bool xmlTakeParamsFull(String (*params)[2], int nParam);
-		void processGeneralXMLParam(String htmltag, String value);
+		void processGeneralXMLParam(const String& htmltag, const String& value);
 
         int _state; // Initialization status of the library.
         String _ip;

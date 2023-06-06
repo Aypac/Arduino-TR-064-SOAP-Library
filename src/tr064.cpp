@@ -57,7 +57,7 @@ TR064::TR064() {
 TR064::TR064(uint16_t port, const String& ip, const String& user, const String& pass,
              Protocol protocol, X509Certificate certificate) {
     _state = TR064_STATUS_INIT;
-    debug_level = DEBUG_WARNING;
+    debug_level = DEBUG_WARNING;    
     this->setServer(port, ip, user, pass, protocol, certificate);
 }
 
@@ -105,9 +105,12 @@ TR064& TR064::setServer(uint16_t port, const String& ip, const String& user,
     _certificate = certificate;
     _protocol = protocol;
 	useStreamingForXML = true;
+    
     if (protocol == Protocol::useHttp) {
         wifiClient = &wifiSimpleClient;
+         deb_println("[TR064][setServer] use Protokol http ", DEBUG_ERROR);
     } else {
+        deb_println("[TR064][setServer] use Protokol https ", DEBUG_ERROR);
         if (protocol == Protocol::useHttpsInsec) {
             wifiSSLClient.setInsecure();
         } else {
@@ -134,6 +137,7 @@ void TR064::initServiceURLs() {
             Serial.println(service.first + ": " + service.second);
           }
      */
+    
     if (_state <= TR064_STATUS_INIT) {
         deb_println("[TR064][initServiceURLs]<error> Could not load service URLs, because setServer was not called before.", DEBUG_ERROR);
         return;
@@ -152,22 +156,12 @@ void TR064::initServiceURLs() {
 		if (useStreamingForXML) {
 			// new method, only keeping small bits in memory.
 			// This is more compatible with newer versions of the http and wifiClient libraries
-			while (true) {
-				int j = 0;
-				while (!wifiClient->connected()) {
-					delay(10);
-					++j;
-					if (j > 100) {
-						deb_println("[TR064][initServiceURLs]<Error> initServiceUrls failed: could not connect", DEBUG_ERROR);
-						return;
-					}
-				}
-				
+           while (true) {
 				String key;
 				if (xmlTakeParamStream(key, "serviceType")) {
 					if (key != "") {
 						String controlurl;
-						if (xmlTakeParamStream(controlurl, "controlURL") && controlurl != "") {
+                        if (xmlTakeParamStream(controlurl, "controlURL") ) {
 							deb_println("[TR064][initServiceURLs] "+ String(i) + "\t" + key + " => " + controlurl, DEBUG_INFO);
 							_services[key] = controlurl;
 							++i;
@@ -252,7 +246,7 @@ String TR064::generateAuthXML() {
 String TR064::generateAuthToken() {
     // Now we have everything to generate our hashed secret.
     String secr = _user + ":" + _realm + ":" + _pass;
-    deb_println("[TR064][generateAuthToken] Your secret is is '" + secr + "'", DEBUG_INFO);
+    deb_println("[TR064][generateAuthToken] Your secret is '" + secr + "'", DEBUG_INFO);
     _secretH = md5String(secr);
     deb_println("[TR064][generateAuthToken] Your hashed secret is '" + _secretH + "'", DEBUG_INFO);
     
@@ -553,17 +547,21 @@ bool TR064::httpRequest(const String& url, const String& xml,
     deb_println("[TR064][httpRequest] prepare request to URL: " + fullurl, DEBUG_INFO);
 	
     http.setReuse(true);
+    //http.useHTTP10(true);
+    
 	if (useStreamingForXML) {
 		http.begin(*wifiClient, _ip.c_str(), _port, url.c_str(), nossl);
 	} else {
 		http.begin(*wifiClient, fullurl);
 	}
     
+    deb_println("[TR064][httpRequest] wifiClient->Stream::getTimeout: " +  String(wifiClient->Stream::getTimeout()), DEBUG_INFO);
+
     // http.setConnectTimeout not defined on ESP8266...
     #if defined(ESP32)
         http.setConnectTimeout(2000);
     #endif
-    wifiClient->Stream::setTimeout(500);
+        wifiClient->Stream::setTimeout(500);
     
     if (soapaction != "") {
 		http.addHeader("CONTENT-TYPE", "text/xml");
@@ -587,12 +585,19 @@ bool TR064::httpRequest(const String& url, const String& xml,
     deb_println("[TR064][httpRequest] HTTP response code: " + String(httpCode), DEBUG_INFO);
     // httpCode will be negative on error
     if (httpCode > 0) {
-        // HTTP header has been send and Server response header has been handled
-        
-        // We assume we got a response, so we can check what the TR-064 host has to tell us.
-        // If this causes problems, we can limit it to these codes:
-        // if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_INTERNAL_SERVER_ERROR) {
-        return true;
+        if (httpCode == HTTP_CODE_OK) {
+            return true;
+        }else{
+            String req[][2] = {{"errorCode",""},{"errorDescription",""}};
+            if (xmlTakeParamsStream(req, 2)) {                                
+                if(req[0][1]!=""){
+                    deb_println("[TR064][httpRequest] <TR064> Failed, errorCode: '" + req[0][1]  + "'", DEBUG_VERBOSE);                    
+                    deb_println("[TR064][httpRequest] <TR064> Failed, message: '" + errorToString(req[0][1].toInt())  + "'", DEBUG_ERROR);
+                    deb_println("[TR064][httpRequest] <Error> Failed, description: '" + req[1][1] + "'", DEBUG_VERBOSE);
+                }                
+            }
+            return false;
+        }
     } else {
         // Error
         // TODO: Proper error-handling? See also #12 on github
@@ -715,7 +720,7 @@ String TR064::xmlTakeParamFull(String& xml, String needParam) {
 /*!
     @brief  Extract the content of an XML element with a certain tag.
               Case-insensitive matching.
-              Note that this function will consume the entire http stream.
+              Note that this function will consume the entire http stream->
     @param    params
                 The array you want to fill.
                 `params[i][0]` should contain the search key, `params[i][1]`
@@ -727,15 +732,19 @@ String TR064::xmlTakeParamFull(String& xml, String needParam) {
 /**************************************************************************/
 bool TR064::xmlTakeParamsStream(String (*params)[2], int nParam) {
     int foundParam = 0;
-    while (wifiClient->connected()) {
+    WiFiClient *stream = http.getStreamPtr();    
+    stream->Stream::setTimeout(40);
+    
+    while (stream->available()) {
+
         if (!http.connected()) {
             deb_println("[TR064][xmlTakeParamsStream] http connection lost", DEBUG_INFO);
             return false;
         }
-        if (wifiClient->find("<")) {
-            const String htmltag = wifiClient->readStringUntil('>');
-            //deb_println("[TR064][xmlTakeParamsStream] htmltag: " + htmltag, DEBUG_VERBOSE);
-            const String value = wifiClient->readStringUntil('<');
+        if (stream->find("<")) {
+            const String htmltag = stream->readStringUntil('>');
+            deb_println("[TR064][xmlTakeParamsStream] htmltag: " + htmltag, DEBUG_VERBOSE);
+            const String value = stream->readStringUntil('<');
             
 			
             // check if this is a tag we're interested in
@@ -750,12 +759,10 @@ bool TR064::xmlTakeParamsStream(String (*params)[2], int nParam) {
                     }
                 }
             }
-        } else {
-            http.end();
+        } else {            
             return (foundParam >= nParam);
         }
-    }
-    http.end();
+    }    
     return (foundParam >= nParam);
 }
 
@@ -774,28 +781,32 @@ bool TR064::xmlTakeParamsStream(String (*params)[2], int nParam) {
 */
 /**************************************************************************/
 bool TR064::xmlTakeParamStream(String& value, const String& needParam) {
-    wifiClient->Stream::setTimeout(500);
-    wifiClient->setTimeout(500);
-    
+    WiFiClient *stream = http.getStreamPtr();    
+    stream->Stream::setTimeout(40);
+
+    if(!stream->available()) {
+            deb_println("[TR064][xmlTakeParamStream] stream not available", DEBUG_INFO);
+            return false;                      
+        }
     int c;
     int ends = 0;
     while (true) {
-		c = wifiClient->read();
+		c = stream->read();
 		if (c != -1) {
 			if (c != '<') {
-				wifiClient->readStringUntil('<');
+				stream->readStringUntil('<');
 			}
 			
 			// read the name of the tag
-			String htmltag = wifiClient->readStringUntil('>');
+			String htmltag = stream->readStringUntil('>');
 				
 			if (htmltag.charAt(0) != '/') {
 				// read the content of the tag
-				deb_println(htmltag, DEBUG_VERBOSE);
+				//deb_println(htmltag, DEBUG_VERBOSE);
 				
 				// check if this is the tag we're interested in
 				if (htmltag.equalsIgnoreCase(needParam)) {
-					value = wifiClient->readStringUntil('<');
+					value = stream->readStringUntil('<');
 					deb_println("[TR064][xmlTakeParamStream] Found tag: " + htmltag + " => " + value, DEBUG_VERBOSE);
 					return true;
 				}
@@ -814,7 +825,7 @@ bool TR064::xmlTakeParamStream(String& value, const String& needParam) {
     return false;
 }
 
-void TR064::processGeneralXMLParam(String htmltag, String value) {
+void TR064::processGeneralXMLParam(const String& htmltag, const String& value) {
 	if (htmltag.equalsIgnoreCase("Nonce")) {
 		_nonce = value;
 		deb_println("[TR064][processGeneralXMLParam] Extracted the nonce '" + _nonce + "' from the last request.", DEBUG_INFO);
