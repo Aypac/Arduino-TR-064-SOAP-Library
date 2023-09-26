@@ -604,8 +604,10 @@ bool TR064::httpRequest(const String& url, const String& xml,
     #if defined(ESP32)
         http.setConnectTimeout(2000);
     #endif
-        wifiClient->Stream::setTimeout(500);
+    //wifiClient->Stream::setTimeout(500);
     
+    deb_println("[TR064][httpRequest] Stream::getTimeout: " + wifiClient->Stream::getTimeout(), DEBUG_INFO);
+
     if (soapaction != "") {
 		http.addHeader("CONTENT-TYPE", "text/xml");
         http.addHeader("SOAPACTION", soapaction);
@@ -824,7 +826,7 @@ bool TR064::xmlTakeParamsStream(String (*params)[2], int nParam) {
 */
 /**************************************************************************/
 bool TR064::xmlTakeParamStream(String& value, const String& needParam) {
-    WiFiClient *stream = http.getStreamPtr();    
+    WiFiClient *stream = http.getStreamPtr();
     stream->Stream::setTimeout(40);
 
     if(!stream->available()) {
