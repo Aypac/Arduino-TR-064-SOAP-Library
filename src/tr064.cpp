@@ -403,6 +403,11 @@ bool TR064::action(const String& service, const String& act, String params[][2],
 /**************************************************************************/
 bool TR064::action_raw(const String& service, const String& act, String params[][2],
                        int nParam, const String& url) {
+    
+    if (service.startsWith(_servicePrefixUPnP)) {
+        // The SOAPACTION-header is in the format service#action
+        return action_UPnP_raw(service, act, params,nParam,url);
+    }
     // Generate the XML-envelop
     String serviceName = cleanOldServiceName(service);
     String xml = _requestStart + generateAuthXML();
@@ -435,6 +440,44 @@ bool TR064::action_raw(const String& service, const String& act, String params[]
             return httpRequest(_services[_servicePrefix + serviceName], xml, soapaction, true);
         } else {
             deb_println("[TR064][action_raw]<error> You need to init the library or specify a serviceURL!", DEBUG_ERROR);
+	    return false;
+        }
+    }
+    return false;
+}
+bool TR064::action_UPnP_raw(const String& service, const String& act, String params[][2],
+                       int nParam, const String& url) {
+    // Generate the XML-envelop
+    String xml = _requestStart ;
+    xml += "<s:Body><u:"+act+" xmlns:u=\"" + service + "\">";
+    
+    // Add request-parameters to XML
+    if (nParam > 0) {
+        for (uint16_t i=0; i<nParam; ++i) {
+            if (params[i][0] != "") {
+                deb_println("[TR064][action_UPnP_raw] Parameter: "+params[i][0]+" => "+params[i][1], DEBUG_VERBOSE);
+                xml += "<"+params[i][0]+">"+params[i][1]+"</"+params[i][0]+">";
+            }
+        }
+    }
+    // Close the envelop
+    xml += "</u:" + act + "></s:Body></s:Envelope>";
+    
+    // The SOAPACTION-header is in the format service#action
+    String soapaction = service+"#"+act;
+    
+    // Empty nonce; this ensures that we request a new one explicitly,
+    //   if we don't get a new one with this request.
+    _nonce = "";
+    
+    // Send the http-Request
+    if (url != "") {
+        return httpRequest(url, xml, soapaction, true);
+    } else {
+        if (_state >= TR064_STATUS_SERVICES) {
+            return httpRequest(service, xml, soapaction, true);
+        } else {
+            deb_println("[TR064][action_UPnP_raw]<error> You need to init the library or specify a serviceURL!", DEBUG_ERROR);
 	    return false;
         }
     }
@@ -743,10 +786,10 @@ bool TR064::xmlTakeParamsStream(String (*params)[2], int nParam) {
         }
         if (stream->find("<")) {
             const String htmltag = stream->readStringUntil('>');
-            deb_println("[TR064][xmlTakeParamsStream] htmltag: " + htmltag, DEBUG_VERBOSE);
+           // deb_println("[TR064][xmlTakeParamsStream] htmltag: " + htmltag, DEBUG_VERBOSE);
             const String value = stream->readStringUntil('<');
             
-			
+			deb_println("[TR064][xmlTakeParamsStream]parameter: " + htmltag + " => " + value, DEBUG_INFO);
             // check if this is a tag we're interested in
 			processGeneralXMLParam(htmltag, value);
             if (nParam > 0) {

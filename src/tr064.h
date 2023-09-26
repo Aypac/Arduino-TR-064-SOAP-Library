@@ -130,6 +130,7 @@ class TR064 {
 		
         void initServiceURLs();
         bool action_raw(const String& service,const String& act, String params[][2], int nParam, const String& url = "");
+        bool action_UPnP_raw(const String& service,const String& act, String params[][2], int nParam, const String& url = "");
         bool httpRequest(const String& url, const String& xml, const String& action, bool retry);
 		
         String generateAuthToken();
@@ -157,6 +158,7 @@ class TR064 {
         const char* const _requestStart = "<?xml version=\"1.0\"?><s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">";
         const char* const _detectPage = "/tr64desc.xml";
         const char* const _servicePrefix = "urn:dslforum-org:service:";
+        const char* const _servicePrefixUPnP = "urn:schemas-upnp-org:service";        
         unsigned long lastOutActivity;
         unsigned long lastInActivity;
         std::map<String, String> _services;
