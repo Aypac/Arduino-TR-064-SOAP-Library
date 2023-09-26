@@ -23,7 +23,7 @@
 // 0 = http, 1 = httpsInsec, 2 = https
 // Please set your own TR_ROOT_CERT and TR_PORT accordingly
 //   below if you chose 1 or 2!
-#define TR_PROTOCOL   1
+#define TR_PROTOCOL   0
 // Which port do we use for accessing the TR-064 host?
 // Defaults for most FRITZ!Box'es:
 //     49000 for http
