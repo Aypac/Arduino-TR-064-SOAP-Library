@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # Comma separated list without double quotes around the list.
-      REQUIRED_LIBRARIES: BearSSL
+      REQUIRED_LIBRARIES: ArduinoBearSSL
     strategy:
       matrix:
         arduino-boards-fqbn:
