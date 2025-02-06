@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Compile all examples using the bash script arduino-test-compile.sh
         env:
           # Passing parameters to the script by setting the appropriate ENV_* variables.
