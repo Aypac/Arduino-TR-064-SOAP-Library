@@ -1,6 +1,8 @@
 # Arduino TR-064 SOAP Library [![Linting](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/actions/workflows/lint.yml/badge.svg)](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/actions/workflows/lint.yml) ![Test compile](https://github.com/Aypac/Arduino-TR-064-SOAP-Library/actions/workflows/arduino-test-compile.yml/badge.svg)
 Arduino library to facilitate the use of the TR-064 SOAP protocol. With this you can get a lot of information from and control common routers and their peripherals, like the FRITZ!Box or some ZyXEL.
 
+IMPORTANT NOTE: it seems there is a problem with newer Arduino IDE versions. **Please use IDE 1.8.18 and ESP8266 boards version not past/newer than 2.7.4**. Version for other boards has to be tested. I will try to fix this asap (Note from Feb 2025).
+
 A few examples of what you can do with it include:
  - Retrieve devices currently connected to the WIFI or LAN
  - Retrieve statistics on internet data usage
